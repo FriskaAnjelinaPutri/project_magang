@@ -5,14 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
 use App\Models\Pasien;
+use App\Models\Antrian;
+use Illuminate\Support\Facades\Auth;
 
 class PendaftaranController extends Controller
 {
     // menampilkan semua data pendaftaran
-    public function index()
+    public function index(Request $request)
     {
-        $pendaftaran = Pendaftaran::with('pasien')->get();
-        return view('pendaftaran.index', compact('pendaftaran'));
+        $tanggalFilter = $request->input('tanggal', now()->toDateString());
+
+        $pendaftaran = Pendaftaran::with(['pasien', 'layanan'])
+            ->whereDate('tanggal_kunjungan', $tanggalFilter)
+            ->orderByDesc('id_pendaftaran')
+            ->get();
+
+        return view('reservasi.index', compact('pendaftaran', 'tanggalFilter'));
     }
 
     // menampilkan form pendaftaran
@@ -31,7 +39,7 @@ class PendaftaranController extends Controller
         $pasienList = \App\Models\Pasien::all();
         $layanan = \App\Models\Layanan::all();
 
-        return view('pendaftaran.create', compact('pasienList', 'layanan', 'user'));
+        return view('reservasi.create', compact('pasienList', 'layanan', 'user'));
     }
 
     // menyimpan data pendaftaran
@@ -67,12 +75,12 @@ class PendaftaranController extends Controller
         ]);
 
         if ($user->role === 'pasien') {
-            return redirect()->route('pendaftaran.cetak', $antrian->id_antrian)
+            return redirect()->route('reservasi.cetak', $antrian->id_antrian)
                 ->with('success', 'Antrian berhasil diambil!');
         }
 
-        return redirect()->route('pendaftaran.index')
-            ->with('success','Pendaftaran berhasil dibuat');
+        return redirect()->route('reservasi.index')
+            ->with('success','Reservasi berhasil dibuat');
     }
 
     // mencetak antrian
@@ -88,7 +96,7 @@ class PendaftaranController extends Controller
             }
         }
 
-        return view('pendaftaran.cetak', compact('antrian'));
+        return view('reservasi.cetak', compact('antrian'));
     }
 
     // menampilkan form edit
@@ -98,7 +106,7 @@ class PendaftaranController extends Controller
         $pasienList = \App\Models\Pasien::all();
         $layanan = \App\Models\Layanan::all();
 
-        return view('pendaftaran.edit', compact('pendaftaran','pasienList','layanan'));
+        return view('reservasi.edit', compact('pendaftaran','pasienList','layanan'));
     }
 
     // update data pendaftaran
@@ -131,8 +139,8 @@ class PendaftaranController extends Controller
             ]);
         }
 
-        return redirect()->route('pendaftaran.index')
-            ->with('success','Data pendaftaran berhasil diupdate');
+        return redirect()->route('reservasi.index')
+            ->with('success','Data reservasi berhasil diupdate');
     }
 
     // hapus pendaftaran
@@ -140,7 +148,40 @@ class PendaftaranController extends Controller
     {
         Pendaftaran::destroy($id);
 
-        return redirect()->route('pendaftaran.index')
-            ->with('success','Data pendaftaran berhasil dihapus');
+        return redirect()->route('reservasi.index')
+            ->with('success','Data reservasi berhasil dihapus');
+    }
+
+    // batalkan pendaftaran oleh pasien
+    public function cancel($id)
+    {
+        $user = Auth::user();
+        if (!$user || $user->role !== 'pasien') {
+            abort(403, 'Hanya pasien yang dapat membatalkan pendaftaran.');
+        }
+
+        $pasien = Pasien::where('id_user', $user->id)->first();
+        if (!$pasien) {
+            return redirect()->route('dashboard.pasien')
+                ->with('error', 'Profil pasien tidak ditemukan.');
+        }
+
+        $pendaftaran = Pendaftaran::with('antrian')->findOrFail($id);
+        if ((int) $pendaftaran->id_pasien !== (int) $pasien->id_pasien) {
+            abort(403, 'Anda tidak berhak membatalkan pendaftaran ini.');
+        }
+
+        $status = strtolower((string) $pendaftaran->status);
+        if (!in_array($status, ['menunggu', 'dipanggil'], true)) {
+            return redirect()->route('dashboard.pasien')
+                ->with('error', 'Pendaftaran ini tidak bisa dibatalkan.');
+        }
+
+        $pendaftaran->update(['status' => 'batal']);
+
+        Antrian::where('id_pendaftaran', $pendaftaran->id_pendaftaran)->delete();
+
+        return redirect()->route('dashboard.pasien')
+            ->with('success', 'Pendaftaran berhasil dibatalkan.');
     }
 }

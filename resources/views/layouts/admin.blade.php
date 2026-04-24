@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Klinik Sehat</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,9 +18,9 @@
             background-color: #FDF8F0;
             overflow-x: hidden;
         }
-        
+
         .blob-bg { display: none; } /* Hide blobs */
-        
+
         /* Override glass with solid flat theme */
         .glass-panel {
             background-color: #FFFFFF;
@@ -36,7 +36,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
-        
+
         .glass-card:hover {
             box-shadow: 0 10px 25px -5px rgba(234, 148, 29, 0.15);
             transform: translateY(-2px);
@@ -56,7 +56,7 @@
             padding-bottom: 0.25rem;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        
+
         .nav-link {
             display: flex;
             align-items: center;
@@ -69,7 +69,7 @@
             transition: all 0.2s;
             font-weight: 600;
         }
-        
+
         .nav-link:hover {
             color: #EA941D;
             background-color: #FFF7ED;
@@ -91,6 +91,43 @@
             box-shadow: 0 4px 15px rgba(234, 148, 29, 0.25);
             transform: translateY(-1px);
         }
+
+        .admin-layout {
+            transition: all 0.3s ease;
+        }
+
+        .admin-sidebar {
+            transition: width 0.3s ease, padding 0.3s ease, opacity 0.2s ease;
+            overflow: hidden;
+        }
+
+        .sidebar-toggle-btn {
+            background-color: #FFFFFF;
+            border: 1px solid rgba(234, 148, 29, 0.2);
+            color: #EA941D;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .sidebar-toggle-btn:hover {
+            background-color: #FFF7ED;
+        }
+
+        .sidebar-toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        body.sidebar-collapsed .admin-sidebar {
+            width: 0;
+            padding-left: 0;
+            padding-right: 0;
+            opacity: 0;
+            border: 0;
+            margin-right: 0;
+        }
+
+        body.sidebar-collapsed .sidebar-toggle-icon {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body class="min-h-screen text-gray-800 flex relative overflow-hidden">
@@ -99,16 +136,21 @@
     <div class="blob-bg blob-1"></div>
     <div class="blob-bg blob-2"></div>
 
-    <div class="w-full flex h-screen p-4 sm:p-6 gap-6 relative z-10">
-        
+    <div class="w-full flex h-screen p-4 sm:p-6 gap-6 relative z-10 admin-layout">
+        <button id="sidebarToggle" type="button" class="sidebar-toggle-btn absolute top-8 left-8 z-20 w-10 h-10 rounded-xl flex items-center justify-center transition-all">
+            <svg class="sidebar-toggle-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
         <!-- Sidebar -->
-        <aside class="w-64 h-full flex flex-col glass-panel rounded-3xl p-6 shrink-0">
+        <aside class="admin-sidebar w-64 h-full flex flex-col glass-panel rounded-3xl p-6 shrink-0">
             <!-- Logo area -->
             <div class="flex flex-col items-center mb-6 pt-2">
                 <div class="w-14 h-14 rounded-2xl bg-orange-500 shadow-lg shadow-orange-500/30 flex items-center justify-center text-white mb-3">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 </div>
-                <h2 class="font-extrabold text-xl tracking-tight text-gray-900">Klinik<span class="text-gradient">Sehat</span></h2>
+                <h2 class="font-extrabold text-xl tracking-tight text-gray-900">Klinik<span class="text-gradient"> Drg.Noviandri</span></h2>
                 <div class="w-full border-b border-gray-200 mt-4 relative"></div>
             </div>
 
@@ -134,9 +176,9 @@
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                     Pembayaran
                 </a>
-                <a href="{{ route('pendaftaran.index') }}" class="nav-link {{ request()->routeIs('pendaftaran.*') ? 'bg-orange-50 text-orange-500 shadow-sm' : '' }}">
+                <a href="{{ route('reservasi.index') }}" class="nav-link {{ request()->routeIs('reservasi.*') ? 'bg-orange-50 text-orange-500 shadow-sm' : '' }}">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                    Pendaftaran
+                    Reservasi
                 </a>
 
                 <div class="sidebar-section">KELOLA ANTRIAN</div>
@@ -172,7 +214,31 @@
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
+    <script>
+        (function () {
+            const body = document.body;
+            const toggleButton = document.getElementById('sidebarToggle');
+            const storageKey = 'admin-sidebar-collapsed';
+
+            if (!toggleButton) {
+                return;
+            }
+
+            const applyState = (isCollapsed) => {
+                body.classList.toggle('sidebar-collapsed', isCollapsed);
+            };
+
+            applyState(localStorage.getItem(storageKey) === '1');
+
+            toggleButton.addEventListener('click', () => {
+                const nextState = !body.classList.contains('sidebar-collapsed');
+                applyState(nextState);
+                localStorage.setItem(storageKey, nextState ? '1' : '0');
+            });
+        })();
+    </script>
+
     @stack('scripts')
 </body>
 </html>

@@ -59,7 +59,6 @@
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#beranda" class="text-dark hover:text-primary font-semibold transition-colors">Beranda</a>
                     <a href="#layanan" class="text-dark hover:text-primary font-semibold transition-colors">Layanan</a>
-                    <a href="{{ route('jadwal') }}" class="text-dark hover:text-primary font-semibold transition-colors">Jadwal Antrian</a>
                     <a href="{{ route('antrian.monitor') }}" class="relative text-dark hover:text-primary font-semibold transition-colors flex items-center gap-1.5 group">
                         <span class="w-2 h-2 rounded-full bg-primary animate-ping absolute -top-1 -right-1"></span>
                         <i class="fa-solid fa-display text-sm"></i> Cek Antrian
@@ -115,7 +114,7 @@
                     Perawatan gigi profesional dengan teknologi modern dan dokter berpengalaman. Dapatkan gigi sehat, bersih, dan senyum menawan yang Anda impikan.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <a href="{{ route('pendaftaran.create') }}" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-accent hover:from-secondary hover:to-primary text-white rounded-full font-bold text-lg transition-all shadow-xl hover:shadow-primary/40 transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                    <a href="{{ route('reservasi.create') }}" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-accent hover:from-secondary hover:to-primary text-white rounded-full font-bold text-lg transition-all shadow-xl hover:shadow-primary/40 transform hover:-translate-y-1 flex items-center justify-center gap-3">
                         <i class="fa-solid fa-ticket text-xl"></i> Ambil Antrian Sekarang
                     </a>
                     <a href="#layanan" class="w-full sm:w-auto px-8 py-4 glass-card text-dark hover:text-primary rounded-full font-bold text-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-3 border border-white">
@@ -203,7 +202,7 @@
                 <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6">Waktunya Membuat Senyum Anda Bersinar</h2>
                 <p class="text-white/90 text-xl mb-10 max-w-2xl mx-auto font-medium">Bebaskan diri dari rasa sakit gigi. Ambil langkah pertama menuju kesehatan mulut yang sempurna hari ini.</p>
                 <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                    <a href="{{ route('pendaftaran.create') }}" class="px-10 py-5 bg-white text-primary hover:bg-light rounded-full font-extrabold text-xl transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center gap-3 w-full sm:w-auto justify-center">
+                    <a href="{{ route('reservasi.create') }}" class="px-10 py-5 bg-white text-primary hover:bg-light rounded-full font-extrabold text-xl transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center gap-3 w-full sm:w-auto justify-center">
                         <i class="fa-solid fa-calendar-check text-2xl"></i> Reservasi Jadwal
                     </a>
                 </div>
@@ -302,10 +301,9 @@
                     <ul class="space-y-4 text-white/70 font-medium">
                         <li><a href="#beranda" class="hover:text-primary transition-colors flex items-center"><i class="fa-solid fa-chevron-right text-xs mr-2 text-primary"></i> Beranda</a></li>
                         <li><a href="#layanan" class="hover:text-primary transition-colors flex items-center"><i class="fa-solid fa-chevron-right text-xs mr-2 text-primary"></i> Layanan</a></li>
-                        <li><a href="{{ route('jadwal') }}" class="hover:text-primary transition-colors flex items-center"><i class="fa-solid fa-chevron-right text-xs mr-2 text-primary"></i> Jadwal Antrian</a></li>
                         <li><a href="{{ route('antrian.monitor') }}" class="hover:text-primary transition-colors flex items-center"><i class="fa-solid fa-chevron-right text-xs mr-2 text-primary"></i> Cek Antrian</a></li>
                         <li><a href="#lokasi" class="hover:text-primary transition-colors flex items-center"><i class="fa-solid fa-chevron-right text-xs mr-2 text-primary"></i> Lokasi</a></li>
-                        <li><a href="{{ route('pendaftaran.create') }}" class="hover:text-primary transition-colors flex items-center"><i class="fa-solid fa-chevron-right text-xs mr-2 text-primary"></i> Reservasi</a></li>
+                        <li><a href="{{ route('reservasi.create') }}" class="hover:text-primary transition-colors flex items-center"><i class="fa-solid fa-chevron-right text-xs mr-2 text-primary"></i> Reservasi</a></li>
                     </ul>
                 </div>
 

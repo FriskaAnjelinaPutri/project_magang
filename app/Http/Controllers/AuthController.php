@@ -23,28 +23,59 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'username' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $identifier = $credentials['username'];
+        $password = $credentials['password'];
+
+        $isEmail = filter_var($identifier, FILTER_VALIDATE_EMAIL) !== false;
+
+        $attemptCredentials = $isEmail
+            ? ['email' => $identifier, 'password' => $password]
+            : ['username' => $identifier, 'password' => $password];
+
+        if (Auth::attempt($attemptCredentials)) {
             $request->session()->regenerate();
 
             $role = Auth::user()->role;
+
+            // Enforce: pasien login via NIK (username), admin/kasir login via email
+            if ($isEmail && $role === 'pasien') {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'username' => 'Pasien harus login menggunakan NIK (bukan email).',
+                ])->onlyInput('username');
+            }
+
+            if (!$isEmail && in_array($role, ['admin', 'kasir'], true)) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'username' => 'Admin/Kasir harus login menggunakan email.',
+                ])->onlyInput('username');
+            }
+
             if ($role === 'admin') {
                 return redirect()->intended('/dashboard/admin');
             } elseif ($role === 'kasir') {
                 return redirect()->intended('/dashboard/kasir');
             } elseif ($role === 'pasien') {
-                return redirect()->intended(route('pendaftaran.create'));
+                return redirect()->intended(route('reservasi.create'));
             }
 
-            return redirect()->intended('/'); 
+            return redirect()->intended('/');
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+            'username' => 'The provided credentials do not match our records.',
+        ])->onlyInput('username');
     }
 
     /**
@@ -62,33 +93,33 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'jenis_kelamin' => ['required', 'in:L,P'],
-            'NIK' => ['required', 'string', 'max:16', 'unique:pasien,NIK'],
-            'no_hp' => ['required', 'string', 'max:15'],
-            'alamat' => ['required', 'string']
+            'username' => ['required', 'string', 'size:16', 'unique:users,username'],
         ]);
+
+        // Email is required by schema, but pasien registration uses NIK as identity.
+        // Generate a unique email from the NIK.
+        $baseEmailLocal = $validated['username'];
+        $generatedEmail = $baseEmailLocal . '@pasien.local';
+        $suffix = 0;
+        while (User::where('email', $generatedEmail)->exists()) {
+            $suffix++;
+            $generatedEmail = $baseEmailLocal . '+' . $suffix . '@pasien.local';
+        }
 
         $user = User::create([
             'name' => $validated['name'],
-            'email' => $validated['email'],
+            'username' => $validated['username'],
+            'email' => $generatedEmail,
             'password' => Hash::make($validated['password']),
             'role' => 'pasien', // Default role for open registrations
         ]);
 
-        \App\Models\Pasien::create([
-            'id_user' => $user->id,
-            'nama_pasien' => $validated['name'],
-            'jenis_kelamin' => $validated['jenis_kelamin'],
-            'NIK' => $validated['NIK'],
-            'no_hp' => $validated['no_hp'],
-            'alamat' => $validated['alamat']
-        ]);
-
         Auth::login($user);
 
-        return redirect()->intended(route('pendaftaran.create'))->with('success', 'Akun berhasil dibuat. Silakan daftar antrian sekarang.');
+        return redirect()
+            ->route('pasien.complete_profile')
+            ->with('success', 'Akun berhasil dibuat. Silakan lengkapi profil Anda terlebih dahulu.');
     }
 
     /**

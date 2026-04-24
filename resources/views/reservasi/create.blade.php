@@ -26,7 +26,7 @@
             </div>
         @endif
         
-        <form action="{{ route('pendaftaran.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-6">
             @csrf
             
             <!-- Layanan Dipilih -->
@@ -84,17 +84,17 @@
 
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 px-2 mt-4 gap-4">
     <div>
-        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Form Pendaftaran</h1>
-        <p class="text-sm text-gray-500 mt-1">Tambahkan pendaftaran reservasi pasien secara manual.</p>
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Form Reservasi</h1>
+        <p class="text-sm text-gray-500 mt-1">Tambahkan reservasi pasien secara manual.</p>
     </div>
-    <a href="{{ route('pendaftaran.index') }}" class="text-gray-500 hover:text-gray-700 font-medium transition-colors text-sm flex items-center gap-2">
-        ← Kembali ke Tabel Pendaftaran
+    <a href="{{ route('reservasi.index') }}" class="text-gray-500 hover:text-gray-700 font-medium transition-colors text-sm flex items-center gap-2">
+        ← Kembali ke Tabel Reservasi
     </a>
 </div>
 
 <div class="px-2">
     <div class="glass-panel rounded-3xl p-6 sm:p-8 bg-white shadow-xl max-w-2xl">
-        <form action="{{ route('pendaftaran.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-6">
             @csrf
             
             <div>
@@ -124,7 +124,7 @@
 
             <div class="pt-4">
                 <button type="submit" class="w-full px-6 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold transition-all shadow-md">
-                    Simpan Pendaftaran
+                    Simpan Reservasi
                 </button>
             </div>
         </form>
@@ -134,3 +134,4 @@
 @endif
 
 @endsection
+

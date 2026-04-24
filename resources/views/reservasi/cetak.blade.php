@@ -49,7 +49,7 @@
         <!-- Badan Tiket -->
         <div class="p-8 text-center bg-gradient-to-b from-white to-orange-50/30">
             <p class="text-gray-500 font-bold text-sm tracking-widest uppercase mb-2">Nomor Antrean Anda</p>
-            <h2 class="text-7xl font-extrabold text-[#4a403d] mb-4 tracking-tighter">{{ str_pad($antrian->nomor_antrian, 3, '0', STR_PAD_LEFT) }}</h2>
+            <h2 class="text-7xl font-extrabold text-[#4a403d] mb-4 tracking-tighter">{{ (int) $antrian->nomor_antrian }}</h2>
             
             <div class="w-16 h-1 bg-[#d4a373] mx-auto rounded-full mb-6 relative"></div>
 
@@ -66,10 +66,7 @@
                     <span class="text-gray-500 font-medium text-sm">Tgl. Kunjungan</span>
                     <span class="font-bold text-[#4a403d]">{{ \Carbon\Carbon::parse($antrian->tanggal_antrian)->format('d M Y') }}</span>
                 </div>
-                <div class="flex justify-between items-center pt-1">
-                    <span class="text-gray-500 font-medium text-sm">Status</span>
-                    <span class="text-orange-600 bg-orange-100 px-3 py-1 rounded-full font-bold text-xs uppercase">{{ $antrian->status }}</span>
-                </div>
+                <!-- Status intentionally hidden -->
             </div>
         </div>
 
@@ -94,3 +91,4 @@
 
 </body>
 </html>
+

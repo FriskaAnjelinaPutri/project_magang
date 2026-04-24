@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class AdminController extends Controller
-{
+{ 
     public function index()
     {
         $stats = [

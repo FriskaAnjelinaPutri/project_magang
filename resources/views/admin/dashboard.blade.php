@@ -90,7 +90,7 @@
             <h2 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Aksi Cermat (Quick Actions)</h2>
             <div class="grid grid-cols-2 gap-4">
                 
-                <a href="{{ route('pendaftaran.index') }}" class="flex flex-col items-center justify-center p-5 rounded-2xl bg-orange-50/70 hover:bg-orange-100 border border-orange-100/50 text-orange-600 transition-all hover:shadow-md transform hover:-translate-y-1">
+                <a href="{{ route('reservasi.index') }}" class="flex flex-col items-center justify-center p-5 rounded-2xl bg-orange-50/70 hover:bg-orange-100 border border-orange-100/50 text-orange-600 transition-all hover:shadow-md transform hover:-translate-y-1">
                     <svg class="w-8 h-8 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                     <span class="text-sm font-bold text-center">Kelola<br>Antrian</span>
                 </a>
@@ -123,14 +123,14 @@
                 <h2 class="text-xl font-bold text-gray-900">Pasien Terakhir Mendaftar</h2>
                 <p class="text-sm text-gray-500 mt-1">Daftar reservasi terbaru masuk ke sistem.</p>
             </div>
-            <a href="{{ route('pendaftaran.index') }}" class="text-sm text-orange-500 hover:text-orange-700 font-bold bg-white/50 px-4 py-2 rounded-xl transition-all hover:bg-white text-center">Lihat Semua Data &rarr;</a>
+            <a href="{{ route('reservasi.index') }}" class="text-sm text-orange-500 hover:text-orange-700 font-bold bg-white/50 px-4 py-2 rounded-xl transition-all hover:bg-white text-center">Lihat Semua Data &rarr;</a>
         </div>
         
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-gray-200/50">
-                        <th class="py-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">ID</th>
+                        <th class="py-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">No</th>
                         <th class="py-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Pasien</th>
                         <th class="py-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggal</th>
                         <th class="py-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
@@ -139,7 +139,7 @@
                 <tbody>
                     @forelse ($recent_pendaftaran ?? [] as $pendaftaran)
                         <tr class="border-b border-gray-100/50 hover:bg-white/40 transition-colors">
-                            <td class="py-4 px-4 text-sm font-bold text-orange-500 text-center">{{ $pendaftaran->id_pendaftaran }}</td>
+                            <td class="py-4 px-4 text-sm font-bold text-orange-500 text-center">{{ $loop->iteration }}</td>
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">{{ $pendaftaran->pasien->nama_pasien ?? 'Unknown' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-600">{{ $pendaftaran->tanggal_kunjungan ?? $pendaftaran->created_at->format('d M Y') }}</td>
                             <td class="py-4 px-4">

@@ -88,7 +88,6 @@
                                 <td class="px-6 py-4 border-b border-gray-50 text-center font-semibold text-dark/70 group-hover:text-primary">{{ $index + 1 }}</td>
                                 <td class="px-6 py-4 border-b border-gray-50">
                                     <div class="font-bold text-dark">{{ $antrian->pasien?->nama_pasien ?? '-' }}</div>
-                                    <div class="text-sm text-dark/50">NIK {{ $antrian->pasien?->NIK ?? '-' }}</div>
                                 </td>
                                 <td class="px-6 py-4 border-b border-gray-50">
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-light text-primary text-sm font-semibold">

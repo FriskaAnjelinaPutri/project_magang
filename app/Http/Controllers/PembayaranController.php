@@ -9,21 +9,34 @@ use App\Models\Pendaftaran;
 class PembayaranController extends Controller
 {
     // menampilkan semua pembayaran
-    public function index()
+    public function index(Request $request)
     {
-        $pembayaran = Pembayaran::with('pendaftaran')->get();
+        $tanggalFilter = $request->input('tanggal', now()->toDateString());
 
-        return view('pembayaran.index', compact('pembayaran'));
+        $pembayaran = Pembayaran::with('pendaftaran.pasien')
+            ->whereDate('tanggal_pembayaran', $tanggalFilter)
+            ->orderByDesc('id_pembayaran')
+            ->get();
+
+        return view('pembayaran.index', compact('pembayaran', 'tanggalFilter'));
     }
 
     // menampilkan form pembayaran
-    public function create()
+    public function create(Request $request)
     {
-        $pendaftaran = Pendaftaran::with(['layanan', 'pasien'])
-            ->orderByDesc('id_pendaftaran')
+        $tanggalFilter = $request->input('tanggal', now()->toDateString());
+
+        $pendaftaran = Pendaftaran::with(['layanan', 'pasien', 'antrian'])
+            ->whereDate('tanggal_kunjungan', $tanggalFilter)
+            ->whereIn('status', ['menunggu', 'dipanggil', 'selesai'])
+            ->whereDoesntHave('pembayaran', function ($query) {
+                $query->where('status', 'lunas');
+            })
+            ->orderBy('tanggal_kunjungan')
+            ->orderBy('id_pendaftaran')
             ->get();
 
-        return view('pembayaran.create', compact('pendaftaran'));
+        return view('pembayaran.create', compact('pendaftaran', 'tanggalFilter'));
     }
 
     // menyimpan pembayaran
@@ -33,7 +46,7 @@ class PembayaranController extends Controller
             'id_pendaftaran' => 'required|exists:pendaftaran,id_pendaftaran',
             'total_bayar' => 'required|numeric|min:0',
             'metode_pembayaran' => 'required|in:cash,transfer',
-            'bukti_transfer' => 'nullable|image|max:2048',
+            'bukti_transfer' => 'required_if:metode_pembayaran,transfer|nullable|image|max:2048',
         ]);
 
         $pendaftaran = Pendaftaran::with('layanan')->findOrFail($request->id_pendaftaran);

@@ -94,14 +94,14 @@
                         </div>
                     </div>
 
-                    <!-- NIK -->
+                    <!-- NIK (from account username) -->
                     <div class="space-y-2">
                         <label for="NIK" class="block text-sm font-bold text-dark">Nomor Induk Kependudukan (NIK)</label>
                         <div class="relative custom-input group rounded-2xl bg-white border border-gray-200">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-id-card text-gray-400 group-focus-within:text-primary"></i>
                             </div>
-                            <input id="NIK" type="text" name="NIK" value="{{ old('NIK') }}" required maxlength="16"
+                            <input id="NIK" type="text" value="{{ $user->username }}" readonly
                                 class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark font-semibold"
                                 placeholder="16 Digit NIK KTP">
                         </div>

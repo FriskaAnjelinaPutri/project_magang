@@ -18,7 +18,7 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-gray-200/50">
-                        <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">ID</th>
+                        <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">No</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Layanan</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Harga</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Aksi</th>
@@ -27,7 +27,7 @@
                 <tbody>
                     @forelse ($layanan ?? [] as $row)
                         <tr class="border-b border-gray-100/50 hover:bg-white/40 transition-colors">
-                            <td class="py-4 px-4 text-sm font-bold text-purple-600 text-center">{{ $row->id_layanan }}</td>
+                            <td class="py-4 px-4 text-sm font-bold text-purple-600 text-center">{{ $loop->iteration }}</td>
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">{{ $row->nama_layanan }}</td>
                             <td class="py-4 px-4 text-sm text-gray-700 font-medium">Rp {{ number_format($row->harga, 0, ',', '.') }}</td>
                             <td class="py-4 px-4 text-right whitespace-nowrap">

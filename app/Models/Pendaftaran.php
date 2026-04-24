@@ -29,4 +29,9 @@ class Pendaftaran extends Model
     {
         return $this->hasOne(Antrian::class, 'id_pendaftaran', 'id_pendaftaran');
     }
+
+    public function pembayaran()
+    {
+        return $this->hasMany(Pembayaran::class, 'id_pendaftaran', 'id_pendaftaran');
+    }
 }

@@ -63,7 +63,7 @@ class PasienController extends Controller
         
         $pasien = Pasien::where('id_user', $user->id)->first();
         if ($pasien) {
-            return redirect()->route('pendaftaran.create');
+            return redirect()->route('reservasi.create');
         }
 
         return view('pasien.complete_profile', compact('user'));
@@ -76,21 +76,33 @@ class PasienController extends Controller
         $request->validate([
             'nama_pasien' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
-            'NIK' => 'required|string|max:16|unique:pasien,NIK',
             'no_hp' => 'required|string|max:15',
             'alamat' => 'required|string'
         ]);
+
+        $nik = (string) $user->username;
+        if ($nik === '') {
+            return back()->withErrors([
+                'NIK' => 'NIK tidak ditemukan pada akun. Silakan hubungi admin.',
+            ]);
+        }
+
+        if (Pasien::where('NIK', $nik)->exists()) {
+            return back()->withErrors([
+                'NIK' => 'NIK sudah terdaftar.',
+            ]);
+        }
 
         Pasien::create([
             'id_user' => $user->id,
             'nama_pasien' => $request->nama_pasien,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'NIK' => $request->NIK,
+            'NIK' => $nik,
             'no_hp' => $request->no_hp,
             'alamat' => $request->alamat
         ]);
 
-        return redirect()->route('pendaftaran.create')->with('success', 'Profil Anda berhasil dilengkapi. Silakan daftar antrian sekarang.');
+        return redirect()->route('reservasi.create')->with('success', 'Profil Anda berhasil dilengkapi. Silakan daftar antrian sekarang.');
     }
 
 
@@ -133,6 +145,7 @@ class PasienController extends Controller
         // Auto-create user account to satisfy foreight-key constraints
         $user = \App\Models\User::create([
             'name' => $request->nama_pasien,
+            'username' => $request->NIK,
             'email' => strtolower(str_replace(' ', '', $request->nama_pasien)) . rand(100,999) . '@klinik.com',
             'password' => bcrypt($request->NIK),
             'role' => 'pasien'

@@ -101,67 +101,16 @@
                         </div>
                     </div>
 
-                    <!-- Email Address -->
+                    <!-- Username (NIK) -->
                     <div class="space-y-1.5">
-                        <label for="email" class="block text-sm font-bold text-dark w-full">Alamat Email</label>
-                        <div class="relative custom-input group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-envelope text-gray-400 group-focus-within:text-primary transition-colors"></i>
-                            </div>
-                            <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                                class="block w-full pl-12 pr-4 py-3 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
-                                placeholder="contoh@email.com">
-                        </div>
-                    </div>
-
-                    <!-- Jenis Kelamin -->
-                    <div class="space-y-1.5">
-                        <label class="block text-sm font-bold text-dark mb-1">Jenis Kelamin</label>
-                        <div class="flex gap-4 items-center h-full pb-2">
-                            <label class="flex items-center gap-2 cursor-pointer group">
-                                <input type="radio" name="jenis_kelamin" value="L" {{ old('jenis_kelamin') == 'L' ? 'checked' : '' }} required class="w-4 h-4 text-primary focus:ring-primary border-gray-300">
-                                <span class="text-dark font-medium text-sm group-hover:text-primary transition-colors">Laki-laki</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer group">
-                                <input type="radio" name="jenis_kelamin" value="P" {{ old('jenis_kelamin') == 'P' ? 'checked' : '' }} required class="w-4 h-4 text-primary focus:ring-primary border-gray-300">
-                                <span class="text-dark font-medium text-sm group-hover:text-primary transition-colors">Perempuan</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- NIK -->
-                    <div class="space-y-1.5">
-                        <label for="NIK" class="block text-sm font-bold text-dark">Nomor Induk Kependudukan (NIK)</label>
+                        <label for="username" class="block text-sm font-bold text-dark">Username (NIK)</label>
                         <div class="relative custom-input group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-id-card text-gray-400 group-focus-within:text-primary transition-colors"></i>
                             </div>
-                            <input id="NIK" type="text" name="NIK" value="{{ old('NIK') }}" required maxlength="16"
+                            <input id="username" type="text" name="username" value="{{ old('username') }}" required maxlength="16"
                                 class="block w-full pl-12 pr-4 py-3 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
                                 placeholder="16 Digit NIK KTP">
-                        </div>
-                    </div>
-
-                    <!-- No HP -->
-                    <div class="space-y-1.5">
-                        <label for="no_hp" class="block text-sm font-bold text-dark">No HP / WhatsApp</label>
-                        <div class="relative custom-input group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-phone text-gray-400 group-focus-within:text-primary transition-colors"></i>
-                            </div>
-                            <input id="no_hp" type="text" name="no_hp" value="{{ old('no_hp') }}" required
-                                class="block w-full pl-12 pr-4 py-3 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
-                                placeholder="Cth: 0812...">
-                        </div>
-                    </div>
-
-                    <!-- Alamat -->
-                    <div class="space-y-1.5">
-                        <label for="alamat" class="block text-sm font-bold text-dark">Alamat Lengkap</label>
-                        <div class="relative custom-input group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all overflow-hidden">
-                            <textarea id="alamat" name="alamat" rows="2" required
-                                class="block w-full p-3 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold resize-none"
-                                placeholder="Jalan, RT/RW, Kota">{{ old('alamat') }}</textarea>
                         </div>
                     </div>
 
@@ -192,7 +141,7 @@
                     </div>
 
                     <button type="submit" class="w-full flex justify-center items-center py-4 px-4 mt-6 rounded-2xl text-lg font-extrabold text-white bg-dark hover:bg-primary shadow-xl shadow-dark/20 focus:outline-none focus:ring-4 focus:ring-primary/30 transition-all duration-300 transform hover:-translate-y-1">
-                        Daftar Pendaftaran <i class="fa-solid fa-user-plus ml-3"></i>
+                        Daftar Akun <i class="fa-solid fa-user-plus ml-3"></i>
                     </button>
                     
                 </form>

@@ -62,9 +62,7 @@
                     <i class="fa-solid fa-tooth text-white"></i>
                 </div>
                 <h1 class="text-5xl font-extrabold mb-6 leading-tight">Selamat Datang di Portal Klinik.</h1>
-                <p class="text-xl text-white/80 font-medium leading-relaxed mb-10">
-                    Akses rekam medis, kelola jadwal reservasi, dan pantau kesehatan gigi Anda melalui satu sistem terintegrasi.
-                </p>
+
 
 
             </div>
@@ -109,16 +107,16 @@
                 <form method="POST" action="{{ route('login') }}" class="space-y-6">
                     @csrf
 
-                    <!-- Email Address -->
+                    <!-- Identifier -->
                     <div class="space-y-2">
-                        <label for="email" class="block text-sm font-bold text-dark w-full">Alamat Email</label>
+                        <label for="username" class="block text-sm font-bold text-dark w-full">Username</label>
                         <div class="relative custom-input group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-envelope text-gray-400 group-focus-within:text-primary transition-colors"></i>
+                                <i class="fa-solid fa-id-card text-gray-400 group-focus-within:text-primary transition-colors"></i>
                             </div>
-                            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                            <input id="username" type="text" name="username" value="{{ old('username') }}" required autofocus
                                 class="block w-full pl-12 pr-4 py-4 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
-                                placeholder="contoh@email.com">
+                                placeholder="Masukkan NIK atau email">
                         </div>
                     </div>
 

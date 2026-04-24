@@ -3,6 +3,17 @@
 @section('content')
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <div class="glass-card rounded-[28px] p-6 md:p-8">
+        @if(session('success'))
+            <div class="mb-6 px-4 py-3 rounded-2xl bg-green-50 border border-green-200 text-green-800 text-sm font-bold">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="mb-6 px-4 py-3 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-sm font-bold">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8">
             <div>
                 <p class="text-primary font-bold uppercase tracking-widest text-xs">Dashboard Pasien</p>
@@ -14,7 +25,7 @@
                 </p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ route('pendaftaran.create') }}"
+                <a href="{{ route('reservasi.create') }}"
                    class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-primary to-accent hover:from-secondary hover:to-primary text-white font-bold shadow-lg shadow-primary/30 transition-all">
                     <i class="fa-solid fa-calendar-plus"></i>
                     Daftar Antrian Baru
@@ -58,8 +69,8 @@
                                 <th class="px-5 py-3 text-left">Tanggal</th>
                                 <th class="px-5 py-3 text-left">Layanan</th>
                                 <th class="px-5 py-3 text-center">No. Antrian</th>
-                                <th class="px-5 py-3 text-center">Status</th>
                                 <th class="px-5 py-3 text-center">Cetak</th>
+                                <th class="px-5 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -72,29 +83,33 @@
                                         {{ $item->layanan->nama_layanan ?? '-' }}
                                     </td>
                                     <td class="px-5 py-4 text-center font-bold text-dark">
-                                        {{ $item->antrian->nomor_antrian ?? '-' }}
-                                    </td>
-                                    <td class="px-5 py-4 text-center">
-                                        @php
-                                            $status = strtolower((string) $item->status);
-                                        @endphp
-                                        @if($status === 'menunggu')
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold">Menunggu</span>
-                                        @elseif($status === 'dipanggil' || $status === 'diperiksa' || $status === 'diproses')
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold">Diproses</span>
-                                        @elseif($status === 'selesai')
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">Selesai</span>
-                                        @else
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold">{{ ucfirst($item->status) }}</span>
-                                        @endif
+                                        {{ isset($item->antrian->nomor_antrian) ? (int) $item->antrian->nomor_antrian : '-' }}
                                     </td>
                                     <td class="px-5 py-4 text-center">
                                         @if($item->antrian)
-                                            <a href="{{ route('pendaftaran.cetak', $item->antrian->id_antrian) }}"
+                                            <a href="{{ route('reservasi.cetak', $item->antrian->id_antrian) }}"
                                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors"
                                                title="Cetak Tiket">
                                                 <i class="fa-solid fa-print"></i>
                                             </a>
+                                        @else
+                                            <span class="text-dark/40">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-5 py-4 text-center">
+                                        @php
+                                            $status = strtolower((string) $item->status);
+                                            $bolehBatal = in_array($status, ['menunggu', 'dipanggil'], true);
+                                        @endphp
+                                        @if($bolehBatal)
+                                            <form action="{{ route('reservasi.cancel', $item->id_pendaftaran) }}" method="POST" onsubmit="return confirm('Yakin ingin membatalkan reservasi ini?')">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit"
+                                                    class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 font-bold text-xs transition-colors">
+                                                    Batalkan
+                                                </button>
+                                            </form>
                                         @else
                                             <span class="text-dark/40">-</span>
                                         @endif

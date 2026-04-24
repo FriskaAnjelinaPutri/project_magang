@@ -133,7 +133,7 @@
             <div class="flex flex-col lg:flex-row gap-8 mb-10">
 
                 <!-- BIG number being called -->
-                <div class="flex-1 glass-card rounded-[40px] p-10 flex flex-col items-center justify-center text-center relative overflow-hidden gradient-border">
+                <div id="antrian-card" class="flex-1 glass-card rounded-[40px] p-10 flex flex-col items-center justify-center text-center relative overflow-hidden gradient-border">
                     <!-- Decorative glow blobs -->
                     <div class="absolute -top-16 -right-16 w-56 h-56 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="absolute -bottom-16 -left-16 w-56 h-56 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -143,37 +143,40 @@
                             <i class="fa-solid fa-bell-ring mr-1 text-primary"></i>
                             Nomor yang Sedang Dipanggil
                         </p>
-
-                        @if($sedangDipanggil)
-                            <!-- Pulse rings -->
-                            <div class="relative flex items-center justify-center mb-6">
-                                <div class="ring-3 absolute rounded-full border-2 border-primary/15 animate-pulse-ring" style="animation-delay:0.4s"></div>
-                                <div class="ring-2 absolute rounded-full border-2 border-primary/25 animate-pulse-ring" style="animation-delay:0.2s"></div>
-                                <div class="ring-1 absolute rounded-full border-2 border-primary/40 animate-pulse-ring"></div>
-                                <div class="w-56 h-56 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-2xl shadow-primary/40 animate-float z-10">
-                                    <span class="text-white font-black" style="font-size:6rem;line-height:1">
-                                        {{ $sedangDipanggil->nomor_antrian }}
-                                    </span>
+                        <div id="sedang-dipanggil-wrapper">
+                            @if($sedangDipanggil)
+                                <!-- Pulse rings -->
+                                <div class="relative flex items-center justify-center mb-6">
+                                    <div class="ring-3 absolute rounded-full border-2 border-primary/15 animate-pulse-ring" style="animation-delay:0.4s"></div>
+                                    <div class="ring-2 absolute rounded-full border-2 border-primary/25 animate-pulse-ring" style="animation-delay:0.2s"></div>
+                                    <div class="ring-1 absolute rounded-full border-2 border-primary/40 animate-pulse-ring"></div>
+                                    <div class="w-56 h-56 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-2xl shadow-primary/40 animate-float z-10">
+                                        <span id="nomor-sekarang" class="text-white font-black" style="font-size:6rem;line-height:1">
+                                            {{ $sedangDipanggil->nomor_antrian }}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            @if($sedangDipanggil->pendaftaran)
-                                <p class="text-dark/60 font-medium text-base mt-2">
-                                    {{ $sedangDipanggil->pendaftaran->layanan->nama_layanan ?? '-' }}
-                                </p>
+                                @if($sedangDipanggil->pendaftaran)
+                                    <p id="layanan-sekarang" class="text-dark/60 font-medium text-base mt-2">
+                                        {{ $sedangDipanggil->pendaftaran->layanan->nama_layanan ?? '-' }}
+                                    </p>
+                                @else
+                                    <p id="layanan-sekarang" class="text-dark/60 font-medium text-base mt-2 hidden"></p>
+                                @endif
+                                <span id="badge-sekarang" class="mt-5 inline-flex items-center gap-2 px-5 py-2 rounded-full status-badge dipanggil text-white font-bold text-sm shadow-lg">
+                                    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                                    Sedang Dilayani
+                                </span>
+                            @else
+                                <div class="relative flex items-center justify-center mb-6">
+                                    <div class="w-56 h-56 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex flex-col items-center justify-center shadow-inner">
+                                        <i class="fa-solid fa-hourglass-half text-5xl text-gray-400 mb-2"></i>
+                                    </div>
+                                </div>
+                                <p id="empty-title" class="text-2xl font-bold text-dark/50 mt-2">Belum Ada Antrian</p>
+                                <p id="empty-subtitle" class="text-dark/40 font-medium mt-1">yang sedang dipanggil saat ini</p>
                             @endif
-                            <span class="mt-5 inline-flex items-center gap-2 px-5 py-2 rounded-full status-badge dipanggil text-white font-bold text-sm shadow-lg">
-                                <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
-                                Sedang Dilayani
-                            </span>
-                        @else
-                            <div class="relative flex items-center justify-center mb-6">
-                                <div class="w-56 h-56 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex flex-col items-center justify-center shadow-inner">
-                                    <i class="fa-solid fa-hourglass-half text-5xl text-gray-400 mb-2"></i>
-                                </div>
-                            </div>
-                            <p class="text-2xl font-bold text-dark/50 mt-2">Belum Ada Antrian</p>
-                            <p class="text-dark/40 font-medium mt-1">yang sedang dipanggil saat ini</p>
-                        @endif
+                        </div>
                     </div>
                 </div>
 
@@ -186,7 +189,7 @@
                         </div>
                         <div>
                             <p class="text-dark/50 font-semibold text-sm uppercase tracking-wider">Menunggu</p>
-                            <p class="text-4xl font-black text-dark">{{ $stats['menunggu'] }}</p>
+                            <p id="stat-menunggu" class="text-4xl font-black text-dark">{{ $stats['menunggu'] }}</p>
                         </div>
                     </div>
                     <!-- Dipanggil -->
@@ -196,7 +199,7 @@
                         </div>
                         <div>
                             <p class="text-dark/50 font-semibold text-sm uppercase tracking-wider">Dipanggil</p>
-                            <p class="text-4xl font-black text-dark">{{ $stats['dipanggil'] }}</p>
+                            <p id="stat-dipanggil" class="text-4xl font-black text-dark">{{ $stats['dipanggil'] }}</p>
                         </div>
                     </div>
                     <!-- Selesai -->
@@ -206,14 +209,11 @@
                         </div>
                         <div>
                             <p class="text-dark/50 font-semibold text-sm uppercase tracking-wider">Selesai</p>
-                            <p class="text-4xl font-black text-dark">{{ $stats['selesai'] }}</p>
+                            <p id="stat-selesai" class="text-4xl font-black text-dark">{{ $stats['selesai'] }}</p>
                         </div>
                     </div>
                     <!-- Auto-refresh info -->
-                    <div class="glass-card rounded-2xl p-4 flex items-center gap-3 text-sm text-dark/50 font-medium">
-                        <i class="fa-solid fa-rotate text-primary text-lg" id="refresh-icon"></i>
-                        <span>Halaman diperbarui otomatis setiap <strong class="text-primary">30 detik</strong></span>
-                    </div>
+                    
                 </div>
             </div>
 
@@ -228,15 +228,78 @@
     </footer>
 
     <script>
-        // Auto refresh every 30 seconds
-        let countdown = 30;
+        const dataUrl = "{{ route('antrian.monitor.data') }}";
+        let countdown = 5;
         const icon = document.getElementById('refresh-icon');
+        const wrapper = document.getElementById('sedang-dipanggil-wrapper');
+        const statMenunggu = document.getElementById('stat-menunggu');
+        const statDipanggil = document.getElementById('stat-dipanggil');
+        const statSelesai = document.getElementById('stat-selesai');
+
+        function renderSedangDipanggil(data) {
+            if (!wrapper) return;
+
+            if (data && data.nomor_antrian) {
+                wrapper.innerHTML = `
+                    <div class="relative flex items-center justify-center mb-6">
+                        <div class="ring-3 absolute rounded-full border-2 border-primary/15 animate-pulse-ring" style="animation-delay:0.4s"></div>
+                        <div class="ring-2 absolute rounded-full border-2 border-primary/25 animate-pulse-ring" style="animation-delay:0.2s"></div>
+                        <div class="ring-1 absolute rounded-full border-2 border-primary/40 animate-pulse-ring"></div>
+                        <div class="w-56 h-56 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-2xl shadow-primary/40 animate-float z-10">
+                            <span class="text-white font-black" style="font-size:6rem;line-height:1">${data.nomor_antrian}</span>
+                        </div>
+                    </div>
+                    <p class="text-dark/60 font-medium text-base mt-2 ${data.layanan ? '' : 'hidden'}">${data.layanan || ''}</p>
+                    <span class="mt-5 inline-flex items-center gap-2 px-5 py-2 rounded-full status-badge dipanggil text-white font-bold text-sm shadow-lg">
+                        <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                        Sedang Dilayani
+                    </span>
+                `;
+            } else {
+                wrapper.innerHTML = `
+                    <div class="relative flex items-center justify-center mb-6">
+                        <div class="w-56 h-56 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex flex-col items-center justify-center shadow-inner">
+                            <i class="fa-solid fa-hourglass-half text-5xl text-gray-400 mb-2"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold text-dark/50 mt-2">Belum Ada Antrian</p>
+                    <p class="text-dark/40 font-medium mt-1">yang sedang dipanggil saat ini</p>
+                `;
+            }
+        }
+
+        async function refreshData() {
+            try {
+                icon.classList.add('fa-spin');
+                const response = await fetch(dataUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                    cache: 'no-store',
+                });
+                if (!response.ok) {
+                    return;
+                }
+
+                const payload = await response.json();
+                renderSedangDipanggil(payload.sedang_dipanggil || null);
+
+                if (statMenunggu && payload.stats) statMenunggu.textContent = payload.stats.menunggu ?? 0;
+                if (statDipanggil && payload.stats) statDipanggil.textContent = payload.stats.dipanggil ?? 0;
+                if (statSelesai && payload.stats) statSelesai.textContent = payload.stats.selesai ?? 0;
+            } catch (error) {
+                // Keep page stable when request fails temporarily.
+            } finally {
+                setTimeout(() => icon.classList.remove('fa-spin'), 250);
+            }
+        }
 
         setInterval(() => {
             countdown--;
             if (countdown <= 0) {
-                icon.classList.add('fa-spin');
-                setTimeout(() => window.location.reload(), 500);
+                refreshData();
+                countdown = 5;
             }
         }, 1000);
 
