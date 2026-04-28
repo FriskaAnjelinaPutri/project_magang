@@ -38,5 +38,14 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password123'),
             'role' => 'pasien',
         ]);
+
+        // Dokter
+        User::create([
+            'name' => 'Drg. Noviandri',
+            'username' => 'dokter1',
+            'email' => 'dokter@klinik.com',
+            'password' => bcrypt('password123'),
+            'role' => 'dokter',
+        ]);
     }
 }

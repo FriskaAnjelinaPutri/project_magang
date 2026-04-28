@@ -87,19 +87,23 @@ class PembayaranController extends Controller
     {
         $request->validate([
             'status' => 'required|in:lunas,belum lunas',
+            'total_bayar' => 'nullable|numeric|min:0',
         ]);
 
         $pembayaran = Pembayaran::with('pendaftaran.layanan')->findOrFail($id);
 
-        $hargaLayanan = (float) (optional($pembayaran->pendaftaran->layanan)->harga ?? 0);
         $pembayaran->status = $request->status;
-        $totalDiselaraskan = false;
-
-        if ($request->status === 'lunas') {
+        
+        if ($request->has('total_bayar') && $request->total_bayar !== null) {
+            $pembayaran->total_bayar = $request->total_bayar;
+        } else if ($request->status === 'lunas' && $pembayaran->total_bayar == 0) {
+            $hargaLayanan = (float) (optional($pembayaran->pendaftaran->layanan)->harga ?? 0);
             if ($hargaLayanan > 0) {
                 $pembayaran->total_bayar = $hargaLayanan;
-                $totalDiselaraskan = true;
             }
+        }
+
+        if ($request->status === 'lunas') {
             if (empty($pembayaran->tanggal_pembayaran)) {
                 $pembayaran->tanggal_pembayaran = now();
             }
@@ -107,12 +111,8 @@ class PembayaranController extends Controller
 
         $pembayaran->save();
 
-        $msg = $request->status === 'lunas' && $totalDiselaraskan
-            ? 'Status lunas. Total bayar disesuaikan dengan harga layanan.'
-            : 'Status pembayaran berhasil diperbarui.';
-
         return redirect()->route('pembayaran.index')
-            ->with('success', $msg);
+            ->with('success', 'Status dan nominal pembayaran berhasil diperbarui.');
     }
 
     // hapus pembayaran

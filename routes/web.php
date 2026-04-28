@@ -6,6 +6,7 @@ use App\Http\Controllers\LayananController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DokterController;
 
 use Illuminate\Http\Request;
 use App\Models\Layanan;
@@ -90,6 +91,9 @@ Route::get('/dashboard/admin', [AdminController::class, 'index'])
 Route::get('/dashboard/kasir', function () {
     return redirect()->route('pembayaran.index');
 })->middleware('auth')->name('dashboard.kasir');
+
+Route::get('/dashboard/dokter', [DokterController::class, 'index'])
+    ->middleware('auth')->name('dashboard.dokter');
 
 Route::get('/dashboard/pasien', [PasienController::class, 'dashboard'])
     ->middleware('auth')->name('dashboard.pasien');

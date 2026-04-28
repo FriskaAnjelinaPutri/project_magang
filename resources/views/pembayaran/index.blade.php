@@ -6,10 +6,6 @@
         <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Data Pembayaran</h1>
         <p class="text-sm text-gray-500 mt-1">Manajemen transaksi dan pembayaran klinik.</p>
     </div>
-    <a href="{{ route('pembayaran.create') }}" class="btn-gradient font-bold py-2.5 px-6 rounded-full shadow-lg transition-all text-sm flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        Catat Pembayaran
-    </a>
 </div>
 @if(session('success'))
     <div class="px-2 mb-6">
@@ -62,15 +58,14 @@
                                         LUNAS
                                     </span>
                                 @else
-                                    <form method="POST" action="{{ route('pembayaran.update', $row->id_pembayaran ?? $row->id) }}" class="inline-block w-full max-w-[200px]">
-                                        @csrf
-                                        @method('PUT')
-                                        <label class="sr-only">Ubah status pembayaran</label>
-                                        <select name="status" onchange="this.form.submit()" class="w-full text-sm font-bold rounded-xl border border-gray-200 bg-white py-2 px-3 focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 cursor-pointer">
-                                            <option value="belum lunas" {{ $statusRaw === 'belum lunas' ? 'selected' : '' }}>Belum lunas</option>
-                                            <option value="lunas">Lunas</option>
-                                        </select>
-                                    </form>
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 shadow-sm">
+                                            BELUM LUNAS
+                                        </span>
+                                        <a href="{{ route('pembayaran.edit', $row->id_pembayaran ?? $row->id) }}" class="inline-flex items-center px-3 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition-colors shadow-sm">
+                                            Proses Bayar
+                                        </a>
+                                    </div>
                                 @endif
                             </td>
                         </tr>

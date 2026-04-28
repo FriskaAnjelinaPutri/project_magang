@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kasir Klinik - Pembayaran</title>
-    
+    <title>Dashboard Dokter - Klinik Drg. Noviandri</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,9 +18,9 @@
             background-color: #FDF8F0;
             overflow-x: hidden;
         }
-        
+
         .blob-bg { display: none; } /* Hide blobs */
-        
+
         /* Override glass with solid flat theme */
         .glass-panel {
             background-color: #FFFFFF;
@@ -28,7 +28,7 @@
             border-radius: 1.5rem;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
-        
+
         .glass-card {
             background-color: #FFFFFF;
             border: 1px solid rgba(234, 148, 29, 0.1);
@@ -41,7 +41,7 @@
             box-shadow: 0 10px 25px -5px rgba(234, 148, 29, 0.15);
             transform: translateY(-2px);
         }
-        
+
         .text-gradient {
             color: #EA941D;
         }
@@ -146,22 +146,33 @@
                 <div class="w-14 h-14 rounded-2xl bg-orange-500 shadow-lg shadow-orange-500/30 flex items-center justify-center text-white mb-3">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 </div>
-                <h2 class="font-extrabold text-xl tracking-tight text-gray-900">Dashboard Kasir</h2>
+                <h2 class="font-extrabold text-xl tracking-tight text-gray-900">Dashboard Dokter</h2>
                 <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mt-0.5">drg.Noviandri</p>
                 <div class="w-full border-b border-gray-200 mt-4 relative"></div>
             </div>
 
             <!-- Navigation Links -->
             <div class="flex-1 overflow-y-auto pr-2 scrollbar-none">
-                <div class="sidebar-section">TRANSAKSI</div>
-                <a href="{{ route('dashboard.kasir') }}" class="nav-link font-semibold {{ request()->routeIs('dashboard.kasir') || request()->routeIs('pembayaran.*') ? 'bg-orange-50 text-orange-500 shadow-sm' : '' }}">
-                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    Pos Kasir
+                <div class="sidebar-section">KELOLA ANTRIAN</div>
+                <a href="{{ route('dashboard.dokter') }}" class="nav-link font-semibold {{ request()->routeIs('dashboard.dokter') ? 'bg-orange-50 text-orange-500 shadow-sm' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    Monitor Antrian
                 </a>
             </div>
 
             <!-- User Info & Logout -->
             <div class="mt-4 pt-4 border-t border-gray-200/50">
+                <!-- <div class="flex items-center gap-3 mb-4 px-2">
+                    <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold">
+                        {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'D' }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-gray-800 leading-none">{{ auth()->check() ? auth()->user()->name : 'Dokter' }}</p>
+                        <p class="text-xs text-green-600 font-semibold mt-1 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Online
+                        </p>
+                    </div>
+                </div> -->
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
                     <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-red-600 hover:text-white hover:bg-red-500 transition-all">
@@ -173,7 +184,7 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 h-full min-h-0 overflow-y-auto pb-10 pr-4 w-full max-w-6xl mx-auto">
+        <main class="flex-1 h-full min-h-0 overflow-y-auto pb-10 pr-4 w-full max-w-7xl mx-auto">
             @yield('content')
         </main>
     </div>
@@ -182,7 +193,7 @@
         (function () {
             const body = document.body;
             const toggleButton = document.getElementById('sidebarToggle');
-            const storageKey = 'kasir-sidebar-collapsed';
+            const storageKey = 'dokter-sidebar-collapsed';
 
             if (!toggleButton) return;
 

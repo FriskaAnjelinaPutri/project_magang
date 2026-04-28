@@ -13,6 +13,11 @@ class AntrianController extends Controller
     private const STATUS_SELESAI = 'selesai';
     private const STATUS_DILEWATI = 'dilewati';
 
+    private function getRedirectRoute()
+    {
+        return (auth()->check() && auth()->user()->role === 'dokter') ? 'dashboard.dokter' : 'antrian.index';
+    }
+
     // menampilkan semua antrian
     public function index(Request $request)
     {
@@ -52,7 +57,7 @@ class AntrianController extends Controller
             'status' => self::STATUS_MENUNGGU
         ]);
 
-        return redirect()->route('antrian.index')
+        return redirect()->route($this->getRedirectRoute())
             ->with('success','Nomor antrian berhasil dibuat');
     }
 
@@ -67,7 +72,7 @@ class AntrianController extends Controller
             ->where('id_antrian', '!=', $antrian->id_antrian)
             ->first();
         if ($sedangDipanggil) {
-            return redirect()->route('antrian.index', [
+            return redirect()->route($this->getRedirectRoute(), [
                 'tanggal' => $request->input('tanggal', $tanggal),
             ])->with('error', 'Masih ada antrian yang sedang dipanggil. Selesaikan atau lewati dulu sebelum memanggil nomor lain.');
         }
@@ -81,7 +86,7 @@ class AntrianController extends Controller
             ]);
         }
 
-        return redirect()->route('antrian.index', [
+        return redirect()->route($this->getRedirectRoute(), [
             'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
         ])->with('success', 'Pasien berhasil dipanggil.');
     }
@@ -93,7 +98,7 @@ class AntrianController extends Controller
 
         $statusSaatIni = strtolower(trim((string) $antrian->status));
         if ($statusSaatIni !== self::STATUS_DIPANGGIL) {
-            return redirect()->route('antrian.index', [
+            return redirect()->route($this->getRedirectRoute(), [
                 'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
             ])->with('success', 'Antrian tidak dapat diselesaikan karena belum berstatus dipanggil.');
         }
@@ -127,7 +132,7 @@ class AntrianController extends Controller
             }
         }
 
-        return redirect()->route('antrian.index', [
+        return redirect()->route($this->getRedirectRoute(), [
             'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
         ])->with('success', $antrianBerikutnya
             ? 'Antrian berhasil diselesaikan. Sistem otomatis memanggil nomor berikutnya.'
@@ -141,7 +146,7 @@ class AntrianController extends Controller
 
         $statusSaatIni = strtolower(trim((string) $antrian->status));
         if ($statusSaatIni !== self::STATUS_DIPANGGIL) {
-            return redirect()->route('antrian.index', [
+            return redirect()->route($this->getRedirectRoute(), [
                 'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
             ])->with('success', 'Antrian tidak dapat dilewati karena belum berstatus dipanggil.');
         }
@@ -177,7 +182,7 @@ class AntrianController extends Controller
             }
         }
 
-        return redirect()->route('antrian.index', [
+        return redirect()->route($this->getRedirectRoute(), [
             'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
         ])->with('success', $antrianBerikutnya
             ? 'Antrian dilewati. Sistem otomatis memanggil nomor berikutnya.'
@@ -189,6 +194,6 @@ class AntrianController extends Controller
     {
         Antrian::destroy($id);
 
-        return redirect()->route('antrian.index');
+        return redirect()->route($this->getRedirectRoute());
     }
 }

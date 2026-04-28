@@ -42,7 +42,6 @@
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Pasien</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Layanan</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggal</th>
-                        <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,24 +54,10 @@
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">{{ $row->pasien->nama_pasien ?? 'Unknown' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-600 font-medium">{{ $row->layanan->nama_layanan ?? '-' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-600">{{ $row->tanggal_kunjungan ?? $row->created_at->format('d M Y') }}</td>
-                            <td class="py-4 px-4 min-w-[180px]">
-                                <form method="POST" action="{{ route('reservasi.update', $row->id_pendaftaran ?? $row->id) }}" class="inline-block w-full max-w-[220px]">
-                                    @csrf
-                                    @method('PUT')
-                                    <label class="sr-only">Ubah status reservasi</label>
-                                    <select name="status" onchange="this.form.submit()"
-                                        class="w-full text-sm font-bold rounded-xl border border-gray-200 bg-white py-2 px-3 focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 cursor-pointer">
-                                        <option value="menunggu" {{ $statusRaw === 'menunggu' ? 'selected' : '' }}>Menunggu</option>
-                                        <option value="diperiksa" {{ $statusRaw === 'diperiksa' ? 'selected' : '' }}>Diperiksa</option>
-                                        <option value="selesai" {{ $statusRaw === 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                        <option value="batal" {{ $statusRaw === 'batal' ? 'selected' : '' }}>Batal</option>
-                                    </select>
-                                </form>
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="py-10 text-center text-sm font-medium text-gray-500">Belum ada data reservasi terbaru.</td>
+                            <td colspan="4" class="py-10 text-center text-sm font-medium text-gray-500">Belum ada data reservasi terbaru.</td>
                         </tr>
                     @endforelse
                 </tbody>

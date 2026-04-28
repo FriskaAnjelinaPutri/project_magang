@@ -153,7 +153,7 @@
                 </form>
 
                 <p class="mt-8 text-center text-dark/70 font-medium">
-                    Belum memiliki akun? <a href="{{ route('register') }}" class="font-extrabold text-primary hover:text-secondary hover:underline transition-all">Daftar Registrasi Baru</a>
+                    Belum memiliki akun? <a href="{{ route('register') }}" class="font-extrabold text-primary hover:text-secondary hover:underline transition-all">Daftar Baru</a>
                 </p>
 
             </div>

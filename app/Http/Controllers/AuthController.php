@@ -52,13 +52,13 @@ class AuthController extends Controller
                 ])->onlyInput('username');
             }
 
-            if (!$isEmail && in_array($role, ['admin', 'kasir'], true)) {
+            if (!$isEmail && in_array($role, ['admin', 'kasir', 'dokter'], true)) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
                 return back()->withErrors([
-                    'username' => 'Admin/Kasir harus login menggunakan email.',
+                    'username' => 'Admin/Kasir/Dokter harus login menggunakan email.',
                 ])->onlyInput('username');
             }
 
@@ -66,6 +66,8 @@ class AuthController extends Controller
                 return redirect()->intended('/dashboard/admin');
             } elseif ($role === 'kasir') {
                 return redirect()->intended('/dashboard/kasir');
+            } elseif ($role === 'dokter') {
+                return redirect()->intended('/dashboard/dokter');
             } elseif ($role === 'pasien') {
                 return redirect()->intended(route('reservasi.create'));
             }
