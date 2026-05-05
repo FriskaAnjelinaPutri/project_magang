@@ -7,8 +7,8 @@
         <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Dashboard Overview</h1>
         <p class="text-sm text-gray-500 mt-1">Sistem manajemen layanan pasien Klinik Sehat.</p>
     </div>
-    
-    <div class="flex items-center gap-4 glass-card px-4 py-2 rounded-full hidden sm:flex">
+
+    {{-- <div class="flex items-center gap-4 glass-card px-4 py-2 rounded-full hidden sm:flex">
         <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-md">
             {{ substr(Auth::user()->name, 0, 1) }}
         </div>
@@ -16,7 +16,7 @@
             <p class="text-sm font-bold text-gray-800 leading-none">{{ Auth::user()->name }}</p>
             <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 <!-- Cards Area -->
@@ -89,12 +89,12 @@
         <div class="glass-panel rounded-3xl p-6 md:p-8 shadow-sm h-full">
             <h2 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Aksi Cermat (Quick Actions)</h2>
             <div class="grid grid-cols-2 gap-4">
-                
+
                 <a href="{{ route('reservasi.index') }}" class="flex flex-col items-center justify-center p-5 rounded-2xl bg-orange-50/70 hover:bg-orange-100 border border-orange-100/50 text-orange-600 transition-all hover:shadow-md transform hover:-translate-y-1">
                     <svg class="w-8 h-8 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                     <span class="text-sm font-bold text-center">Kelola<br>Antrian</span>
                 </a>
-                
+
                 <a href="{{ route('pasien.index') }}" class="flex flex-col items-center justify-center p-5 rounded-2xl bg-blue-50/70 hover:bg-blue-100 border border-blue-100/50 text-blue-600 transition-all hover:shadow-md transform hover:-translate-y-1">
                     <svg class="w-8 h-8 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                     <span class="text-sm font-bold text-center">Data<br>Pasien</span>
@@ -115,6 +115,155 @@
     </div>
 </div>
 
+<!-- Manajemen Antrian Hari Ini -->
+<div class="px-2 mb-10">
+    <div class="glass-panel rounded-3xl p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900">
+                    <i class="fa-solid fa-bell-concierge text-orange-500 mr-2"></i>Manajemen Antrian Hari Ini
+                </h2>
+                <p class="text-sm text-gray-500 mt-1">Panggil, lewati, atau selesaikan antrian pasien.</p>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-200">
+                    <i class="fa-solid fa-clock mr-1.5"></i> Menunggu: {{ $antrian_stats['menunggu'] ?? 0 }}
+                </span>
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                    <i class="fa-solid fa-microphone mr-1.5"></i> Dipanggil: {{ $antrian_stats['dipanggil'] ?? 0 }}
+                </span>
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                    <i class="fa-solid fa-forward-step mr-1.5"></i> Dilewati: {{ $antrian_stats['dilewati'] ?? 0 }}
+                </span>
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
+                    <i class="fa-solid fa-check mr-1.5"></i> Selesai: {{ $antrian_stats['selesai'] ?? 0 }}
+                </span>
+            </div>
+        </div>
+
+        @if (session('success'))
+        <div class="mb-5 p-4 bg-green-50/80 border border-green-200 text-green-700 rounded-2xl flex items-center shadow-sm">
+            <i class="fa-solid fa-circle-check text-xl mr-3"></i>
+            <span class="font-bold">{{ session('success') }}</span>
+        </div>
+        @endif
+        @if (session('error'))
+        <div class="mb-5 p-4 bg-red-50/80 border border-red-200 text-red-700 rounded-2xl flex items-center shadow-sm">
+            <i class="fa-solid fa-circle-exclamation text-xl mr-3"></i>
+            <span class="font-bold">{{ session('error') }}</span>
+        </div>
+        @endif
+
+        <div class="overflow-x-auto rounded-2xl border border-gray-200/70 bg-white/70">
+            <table class="w-full text-left border-separate border-spacing-0">
+                <thead>
+                    <tr class="bg-gray-50/90">
+                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">No. Antrian</th>
+                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Pasien</th>
+                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Layanan</th>
+                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">Status</th>
+                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($antrian_hari_ini ?? [] as $row)
+                        @php
+                            $statusAntrian = strtolower(trim((string) $row->status));
+                        @endphp
+                        <tr class="odd:bg-white even:bg-gray-50/50 hover:bg-orange-50/40 transition-colors {{ $statusAntrian === 'dipanggil' ? 'ring-2 ring-blue-300 ring-inset bg-blue-50/30' : '' }}">
+                            <td class="py-4 px-4 text-2xl font-black text-orange-500 text-center border-b border-gray-100/80">
+                                {{ (int) $row->nomor_antrian }}
+                            </td>
+                            <td class="py-4 px-4 border-b border-gray-100/80">
+                                <div class="text-sm text-gray-900 font-bold">{{ $row->pendaftaran->pasien->nama_pasien ?? 'Unknown' }}</div>
+                            </td>
+                            <td class="py-4 px-4 border-b border-gray-100/80">
+                                <div class="text-sm text-gray-600 font-medium">{{ $row->pendaftaran->layanan->nama_layanan ?? '-' }}</div>
+                            </td>
+                            <td class="py-4 px-4 text-center whitespace-nowrap border-b border-gray-100/80">
+                                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold capitalize
+                                    {{ $statusAntrian === 'menunggu' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' : '' }}
+                                    {{ $statusAntrian === 'dipanggil' ? 'bg-blue-100 text-blue-700 border border-blue-200 animate-pulse' : '' }}
+                                    {{ $statusAntrian === 'selesai' ? 'bg-green-100 text-green-800 border border-green-200' : '' }}
+                                    {{ $statusAntrian === 'dilewati' ? 'bg-gray-100 text-gray-600 border border-gray-200' : '' }}
+                                ">
+                                    @if($statusAntrian === 'menunggu')
+                                        <i class="fa-solid fa-clock mr-1.5"></i>
+                                    @elseif($statusAntrian === 'dipanggil')
+                                        <i class="fa-solid fa-microphone mr-1.5"></i>
+                                    @elseif($statusAntrian === 'selesai')
+                                        <i class="fa-solid fa-check mr-1.5"></i>
+                                    @elseif($statusAntrian === 'dilewati')
+                                        <i class="fa-solid fa-forward-step mr-1.5"></i>
+                                    @endif
+                                    {{ $row->status }}
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-center whitespace-nowrap border-b border-gray-100/80">
+                                <div class="flex items-center justify-center gap-2">
+                                    {{-- Tombol Panggil: tampil jika status menunggu atau dilewati --}}
+                                    @if(in_array($statusAntrian, ['menunggu', 'dilewati']))
+                                        <form action="{{ route('antrian.panggil', $row->id_antrian) }}" method="POST" class="inline">
+                                            @csrf @method('PUT')
+                                            <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Panggil pasien ini">
+                                                <i class="fa-solid fa-bullhorn mr-1.5"></i> Panggil
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    {{-- Tombol Selesai & Lewati: tampil jika status dipanggil --}}
+                                    @if($statusAntrian === 'dipanggil')
+                                        <form action="{{ route('antrian.selesai', $row->id_antrian) }}" method="POST" class="inline">
+                                            @csrf @method('PUT')
+                                            <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-green-500 hover:bg-green-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Selesaikan antrian ini">
+                                                <i class="fa-solid fa-check-double mr-1.5"></i> Selesai
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('antrian.lewati', $row->id_antrian) }}" method="POST" class="inline">
+                                            @csrf @method('PUT')
+                                            <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-400 hover:bg-gray-500 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Lewati antrian ini">
+                                                <i class="fa-solid fa-forward-step mr-1.5"></i> Lewati
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    {{-- Jika selesai, tampilkan tanda check --}}
+                                    @if($statusAntrian === 'selesai')
+                                        <span class="text-green-500 text-sm font-bold"><i class="fa-solid fa-circle-check"></i> Done</span>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-12 text-center text-gray-500">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-3">
+                                        <i class="fa-solid fa-clipboard-list text-2xl"></i>
+                                    </div>
+                                    <p class="text-base font-bold text-gray-700">Tidak Ada Antrian Hari Ini</p>
+                                    <p class="text-sm mt-1">Belum ada pasien yang masuk antrian hari ini.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        @if(($antrian_hari_ini ?? collect())->isNotEmpty())
+        <div class="mt-4 flex justify-end">
+            <a href="{{ route('antrian.index') }}" class="text-sm text-orange-500 hover:text-orange-700 font-bold bg-white/50 px-4 py-2 rounded-xl transition-all hover:bg-white">
+                Kelola Semua Antrian &rarr;
+            </a>
+        </div>
+        @endif
+    </div>
+</div>
+
 <!-- Table Area -->
 <div class="px-2">
     <div class="glass-panel rounded-3xl p-8">
@@ -125,7 +274,7 @@
             </div>
             <a href="{{ route('reservasi.index') }}" class="text-sm text-orange-500 hover:text-orange-700 font-bold bg-white/50 px-4 py-2 rounded-xl transition-all hover:bg-white text-center">Lihat Semua Data &rarr;</a>
         </div>
-        
+
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -169,7 +318,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('trendChart').getContext('2d');
-        
+
         // Buat gradien lembut untuk shadow area grafik
         const gradientFill = ctx.createLinearGradient(0, 0, 0, 400);
         gradientFill.addColorStop(0, 'rgba(234, 148, 29, 0.5)'); // Core Orange Text Gradient
@@ -216,8 +365,8 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { 
-                            color: 'rgba(0,0,0,0.04)', 
+                        grid: {
+                            color: 'rgba(0,0,0,0.04)',
                             drawBorder: false,
                             borderDash: [5, 5]
                         },

@@ -41,10 +41,10 @@
             <table class="w-full text-left border-separate border-spacing-0">
                 <thead>
                     <tr class="bg-gray-50/90">
-                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">No. Antrian</th>
+                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">No</th>
                         <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Informasi Pendaftaran</th>
                         <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Tanggal</th>
-                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right border-b border-gray-200/80">Status</th>
+                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,14 +61,14 @@
                                     {{ $row->pendaftaran->pasien->nama_pasien ?? 'Unknown' }}
                                 </div>
                                 <div class="text-xs text-gray-500 font-medium">
-                                    Poli: <span class="text-gray-700">{{ $row->pendaftaran->layanan->nama_layanan ?? '-' }}</span>
+                                    {{ $row->pendaftaran->layanan->nama_layanan ?? '-' }}
                                 </div>
                             </td>
                             <td class="py-4 px-4 text-sm text-gray-600 font-medium whitespace-nowrap border-b border-gray-100/80">
                                 {{ \Carbon\Carbon::parse($row->tanggal_antrian)->format('d M Y') }}
                             </td>
-                            <td class="py-4 px-4 text-right whitespace-nowrap border-b border-gray-100/80">
-                                <div class="flex items-center justify-end gap-2">
+                            <td class="py-4 px-4 text-center whitespace-nowrap border-b border-gray-100/80">
+                                <div class="flex items-center justify-center gap-2">
                                     <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold capitalize
                                         {{ $statusAntrian === 'menunggu' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' : '' }}
                                         {{ $statusAntrian === 'dipanggil' ? 'bg-blue-100 text-blue-700 border border-blue-200 animate-pulse' : '' }}
@@ -88,40 +88,7 @@
                                         {{ $row->status }}
                                     </span>
 
-                                    @if($statusAntrian === 'menunggu' || $statusAntrian === 'selesai' || $statusAntrian === 'dilewati')
-                                        <form action="{{ route('antrian.panggil', $row->id_antrian) }}" method="POST" class="inline m-0">
-                                            @csrf @method('PUT')
-                                            <input type="hidden" name="tanggal" value="{{ $tanggal ?? now()->toDateString() }}">
-                                            <button type="submit" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors border border-blue-200">
-                                                <i class="fa-solid fa-bullhorn"></i> Panggil
-                                            </button>
-                                        </form>
-                                    @endif
 
-                                    @if($statusAntrian === 'dipanggil')
-                                        <form action="{{ route('antrian.lewati', $row->id_antrian) }}" method="POST" class="inline m-0">
-                                            @csrf @method('PUT')
-                                            <input type="hidden" name="tanggal" value="{{ $tanggal ?? now()->toDateString() }}">
-                                            <button type="submit" class="bg-yellow-50 hover:bg-yellow-100 text-yellow-700 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors border border-yellow-100" onclick="return confirm('Pasien belum hadir. Lewati nomor ini dan panggil berikutnya?')">
-                                                Lewati
-                                            </button>
-                                        </form>
-
-                                        <form action="{{ route('antrian.selesai', $row->id_antrian) }}" method="POST" class="inline m-0">
-                                            @csrf @method('PUT')
-                                            <input type="hidden" name="tanggal" value="{{ $tanggal ?? now()->toDateString() }}">
-                                            <button type="submit" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors border border-green-200">
-                                                Selesai
-                                            </button>
-                                        </form>
-                                    @endif
-
-                                    <form action="{{ route('antrian.destroy', $row->id_antrian) }}" method="POST" class="inline m-0">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors border border-red-100" onclick="return confirm('Apakah Anda yakin ingin menghapus antrian ini?')">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </form>
                                 </div>
                             </td>
                         </tr>

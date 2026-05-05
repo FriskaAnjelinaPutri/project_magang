@@ -31,13 +31,13 @@
     </style>
 </head>
 <body class="antialiased min-h-screen bg-light text-dark font-sans flex items-center justify-center py-10 px-6 relative overflow-x-hidden">
-    
+
     <!-- Decorative Elements -->
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl z-0"></div>
     <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl z-0"></div>
 
     <div class="w-full max-w-2xl relative z-10 animate-fade-in-up">
-        
+
         <div class="text-center mb-8">
             <div class="w-16 h-16 mx-auto bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center text-white shadow-xl shadow-primary/30 mb-4">
                 <i class="fa-solid fa-tooth text-3xl"></i>
@@ -47,8 +47,9 @@
         </div>
 
         <div class="glass-card rounded-[32px] p-8 sm:p-10 w-full shadow-2xl">
-            
+
             @if ($errors->any())
+
                 <div class="mb-8 p-4 rounded-2xl bg-red-50 border border-red-100 flex items-start">
                     <i class="fa-solid fa-circle-exclamation text-red-500 mt-1 mr-3 shrink-0"></i>
                     <div>
@@ -67,6 +68,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Nama Lengkap -->
+                    <h1 class="text-2xl font-extrabold text-dark mb-4 col-span-full">lengkapi Informasi Pribadi</h1>
                     <div class="space-y-2 col-span-1 md:col-span-2">
                         <label for="nama_pasien" class="block text-sm font-bold text-dark">Nama Lengkap Sesuai KTP</label>
                         <div class="relative custom-input group rounded-2xl bg-white border border-gray-200">
@@ -139,7 +141,7 @@
                     </button>
                 </div>
             </form>
-            
+
         </div>
     </div>
 </body>

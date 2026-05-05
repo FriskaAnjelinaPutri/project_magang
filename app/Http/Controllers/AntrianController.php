@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Antrian;
 use App\Models\Pendaftaran;
+use App\Models\Pembayaran;
+use Illuminate\Support\Facades\Auth;
 
 class AntrianController extends Controller
 {
@@ -15,7 +17,14 @@ class AntrianController extends Controller
 
     private function getRedirectRoute()
     {
-        return (auth()->check() && auth()->user()->role === 'dokter') ? 'dashboard.dokter' : 'antrian.index';
+        $user = Auth::user();
+
+        if ($user) {
+            if ($user->role === 'dokter') return 'dashboard.dokter';
+            if ($user->role === 'admin') return 'dashboard.admin';
+        }
+
+        return 'antrian.index';
     }
 
     // menampilkan semua antrian
@@ -74,7 +83,7 @@ class AntrianController extends Controller
         if ($sedangDipanggil) {
             return redirect()->route($this->getRedirectRoute(), [
                 'tanggal' => $request->input('tanggal', $tanggal),
-            ])->with('error', 'Masih ada antrian yang sedang dipanggil. Selesaikan atau lewati dulu sebelum memanggil nomor lain.');
+            ])->with('error', 'Masih ada antrian yang sedang dipanggil.');
         }
 
         $antrian->update([
@@ -134,9 +143,7 @@ class AntrianController extends Controller
 
         return redirect()->route($this->getRedirectRoute(), [
             'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
-        ])->with('success', $antrianBerikutnya
-            ? 'Antrian berhasil diselesaikan. Sistem otomatis memanggil nomor berikutnya.'
-            : 'Antrian berhasil diselesaikan.');
+        ])->with('success', 'Antrian berhasil diselesaikan.');
     }
 
     // lewati antrian (pasien belum hadir / no-show)
@@ -160,6 +167,9 @@ class AntrianController extends Controller
             $antrian->pendaftaran->update([
                 'status' => self::STATUS_MENUNGGU,
             ]);
+
+            // Hapus pembayaran terkait agar tidak muncul di tabel pembayaran admin/kasir
+            Pembayaran::where('id_pendaftaran', $antrian->pendaftaran->id_pendaftaran)->delete();
         }
 
         // Panggil nomor berikutnya yang menunggu/dilewati (jika ada).
@@ -185,7 +195,7 @@ class AntrianController extends Controller
         return redirect()->route($this->getRedirectRoute(), [
             'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
         ])->with('success', $antrianBerikutnya
-            ? 'Antrian dilewati. Sistem otomatis memanggil nomor berikutnya.'
+            ? 'Antrian dilewati.'
             : 'Antrian dilewati.');
     }
 

@@ -41,14 +41,14 @@ class AuthController extends Controller
 
             $role = Auth::user()->role;
 
-            // Enforce: pasien login via NIK (username), admin/kasir login via email
+            // pasien login via NIK (username), admin/kasir login via email
             if ($isEmail && $role === 'pasien') {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
                 return back()->withErrors([
-                    'username' => 'Pasien harus login menggunakan NIK (bukan email).',
+                    'username' => 'Pasien harus login menggunakan NIK.',
                 ])->onlyInput('username');
             }
 
@@ -99,8 +99,7 @@ class AuthController extends Controller
             'username' => ['required', 'string', 'size:16', 'unique:users,username'],
         ]);
 
-        // Email is required by schema, but pasien registration uses NIK as identity.
-        // Generate a unique email from the NIK.
+
         $baseEmailLocal = $validated['username'];
         $generatedEmail = $baseEmailLocal . '@pasien.local';
         $suffix = 0;
@@ -114,7 +113,7 @@ class AuthController extends Controller
             'username' => $validated['username'],
             'email' => $generatedEmail,
             'password' => Hash::make($validated['password']),
-            'role' => 'pasien', // Default role for open registrations
+            'role' => 'pasien',
         ]);
 
         Auth::login($user);
@@ -124,9 +123,6 @@ class AuthController extends Controller
             ->with('success', 'Akun berhasil dibuat. Silakan lengkapi profil Anda terlebih dahulu.');
     }
 
-    /**
-     * Log the user out of the application.
-     */
     public function logout(Request $request)
     {
         Auth::logout();

@@ -7,6 +7,7 @@ use App\Models\Pasien;
 use App\Models\Layanan;
 use App\Models\Pendaftaran;
 use App\Models\Pembayaran;
+use App\Models\Antrian;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -21,10 +22,24 @@ class AdminController extends Controller
             'pembayaran' => Pembayaran::count(),
         ];
 
-        // Table Data
+        // Tabel pendaftaran
         $recent_pendaftaran = Pendaftaran::with('pasien', 'layanan')->latest('created_at')->take(5)->get();
 
-        // Chart Data (Last 7 Days)
+        // Antrian hari ini untuk tabel manajemen antrian
+        $antrian_hari_ini = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanan')
+            ->whereDate('tanggal_antrian', today())
+            ->orderBy('nomor_antrian', 'asc')
+            ->get();
+
+        $antrian_stats = [
+            'menunggu'  => $antrian_hari_ini->where('status', 'menunggu')->count(),
+            'dipanggil' => $antrian_hari_ini->where('status', 'dipanggil')->count(),
+            'dilewati'  => $antrian_hari_ini->where('status', 'dilewati')->count(),
+            'selesai'   => $antrian_hari_ini->where('status', 'selesai')->count(),
+            'total'     => $antrian_hari_ini->count(),
+        ];
+
+        // mengambil data terbaru 7 hari terakhir
         $chartData = Pendaftaran::select(DB::raw('DATE(tanggal_kunjungan) as date'), DB::raw('count(*) as count'))
             ->where('tanggal_kunjungan', '>=', Carbon::now()->subDays(6)->toDateString())
             ->groupBy('date')
@@ -42,6 +57,6 @@ class AdminController extends Controller
             $data[] = $chartMap[$dateString] ?? 0;
         }
 
-        return view('admin.dashboard', compact('stats', 'recent_pendaftaran', 'labels', 'data'));
+        return view('admin.dashboard', compact('stats', 'recent_pendaftaran', 'antrian_hari_ini', 'antrian_stats', 'labels', 'data'));
     }
 }

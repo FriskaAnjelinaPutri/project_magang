@@ -46,8 +46,9 @@ Route::get('/antrian-monitor', function () {
     $sedangDipanggil = $antrians->firstWhere('status', 'dipanggil');
 
     $stats = [
-        'menunggu'  => $antrians->whereIn('status', ['menunggu', 'dilewati'])->count(),
+        'menunggu'  => $antrians->where('status', 'menunggu')->count(),
         'dipanggil' => $antrians->where('status', 'dipanggil')->count(),
+        'dilewati'  => $antrians->where('status', 'dilewati')->count(),
         'selesai'   => $antrians->where('status', 'selesai')->count(),
     ];
 
@@ -69,8 +70,9 @@ Route::get('/antrian-monitor/data', function () {
             'status' => $sedangDipanggil->status,
         ] : null,
         'stats' => [
-            'menunggu' => $antrians->whereIn('status', ['menunggu', 'dilewati'])->count(),
+            'menunggu' => $antrians->where('status', 'menunggu')->count(),
             'dipanggil' => $antrians->where('status', 'dipanggil')->count(),
+            'dilewati' => $antrians->where('status', 'dilewati')->count(),
             'selesai' => $antrians->where('status', 'selesai')->count(),
         ],
         'server_time' => now()->toDateTimeString(),

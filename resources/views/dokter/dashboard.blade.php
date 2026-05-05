@@ -8,15 +8,7 @@
         <p class="text-sm text-gray-500 mt-1">Daftar pasien yang terjadwal dan menunggu pemeriksaan.</p>
     </div>
 
-    <div class="flex items-center gap-4 glass-card px-4 py-2 rounded-full hidden sm:flex">
-        <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-md text-sm font-bold">
-            {{ substr(Auth::user()->name, 0, 1) }}
-        </div>
-        <div>
-            <p class="text-sm font-bold text-gray-800 leading-none">{{ Auth::user()->name }}</p>
-            <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
-        </div>
-    </div>
+
 </div>
 
 <!-- Stats Cards -->
@@ -176,6 +168,19 @@
                                 @endif
                                 {{ $row->status }}
                             </span>
+
+                            @if($statusAntrian === 'menunggu')
+                                <div class="mt-3 flex flex-col sm:flex-row justify-center items-center gap-2">
+                                    <form action="{{ route('antrian.panggil', $row->id_antrian) }}" method="POST" class="inline m-0">
+                                        @csrf @method('PUT')
+                                        <input type="hidden" name="tanggal" value="{{ $tanggal }}">
+                                        <button type="submit" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-blue-200 w-full sm:w-auto">
+                                            <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 12h.01"></path></svg>
+                                            Panggil
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
 
                             @if($statusAntrian === 'dipanggil')
                                 <div class="mt-3 flex flex-col sm:flex-row justify-center items-center gap-2">

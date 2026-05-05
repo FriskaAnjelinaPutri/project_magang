@@ -118,7 +118,7 @@
 
         <!-- Header -->
         <div class="py-12 text-center">
-            
+
             <h1 class="text-4xl md:text-5xl font-extrabold text-dark">
                 Status <span class="text-primary">Antrian</span> Hari Ini
             </h1>
@@ -212,8 +212,18 @@
                             <p id="stat-selesai" class="text-4xl font-black text-dark">{{ $stats['selesai'] }}</p>
                         </div>
                     </div>
+                    <!-- Dilewati -->
+                    <div class="glass-card rounded-3xl p-7 flex items-center gap-5">
+                        <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center text-3xl text-gray-400 shrink-0 shadow-sm">
+                            <i class="fa-solid fa-forward-step"></i>
+                        </div>
+                        <div>
+                            <p class="text-dark/50 font-semibold text-sm uppercase tracking-wider">Dilewati</p>
+                            <p id="stat-dilewati" class="text-4xl font-black text-dark">{{ $stats['dilewati'] }}</p>
+                        </div>
+                    </div>
                     <!-- Auto-refresh info -->
-                    
+
                 </div>
             </div>
 
@@ -235,6 +245,7 @@
         const statMenunggu = document.getElementById('stat-menunggu');
         const statDipanggil = document.getElementById('stat-dipanggil');
         const statSelesai = document.getElementById('stat-selesai');
+        const statDilewati = document.getElementById('stat-dilewati');
 
         function renderSedangDipanggil(data) {
             if (!wrapper) return;
@@ -287,6 +298,7 @@
 
                 if (statMenunggu && payload.stats) statMenunggu.textContent = payload.stats.menunggu ?? 0;
                 if (statDipanggil && payload.stats) statDipanggil.textContent = payload.stats.dipanggil ?? 0;
+                if (statDilewati && payload.stats) statDilewati.textContent = payload.stats.dilewati ?? 0;
                 if (statSelesai && payload.stats) statSelesai.textContent = payload.stats.selesai ?? 0;
             } catch (error) {
                 // Keep page stable when request fails temporarily.
