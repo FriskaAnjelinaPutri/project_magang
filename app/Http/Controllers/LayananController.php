@@ -45,7 +45,7 @@ class LayananController extends Controller
         $layanan = Layanan::findOrFail($id);
 
         $layanan->update([
-            'nama_layanan' => $request->nama_layanan,
+            'nama_layanan' => $request->nama_layanan, 
             'harga' => $request->harga
         ]);
 

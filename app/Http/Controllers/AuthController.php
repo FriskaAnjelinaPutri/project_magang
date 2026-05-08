@@ -23,44 +23,14 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'username' => ['required', 'string'],
+            'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        $identifier = $credentials['username'];
-        $password = $credentials['password'];
-
-        $isEmail = filter_var($identifier, FILTER_VALIDATE_EMAIL) !== false;
-
-        $attemptCredentials = $isEmail
-            ? ['email' => $identifier, 'password' => $password]
-            : ['username' => $identifier, 'password' => $password];
-
-        if (Auth::attempt($attemptCredentials)) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
 
             $role = Auth::user()->role;
-
-            // pasien login via NIK (username), admin/kasir login via email
-            if ($isEmail && $role === 'pasien') {
-                Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-
-                return back()->withErrors([
-                    'username' => 'Pasien harus login menggunakan NIK.',
-                ])->onlyInput('username');
-            }
-
-            if (!$isEmail && in_array($role, ['admin', 'kasir', 'dokter'], true)) {
-                Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-
-                return back()->withErrors([
-                    'username' => 'Admin/Kasir/Dokter harus login menggunakan email.',
-                ])->onlyInput('username');
-            }
 
             if ($role === 'admin') {
                 return redirect()->intended('/dashboard/admin');
@@ -76,8 +46,8 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'username' => 'The provided credentials do not match our records.',
-        ])->onlyInput('username');
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
 
     /**
@@ -95,23 +65,14 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'username' => ['required', 'string', 'size:16', 'unique:users,username'],
         ]);
-
-
-        $baseEmailLocal = $validated['username'];
-        $generatedEmail = $baseEmailLocal . '@pasien.local';
-        $suffix = 0;
-        while (User::where('email', $generatedEmail)->exists()) {
-            $suffix++;
-            $generatedEmail = $baseEmailLocal . '+' . $suffix . '@pasien.local';
-        }
 
         $user = User::create([
             'name' => $validated['name'],
-            'username' => $validated['username'],
-            'email' => $generatedEmail,
+            'username' => $validated['email'], // fallback for not null
+            'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'pasien',
         ]);

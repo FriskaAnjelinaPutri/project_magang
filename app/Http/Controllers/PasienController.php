@@ -76,16 +76,12 @@ class PasienController extends Controller
         $request->validate([
             'nama_pasien' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
+            'NIK' => 'required|string|size:16|unique:pasien,NIK',
             'no_hp' => 'required|string|max:15',
             'alamat' => 'required|string'
         ]);
 
-        $nik = (string) $user->username;
-        if ($nik === '') {
-            return back()->withErrors([
-                'NIK' => 'NIK tidak ditemukan pada akun. Silakan hubungi admin.',
-            ]);
-        }
+        $nik = $request->NIK;
 
         if (Pasien::where('NIK', $nik)->exists()) {
             return back()->withErrors([

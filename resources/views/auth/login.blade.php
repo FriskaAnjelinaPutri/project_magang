@@ -109,14 +109,14 @@
 
                     <!-- Identifier -->
                     <div class="space-y-2">
-                        <label for="username" class="block text-sm font-bold text-dark w-full">Username</label>
+                        <label for="email" class="block text-sm font-bold text-dark w-full">Email</label>
                         <div class="relative custom-input group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-id-card text-gray-400 group-focus-within:text-primary transition-colors"></i>
+                                <i class="fa-solid fa-envelope text-gray-400 group-focus-within:text-primary transition-colors"></i>
                             </div>
-                            <input id="username" type="text" name="username" value="{{ old('username') }}" required autofocus
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
                                 class="block w-full pl-12 pr-4 py-4 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
-                                placeholder="Masukkan NIK atau email">
+                                placeholder="Masukkan email">
                         </div>
                     </div>
 
