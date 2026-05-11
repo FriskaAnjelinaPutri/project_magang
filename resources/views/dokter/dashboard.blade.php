@@ -169,15 +169,22 @@
                                 {{ $row->status }}
                             </span>
 
-                            @if($statusAntrian === 'menunggu')
+                            @if(in_array($statusAntrian, ['menunggu', 'dilewati']))
                                 <div class="mt-3 flex flex-col sm:flex-row justify-center items-center gap-2">
                                     <form action="{{ route('antrian.panggil', $row->id_antrian) }}" method="POST" class="inline m-0">
                                         @csrf @method('PUT')
                                         <input type="hidden" name="tanggal" value="{{ $tanggal }}">
-                                        <button type="submit" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-blue-200 w-full sm:w-auto">
-                                            <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 12h.01"></path></svg>
-                                            Panggil
-                                        </button>
+                                        @if($statusAntrian === 'dilewati')
+                                            <button type="submit" class="bg-orange-100 hover:bg-orange-200 text-orange-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-orange-200 w-full sm:w-auto">
+                                                <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 12h.01"></path></svg>
+                                                Panggil Ulang
+                                            </button>
+                                        @else
+                                            <button type="submit" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-blue-200 w-full sm:w-auto">
+                                                <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 12h.01"></path></svg>
+                                                Panggil
+                                            </button>
+                                        @endif
                                     </form>
                                 </div>
                             @endif

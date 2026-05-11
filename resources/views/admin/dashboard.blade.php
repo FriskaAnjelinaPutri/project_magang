@@ -206,9 +206,15 @@
                                         <form action="{{ route('antrian.panggil', $row->id_antrian) }}" method="POST" class="inline">
                                             @csrf @method('PUT')
                                             <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
-                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Panggil pasien ini">
-                                                <i class="fa-solid fa-bullhorn mr-1.5"></i> Panggil
-                                            </button>
+                                            @if($statusAntrian === 'dilewati')
+                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Panggil ulang pasien ini">
+                                                    <i class="fa-solid fa-bullhorn mr-1.5"></i> Panggil Ulang
+                                                </button>
+                                            @else
+                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Panggil pasien ini">
+                                                    <i class="fa-solid fa-bullhorn mr-1.5"></i> Panggil
+                                                </button>
+                                            @endif
                                         </form>
                                     @endif
 

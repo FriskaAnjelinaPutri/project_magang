@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class AdminController extends Controller
-{ 
+{
     public function index()
     {
         $stats = [
@@ -23,7 +23,10 @@ class AdminController extends Controller
         ];
 
         // Tabel pendaftaran
-        $recent_pendaftaran = Pendaftaran::with('pasien', 'layanan')->latest('created_at')->take(5)->get();
+        $recent_pendaftaran = Pendaftaran::with('pasien', 'layanan')
+        ->latest('created_at')
+        ->take(5)
+        ->get();
 
         // Antrian hari ini untuk tabel manajemen antrian
         $antrian_hari_ini = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanan')
@@ -39,7 +42,7 @@ class AdminController extends Controller
             'total'     => $antrian_hari_ini->count(),
         ];
 
-        // mengambil data terbaru 7 hari terakhir
+        // mengambil data untuk grafik kunjungan 7 hari terakhir
         $chartData = Pendaftaran::select(DB::raw('DATE(tanggal_kunjungan) as date'), DB::raw('count(*) as count'))
             ->where('tanggal_kunjungan', '>=', Carbon::now()->subDays(6)->toDateString())
             ->groupBy('date')

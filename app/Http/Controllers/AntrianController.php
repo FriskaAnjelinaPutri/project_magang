@@ -32,7 +32,7 @@ class AntrianController extends Controller
     {
         $tanggal = $request->input('tanggal', now()->toDateString());
 
-        // Data guard: only allow one "dipanggil" per day.
+        // data yang statusnya "dipanggil" per hari
         $dipanggil = Antrian::whereDate('tanggal_antrian', $tanggal)
             ->where('status', self::STATUS_DIPANGGIL)
             ->orderBy('nomor_antrian', 'asc')
@@ -73,7 +73,7 @@ class AntrianController extends Controller
     // memanggil pasien
     public function panggil(Request $request, $id)
     {
-        $antrian = Antrian::with('pendaftaran')->findOrFail($id);
+        $antrian = Antrian::with('pendaftaran.layanan')->findOrFail($id);
 
         $tanggal = $antrian->tanggal_antrian;
         $sedangDipanggil = Antrian::whereDate('tanggal_antrian', $tanggal)
@@ -93,6 +93,18 @@ class AntrianController extends Controller
             $antrian->pendaftaran->update([
                 'status' => self::STATUS_DIPANGGIL,
             ]);
+
+            // Cek apakah pembayaran sudah dihapus (karena dilewati), jika ya, buat ulang
+            $pembayaran = Pembayaran::where('id_pendaftaran', $antrian->pendaftaran->id_pendaftaran)->first();
+            if (!$pembayaran && $antrian->pendaftaran->layanan) {
+                Pembayaran::create([
+                    'id_pendaftaran' => $antrian->pendaftaran->id_pendaftaran,
+                    'total_bayar' => $antrian->pendaftaran->layanan->harga,
+                    'tanggal_pembayaran' => $antrian->tanggal_antrian,
+                    'status' => 'belum lunas',
+                    'metode_pembayaran' => 'cash',
+                ]);
+            }
         }
 
         return redirect()->route($this->getRedirectRoute(), [
