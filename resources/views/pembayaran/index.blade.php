@@ -34,7 +34,7 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-gray-200/50">
-                        <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">No</th>
+                        <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">No. Antrian</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Pasien</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Total Bayar</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggal</th>
@@ -48,7 +48,7 @@
                             $isLunas = $statusRaw === 'lunas';
                         @endphp
                         <tr class="border-b border-gray-100/50 hover:bg-white/40 transition-colors">
-                            <td class="py-4 px-4 text-sm font-bold text-green-600 text-center">{{ $loop->iteration }}</td>
+                            <td class="py-4 px-4 text-sm font-bold text-green-600 text-center">{{ optional(optional($row->pendaftaran)->antrian)->nomor_antrian ?? '-' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">{{ optional(optional($row->pendaftaran)->pasien)->nama_pasien ?? '-' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">Rp {{ number_format($row->total_bayar, 0, ',', '.') }}</td>
                             <td class="py-4 px-4 text-sm text-gray-600">{{ $row->tanggal_pembayaran ?? $row->created_at->format('d M Y') }}</td>

@@ -35,6 +35,7 @@ class AdminController extends Controller
             ->get();
 
         $antrian_stats = [
+            'belum_datang' => $antrian_hari_ini->where('status', 'belum_datang')->count(),
             'menunggu'  => $antrian_hari_ini->where('status', 'menunggu')->count(),
             'dipanggil' => $antrian_hari_ini->where('status', 'dipanggil')->count(),
             'dilewati'  => $antrian_hari_ini->where('status', 'dilewati')->count(),

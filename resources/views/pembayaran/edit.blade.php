@@ -15,12 +15,12 @@
     <div class="glass-panel rounded-3xl p-8 max-w-2xl">
         <div class="space-y-4 mb-8">
             <div>
-                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">ID Pembayaran</p>
-                <p class="text-lg font-bold text-green-600">{{ $pembayaran->id_pembayaran }}</p>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">No. Antrian</p>
+                <p class="text-2xl font-black text-orange-500">{{ optional(optional($pembayaran->pendaftaran)->antrian)->nomor_antrian ?? '-' }}</p>
             </div>
             <div>
-                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">ID Pendaftaran</p>
-                <p class="text-lg font-bold text-orange-500">{{ $pembayaran->id_pendaftaran }}</p>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Pasien</p>
+                <p class="text-lg font-bold text-gray-900">{{ optional(optional($pembayaran->pendaftaran)->pasien)->nama_pasien ?? '-' }}</p>
             </div>
             <div>
                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tagihan Awal Layanan</p>

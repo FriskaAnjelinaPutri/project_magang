@@ -126,6 +126,9 @@
                 <p class="text-sm text-gray-500 mt-1">Panggil, lewati, atau selesaikan antrian pasien.</p>
             </div>
             <div class="flex items-center gap-3 flex-wrap">
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">
+                    <i class="fa-solid fa-user-clock mr-1.5"></i> Belum Datang: {{ $antrian_stats['belum_datang'] ?? 0 }}
+                </span>
                 <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-200">
                     <i class="fa-solid fa-clock mr-1.5"></i> Menunggu: {{ $antrian_stats['menunggu'] ?? 0 }}
                 </span>
@@ -182,12 +185,15 @@
                             </td>
                             <td class="py-4 px-4 text-center whitespace-nowrap border-b border-gray-100/80">
                                 <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold capitalize
+                                    {{ $statusAntrian === 'belum_datang' ? 'bg-red-100 text-red-800 border border-red-200' : '' }}
                                     {{ $statusAntrian === 'menunggu' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' : '' }}
                                     {{ $statusAntrian === 'dipanggil' ? 'bg-blue-100 text-blue-700 border border-blue-200 animate-pulse' : '' }}
                                     {{ $statusAntrian === 'selesai' ? 'bg-green-100 text-green-800 border border-green-200' : '' }}
                                     {{ $statusAntrian === 'dilewati' ? 'bg-gray-100 text-gray-600 border border-gray-200' : '' }}
                                 ">
-                                    @if($statusAntrian === 'menunggu')
+                                    @if($statusAntrian === 'belum_datang')
+                                        <i class="fa-solid fa-user-clock mr-1.5"></i>
+                                    @elseif($statusAntrian === 'menunggu')
                                         <i class="fa-solid fa-clock mr-1.5"></i>
                                     @elseif($statusAntrian === 'dipanggil')
                                         <i class="fa-solid fa-microphone mr-1.5"></i>
@@ -196,11 +202,22 @@
                                     @elseif($statusAntrian === 'dilewati')
                                         <i class="fa-solid fa-forward-step mr-1.5"></i>
                                     @endif
-                                    {{ $row->status }}
+                                    {{ str_replace('_', ' ', $row->status) }}
                                 </span>
                             </td>
                             <td class="py-4 px-4 text-center whitespace-nowrap border-b border-gray-100/80">
                                 <div class="flex items-center justify-center gap-2">
+                                    {{-- Tombol Hadir: tampil jika status belum_datang --}}
+                                    @if($statusAntrian === 'belum_datang')
+                                        <form action="{{ route('antrian.hadir', $row->id_antrian) }}" method="POST" class="inline">
+                                            @csrf @method('PUT')
+                                            <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Tandai pasien sudah hadir">
+                                                <i class="fa-solid fa-clipboard-user mr-1.5"></i> Lapor Hadir
+                                            </button>
+                                        </form>
+                                    @endif
+
                                     {{-- Tombol Panggil: tampil jika status menunggu atau dilewati --}}
                                     @if(in_array($statusAntrian, ['menunggu', 'dilewati']))
                                         <form action="{{ route('antrian.panggil', $row->id_antrian) }}" method="POST" class="inline">

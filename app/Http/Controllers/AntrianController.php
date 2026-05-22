@@ -70,6 +70,23 @@ class AntrianController extends Controller
             ->with('success','Nomor antrian berhasil dibuat');
     }
 
+    // menandai pasien hadir
+    public function hadir(Request $request, $id)
+    {
+        $antrian = Antrian::with('pendaftaran')->findOrFail($id);
+
+        $statusSaatIni = strtolower(trim((string) $antrian->status));
+        if ($statusSaatIni !== 'belum_datang') {
+            return redirect()->back()->with('error', 'Status antrian tidak valid untuk ditandai hadir.');
+        }
+
+        $antrian->update([
+            'status' => self::STATUS_MENUNGGU
+        ]);
+
+        return redirect()->back()->with('success', 'Pasien telah melapor datang dan masuk antrian menunggu.');
+    }
+
     // memanggil pasien
     public function panggil(Request $request, $id)
     {
@@ -81,9 +98,7 @@ class AntrianController extends Controller
             ->where('id_antrian', '!=', $antrian->id_antrian)
             ->first();
         if ($sedangDipanggil) {
-            return redirect()->route($this->getRedirectRoute(), [
-                'tanggal' => $request->input('tanggal', $tanggal),
-            ])->with('error', 'Masih ada antrian yang sedang dipanggil.');
+            return redirect()->back()->with('error', 'Masih ada antrian yang sedang dipanggil.');
         }
 
         $antrian->update([
@@ -107,9 +122,7 @@ class AntrianController extends Controller
             }
         }
 
-        return redirect()->route($this->getRedirectRoute(), [
-            'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
-        ])->with('success', 'Pasien berhasil dipanggil.');
+        return redirect()->back()->with('success', 'Pasien berhasil dipanggil.');
     }
 
     // menyelesaikan antrian
@@ -119,9 +132,7 @@ class AntrianController extends Controller
 
         $statusSaatIni = strtolower(trim((string) $antrian->status));
         if ($statusSaatIni !== self::STATUS_DIPANGGIL) {
-            return redirect()->route($this->getRedirectRoute(), [
-                'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
-            ])->with('success', 'Antrian tidak dapat diselesaikan karena belum berstatus dipanggil.');
+            return redirect()->back()->with('error', 'Antrian tidak dapat diselesaikan karena belum berstatus dipanggil.');
         }
 
         $antrian->update([
@@ -153,9 +164,7 @@ class AntrianController extends Controller
             }
         }
 
-        return redirect()->route($this->getRedirectRoute(), [
-            'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
-        ])->with('success', 'Antrian berhasil diselesaikan.');
+        return redirect()->back()->with('success', 'Antrian berhasil diselesaikan.');
     }
 
     // lewati antrian (pasien belum hadir / no-show)
@@ -165,9 +174,7 @@ class AntrianController extends Controller
 
         $statusSaatIni = strtolower(trim((string) $antrian->status));
         if ($statusSaatIni !== self::STATUS_DIPANGGIL) {
-            return redirect()->route($this->getRedirectRoute(), [
-                'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
-            ])->with('success', 'Antrian tidak dapat dilewati karena belum berstatus dipanggil.');
+            return redirect()->back()->with('error', 'Antrian tidak dapat dilewati karena belum berstatus dipanggil.');
         }
 
         $antrian->update([
@@ -204,11 +211,7 @@ class AntrianController extends Controller
             }
         }
 
-        return redirect()->route($this->getRedirectRoute(), [
-            'tanggal' => $request->input('tanggal', $antrian->tanggal_antrian),
-        ])->with('success', $antrianBerikutnya
-            ? 'Antrian dilewati.'
-            : 'Antrian dilewati.');
+        return redirect()->back()->with('success', $antrianBerikutnya ? 'Antrian dilewati.' : 'Antrian dilewati.');
     }
 
     // menghapus antrian
@@ -216,6 +219,6 @@ class AntrianController extends Controller
     {
         Antrian::destroy($id);
 
-        return redirect()->route($this->getRedirectRoute());
+        return redirect()->back()->with('success', 'Antrian berhasil dihapus.');
     }
 }

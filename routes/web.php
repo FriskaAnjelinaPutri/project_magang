@@ -108,6 +108,7 @@ Route::resource('layanan', LayananController::class)->middleware('auth');
 
 use App\Http\Controllers\AntrianController;
 
+Route::put('/antrian/{id}/hadir', [AntrianController::class, 'hadir'])->name('antrian.hadir')->middleware('auth');
 Route::put('/antrian/{id}/panggil', [AntrianController::class, 'panggil'])->name('antrian.panggil')->middleware('auth');
 Route::put('/antrian/{id}/lewati', [AntrianController::class, 'lewati'])->name('antrian.lewati')->middleware('auth');
 Route::put('/antrian/{id}/selesai', [AntrianController::class, 'selesai'])->name('antrian.selesai')->middleware('auth');

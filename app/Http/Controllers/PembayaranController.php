@@ -13,7 +13,7 @@ class PembayaranController extends Controller
     {
         $tanggalFilter = $request->input('tanggal', now()->toDateString());
 
-        $pembayaran = Pembayaran::with('pendaftaran.pasien')
+        $pembayaran = Pembayaran::with('pendaftaran.pasien', 'pendaftaran.antrian')
             ->whereDate('tanggal_pembayaran', $tanggalFilter)
             ->orderByDesc('id_pembayaran')
             ->get();
@@ -77,7 +77,7 @@ class PembayaranController extends Controller
     // edit pembayaran
     public function edit($id)
     {
-        $pembayaran = Pembayaran::with('pendaftaran.layanan')->findOrFail($id);
+        $pembayaran = Pembayaran::with('pendaftaran.layanan', 'pendaftaran.antrian', 'pendaftaran.pasien')->findOrFail($id);
 
         return view('pembayaran.edit', compact('pembayaran'));
     }
@@ -93,7 +93,7 @@ class PembayaranController extends Controller
         $pembayaran = Pembayaran::with('pendaftaran.layanan')->findOrFail($id);
 
         $pembayaran->status = $request->status;
-        
+
         if ($request->has('total_bayar') && $request->total_bayar !== null) {
             $pembayaran->total_bayar = $request->total_bayar;
         } else if ($request->status === 'lunas' && $pembayaran->total_bayar == 0) {

@@ -71,7 +71,7 @@ class PendaftaranController extends Controller
             'id_pendaftaran' => $pendaftaran->id_pendaftaran,
             'nomor_antrian' => $antrianKe,
             'tanggal_antrian' => $request->tanggal_kunjungan,
-            'status' => 'menunggu'
+            'status' => 'belum_datang'
         ]);
 
         $layananRecord = \App\Models\Layanan::find($request->id_layanan);
