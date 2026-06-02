@@ -77,13 +77,6 @@ class PendaftaranController extends Controller
         $layananRecord = \App\Models\Layanan::find($request->id_layanan);
         $total_bayar = $layananRecord ? $layananRecord->harga : 0;
 
-        \App\Models\Pembayaran::create([
-            'id_pendaftaran' => $pendaftaran->id_pendaftaran,
-            'total_bayar' => $total_bayar,
-            'tanggal_pembayaran' => $request->tanggal_kunjungan,
-            'status' => 'belum lunas',
-            'metode_pembayaran' => 'cash',
-        ]);
 
         if ($user->role === 'pasien') {
             return redirect()->route('reservasi.cetak', $antrian->id_antrian)

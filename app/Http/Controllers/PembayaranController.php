@@ -15,7 +15,7 @@ class PembayaranController extends Controller
 
         $pembayaran = Pembayaran::with('pendaftaran.pasien', 'pendaftaran.antrian')
             ->whereDate('tanggal_pembayaran', $tanggalFilter)
-            ->orderByDesc('id_pembayaran')
+            ->orderBy('created_at', 'asc')
             ->get();
 
         return view('pembayaran.index', compact('pembayaran', 'tanggalFilter'));
@@ -27,13 +27,14 @@ class PembayaranController extends Controller
         $tanggalFilter = $request->input('tanggal', now()->toDateString());
 
         $pendaftaran = Pendaftaran::with(['layanan', 'pasien', 'antrian'])
-            ->whereDate('tanggal_kunjungan', $tanggalFilter)
-            ->whereIn('status', ['menunggu', 'dipanggil', 'selesai'])
+            ->select('pendaftaran.*')
+            ->leftJoin('antrian', 'pendaftaran.id_pendaftaran', '=', 'antrian.id_pendaftaran')
+            ->whereDate('pendaftaran.tanggal_kunjungan', $tanggalFilter)
+            ->whereIn('pendaftaran.status', ['menunggu', 'dipanggil', 'selesai'])
             ->whereDoesntHave('pembayaran', function ($query) {
                 $query->where('status', 'lunas');
             })
-            ->orderBy('tanggal_kunjungan')
-            ->orderBy('id_pendaftaran')
+            ->orderBy('antrian.updated_at', 'asc')
             ->get();
 
         return view('pembayaran.create', compact('pendaftaran', 'tanggalFilter'));
@@ -88,11 +89,16 @@ class PembayaranController extends Controller
         $request->validate([
             'status' => 'required|in:lunas,belum lunas',
             'total_bayar' => 'nullable|numeric|min:0',
+            'metode_pembayaran' => 'nullable|in:cash,transfer',
         ]);
 
         $pembayaran = Pembayaran::with('pendaftaran.layanan')->findOrFail($id);
 
         $pembayaran->status = $request->status;
+        
+        if ($request->has('metode_pembayaran') && $request->metode_pembayaran) {
+            $pembayaran->metode_pembayaran = $request->metode_pembayaran;
+        }
 
         if ($request->has('total_bayar') && $request->total_bayar !== null) {
             $pembayaran->total_bayar = $request->total_bayar;
@@ -113,6 +119,13 @@ class PembayaranController extends Controller
 
         return redirect()->route('pembayaran.index')
             ->with('success', 'Status dan nominal pembayaran berhasil diperbarui.');
+    }
+
+    // menampilkan detail pembayaran
+    public function show($id)
+    {
+        $pembayaran = Pembayaran::with('pendaftaran.layanan', 'pendaftaran.antrian', 'pendaftaran.pasien')->findOrFail($id);
+        return view('pembayaran.show', compact('pembayaran'));
     }
 
     // hapus pembayaran

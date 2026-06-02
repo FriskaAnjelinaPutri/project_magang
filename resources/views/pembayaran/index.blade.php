@@ -54,9 +54,14 @@
                             <td class="py-4 px-4 text-sm text-gray-600">{{ $row->tanggal_pembayaran ?? $row->created_at->format('d M Y') }}</td>
                             <td class="py-4 px-4 min-w-[180px]">
                                 @if($isLunas)
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-800 shadow-sm">
-                                        LUNAS
-                                    </span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-800 shadow-sm">
+                                            LUNAS
+                                        </span>
+                                        <a href="{{ route('pembayaran.show', $row->id_pembayaran ?? $row->id) }}" class="inline-flex items-center px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors shadow-sm">
+                                            Detail
+                                        </a>
+                                    </div>
                                 @else
                                     <div class="flex items-center gap-2">
                                         <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 shadow-sm">

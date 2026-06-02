@@ -31,7 +31,8 @@ class AdminController extends Controller
         // Antrian hari ini untuk tabel manajemen antrian
         $antrian_hari_ini = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanan')
             ->whereDate('tanggal_antrian', today())
-            ->orderBy('nomor_antrian', 'asc')
+            ->orderByRaw("FIELD(status, 'dipanggil', 'menunggu', 'dilewati', 'belum_datang', 'selesai')")
+            ->orderBy('updated_at', 'asc')
             ->get();
 
         $antrian_stats = [

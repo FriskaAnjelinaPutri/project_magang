@@ -4,9 +4,7 @@
 
 @if(isset($user) && $user->role === 'pasien')
 
-<!-- ============================ -->
 <!-- TAMPILAN KHUSUS PASIEN -->
-<!-- ============================ -->
 
 <div class="max-w-xl mx-auto">
 
@@ -25,10 +23,10 @@
                 <i class="fa-solid fa-check-circle mr-3 text-xl"></i> {{ session('success') }}
             </div>
         @endif
-        
+
         <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-6">
             @csrf
-            
+
             <!-- Layanan Dipilih -->
             <div class="space-y-2">
                 <label class="block text-sm font-bold text-dark">Pilih Pelayanan</label>
@@ -73,14 +71,12 @@
             </button>
         </form>
     </div>
-    
+
 </div>
 
 @else
 
-<!-- ============================ -->
 <!-- TAMPILAN ADMIN/KASIR -->
-<!-- ============================ -->
 
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 px-2 mt-4 gap-4">
     <div>
@@ -96,7 +92,7 @@
     <div class="glass-panel rounded-3xl p-6 sm:p-8 bg-white shadow-xl max-w-2xl">
         <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-6">
             @csrf
-            
+
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Pilih Pasien</label>
                 <select name="id_pasien" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all text-gray-800 font-medium" required>

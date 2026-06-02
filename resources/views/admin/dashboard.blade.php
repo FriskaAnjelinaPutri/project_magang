@@ -7,16 +7,6 @@
         <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Dashboard Overview</h1>
         <p class="text-sm text-gray-500 mt-1">Sistem manajemen layanan pasien Klinik Sehat.</p>
     </div>
-
-    {{-- <div class="flex items-center gap-4 glass-card px-4 py-2 rounded-full hidden sm:flex">
-        <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-md">
-            {{ substr(Auth::user()->name, 0, 1) }}
-        </div>
-        <div>
-            <p class="text-sm font-bold text-gray-800 leading-none">{{ Auth::user()->name }}</p>
-            <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
-        </div>
-    </div> --}}
 </div>
 
 <!-- Cards Area -->
@@ -115,177 +105,301 @@
     </div>
 </div>
 
-<!-- Manajemen Antrian Hari Ini -->
-<div class="px-2 mb-10">
-    <div class="glass-panel rounded-3xl p-8">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            <div>
-                <h2 class="text-xl font-bold text-gray-900">
-                    <i class="fa-solid fa-bell-concierge text-orange-500 mr-2"></i>Manajemen Antrian Hari Ini
-                </h2>
-                <p class="text-sm text-gray-500 mt-1">Panggil, lewati, atau selesaikan antrian pasien.</p>
+    <!-- Manajemen Antrian Hari Ini -->
+    <div class="px-2 mb-10">
+        <div class="glass-panel rounded-3xl p-8">
+
+            {{-- HEADER --}}
+            <div class="mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fa-solid fa-bell-concierge text-orange-500 mr-2"></i>
+                        Manajemen Antrian Hari Ini
+                    </h2>
+
+                    {{-- <p class="text-sm text-gray-500 mt-1">
+                        Panggil, lewati, atau selesaikan antrian pasien.
+                    </p> --}}
+                </div>
+
+                {{-- STATUS BADGE --}}
+                <div class="flex flex-wrap items-center gap-3 mt-4">
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">
+                        <i class="fa-solid fa-user-clock mr-1.5"></i>
+                        Belum Datang: {{ $antrian_stats['belum_datang'] ?? 0 }}
+                    </span>
+
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-200">
+                        <i class="fa-solid fa-clock mr-1.5"></i>
+                        Menunggu: {{ $antrian_stats['menunggu'] ?? 0 }}
+                    </span>
+
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                        <i class="fa-solid fa-microphone mr-1.5"></i>
+                        Dipanggil: {{ $antrian_stats['dipanggil'] ?? 0 }}
+                    </span>
+
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                        <i class="fa-solid fa-forward-step mr-1.5"></i>
+                        Dilewati: {{ $antrian_stats['dilewati'] ?? 0 }}
+                    </span>
+
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
+                        <i class="fa-solid fa-check mr-1.5"></i>
+                        Selesai: {{ $antrian_stats['selesai'] ?? 0 }}
+                    </span>
+                </div>
             </div>
-            <div class="flex items-center gap-3 flex-wrap">
-                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">
-                    <i class="fa-solid fa-user-clock mr-1.5"></i> Belum Datang: {{ $antrian_stats['belum_datang'] ?? 0 }}
-                </span>
-                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-200">
-                    <i class="fa-solid fa-clock mr-1.5"></i> Menunggu: {{ $antrian_stats['menunggu'] ?? 0 }}
-                </span>
-                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
-                    <i class="fa-solid fa-microphone mr-1.5"></i> Dipanggil: {{ $antrian_stats['dipanggil'] ?? 0 }}
-                </span>
-                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
-                    <i class="fa-solid fa-forward-step mr-1.5"></i> Dilewati: {{ $antrian_stats['dilewati'] ?? 0 }}
-                </span>
-                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
-                    <i class="fa-solid fa-check mr-1.5"></i> Selesai: {{ $antrian_stats['selesai'] ?? 0 }}
-                </span>
+
+            {{-- ALERT SUCCESS --}}
+            @if (session('success'))
+            <div class="mb-5 p-4 bg-green-50/80 border border-green-200 text-green-700 rounded-2xl flex items-center shadow-sm">
+                <i class="fa-solid fa-circle-check text-xl mr-3"></i>
+                <span class="font-bold">{{ session('success') }}</span>
             </div>
-        </div>
+            @endif
 
-        @if (session('success'))
-        <div class="mb-5 p-4 bg-green-50/80 border border-green-200 text-green-700 rounded-2xl flex items-center shadow-sm">
-            <i class="fa-solid fa-circle-check text-xl mr-3"></i>
-            <span class="font-bold">{{ session('success') }}</span>
-        </div>
-        @endif
-        @if (session('error'))
-        <div class="mb-5 p-4 bg-red-50/80 border border-red-200 text-red-700 rounded-2xl flex items-center shadow-sm">
-            <i class="fa-solid fa-circle-exclamation text-xl mr-3"></i>
-            <span class="font-bold">{{ session('error') }}</span>
-        </div>
-        @endif
+            {{-- ALERT ERROR --}}
+            @if (session('error'))
+            <div class="mb-5 p-4 bg-red-50/80 border border-red-200 text-red-700 rounded-2xl flex items-center shadow-sm">
+                <i class="fa-solid fa-circle-exclamation text-xl mr-3"></i>
+                <span class="font-bold">{{ session('error') }}</span>
+            </div>
+            @endif
 
-        <div class="overflow-x-auto rounded-2xl border border-gray-200/70 bg-white/70">
-            <table class="w-full text-left border-separate border-spacing-0">
-                <thead>
-                    <tr class="bg-gray-50/90">
-                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">No. Antrian</th>
-                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Pasien</th>
-                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Layanan</th>
-                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">Status</th>
-                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($antrian_hari_ini ?? [] as $row)
-                        @php
-                            $statusAntrian = strtolower(trim((string) $row->status));
-                        @endphp
-                        <tr class="odd:bg-white even:bg-gray-50/50 hover:bg-orange-50/40 transition-colors {{ $statusAntrian === 'dipanggil' ? 'ring-2 ring-blue-300 ring-inset bg-blue-50/30' : '' }}">
-                            <td class="py-4 px-4 text-2xl font-black text-orange-500 text-center border-b border-gray-100/80">
-                                {{ (int) $row->nomor_antrian }}
-                            </td>
-                            <td class="py-4 px-4 border-b border-gray-100/80">
-                                <div class="text-sm text-gray-900 font-bold">{{ $row->pendaftaran->pasien->nama_pasien ?? 'Unknown' }}</div>
-                            </td>
-                            <td class="py-4 px-4 border-b border-gray-100/80">
-                                <div class="text-sm text-gray-600 font-medium">{{ $row->pendaftaran->layanan->nama_layanan ?? '-' }}</div>
-                            </td>
-                            <td class="py-4 px-4 text-center whitespace-nowrap border-b border-gray-100/80">
-                                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold capitalize
-                                    {{ $statusAntrian === 'belum_datang' ? 'bg-red-100 text-red-800 border border-red-200' : '' }}
-                                    {{ $statusAntrian === 'menunggu' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' : '' }}
-                                    {{ $statusAntrian === 'dipanggil' ? 'bg-blue-100 text-blue-700 border border-blue-200 animate-pulse' : '' }}
-                                    {{ $statusAntrian === 'selesai' ? 'bg-green-100 text-green-800 border border-green-200' : '' }}
-                                    {{ $statusAntrian === 'dilewati' ? 'bg-gray-100 text-gray-600 border border-gray-200' : '' }}
-                                ">
-                                    @if($statusAntrian === 'belum_datang')
-                                        <i class="fa-solid fa-user-clock mr-1.5"></i>
-                                    @elseif($statusAntrian === 'menunggu')
-                                        <i class="fa-solid fa-clock mr-1.5"></i>
-                                    @elseif($statusAntrian === 'dipanggil')
-                                        <i class="fa-solid fa-microphone mr-1.5"></i>
-                                    @elseif($statusAntrian === 'selesai')
-                                        <i class="fa-solid fa-check mr-1.5"></i>
-                                    @elseif($statusAntrian === 'dilewati')
-                                        <i class="fa-solid fa-forward-step mr-1.5"></i>
-                                    @endif
-                                    {{ str_replace('_', ' ', $row->status) }}
-                                </span>
-                            </td>
-                            <td class="py-4 px-4 text-center whitespace-nowrap border-b border-gray-100/80">
-                                <div class="flex items-center justify-center gap-2">
-                                    {{-- Tombol Hadir: tampil jika status belum_datang --}}
-                                    @if($statusAntrian === 'belum_datang')
-                                        <form action="{{ route('antrian.hadir', $row->id_antrian) }}" method="POST" class="inline">
-                                            @csrf @method('PUT')
-                                            <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
-                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Tandai pasien sudah hadir">
-                                                <i class="fa-solid fa-clipboard-user mr-1.5"></i> Lapor Hadir
-                                            </button>
-                                        </form>
-                                    @endif
+            {{-- TABLE --}}
+            <div class="overflow-x-auto rounded-2xl border border-gray-200/70 bg-white/70">
+                <table class="w-full text-left border-separate border-spacing-0">
 
-                                    {{-- Tombol Panggil: tampil jika status menunggu atau dilewati --}}
-                                    @if(in_array($statusAntrian, ['menunggu', 'dilewati']))
-                                        <form action="{{ route('antrian.panggil', $row->id_antrian) }}" method="POST" class="inline">
-                                            @csrf @method('PUT')
-                                            <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
-                                            @if($statusAntrian === 'dilewati')
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Panggil ulang pasien ini">
-                                                    <i class="fa-solid fa-bullhorn mr-1.5"></i> Panggil Ulang
-                                                </button>
-                                            @else
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Panggil pasien ini">
-                                                    <i class="fa-solid fa-bullhorn mr-1.5"></i> Panggil
-                                                </button>
-                                            @endif
-                                        </form>
-                                    @endif
+                    {{-- TABLE HEADER --}}
+                    <thead>
+                        <tr class="bg-gray-50/90">
+                            <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">
+                                No. Antrian
+                            </th>
 
-                                    {{-- Tombol Selesai & Lewati: tampil jika status dipanggil --}}
-                                    @if($statusAntrian === 'dipanggil')
-                                        <form action="{{ route('antrian.selesai', $row->id_antrian) }}" method="POST" class="inline">
-                                            @csrf @method('PUT')
-                                            <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
-                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-green-500 hover:bg-green-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Selesaikan antrian ini">
-                                                <i class="fa-solid fa-check-double mr-1.5"></i> Selesai
-                                            </button>
-                                        </form>
-                                        <form action="{{ route('antrian.lewati', $row->id_antrian) }}" method="POST" class="inline">
-                                            @csrf @method('PUT')
-                                            <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
-                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-400 hover:bg-gray-500 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" title="Lewati antrian ini">
-                                                <i class="fa-solid fa-forward-step mr-1.5"></i> Lewati
-                                            </button>
-                                        </form>
-                                    @endif
+                            <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">
+                                Pasien
+                            </th>
 
-                                    {{-- Jika selesai, tampilkan tanda check --}}
-                                    @if($statusAntrian === 'selesai')
-                                        <span class="text-green-500 text-sm font-bold"><i class="fa-solid fa-circle-check"></i> Done</span>
-                                    @endif
-                                </div>
-                            </td>
+                            <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">
+                                Layanan
+                            </th>
+
+                            <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">
+                                Status
+                            </th>
+
+                            <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">
+                                Aksi
+                            </th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="py-12 text-center text-gray-500">
-                                <div class="flex flex-col items-center justify-center">
-                                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-3">
-                                        <i class="fa-solid fa-clipboard-list text-2xl"></i>
+                    </thead>
+
+                    {{-- TABLE BODY --}}
+                    <tbody>
+                        @forelse ($antrian_hari_ini ?? [] as $row)
+
+                            @php
+                                $statusAntrian = strtolower(trim((string) $row->status));
+                            @endphp
+
+                            <tr class="odd:bg-white even:bg-gray-50/50 hover:bg-orange-50/40 transition-colors {{ $statusAntrian === 'dipanggil' ? 'ring-2 ring-blue-300 ring-inset bg-blue-50/30' : '' }}">
+
+                                {{-- NOMOR ANTRIAN --}}
+                                <td class="py-4 px-4 text-2xl font-black text-orange-500 text-center border-b border-gray-100/80">
+                                    {{ (int) $row->nomor_antrian }}
+                                </td>
+
+                                {{-- PASIEN --}}
+                                <td class="py-4 px-4 border-b border-gray-100/80">
+                                    <div class="text-sm text-gray-900 font-bold">
+                                        {{ $row->pendaftaran->pasien->nama_pasien ?? 'Unknown' }}
                                     </div>
-                                    <p class="text-base font-bold text-gray-700">Tidak Ada Antrian Hari Ini</p>
-                                    <p class="text-sm mt-1">Belum ada pasien yang masuk antrian hari ini.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                                </td>
 
-        @if(($antrian_hari_ini ?? collect())->isNotEmpty())
-        <div class="mt-4 flex justify-end">
-            <a href="{{ route('antrian.index') }}" class="text-sm text-orange-500 hover:text-orange-700 font-bold bg-white/50 px-4 py-2 rounded-xl transition-all hover:bg-white">
-                Kelola Semua Antrian &rarr;
-            </a>
+                                {{-- LAYANAN --}}
+                                <td class="py-4 px-4 border-b border-gray-100/80">
+                                    <div class="text-sm text-gray-600 font-medium">
+                                        {{ $row->pendaftaran->layanan->nama_layanan ?? '-' }}
+                                    </div>
+                                </td>
+
+                                {{-- STATUS --}}
+                                <td class="py-4 px-4 text-center whitespace-nowrap border-b border-gray-100/80">
+
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold capitalize
+
+                                        {{ $statusAntrian === 'belum_datang' ? 'bg-red-100 text-red-800 border border-red-200' : '' }}
+
+                                        {{ $statusAntrian === 'menunggu' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' : '' }}
+
+                                        {{ $statusAntrian === 'dipanggil' ? 'bg-blue-100 text-blue-700 border border-blue-200 animate-pulse' : '' }}
+
+                                        {{ $statusAntrian === 'selesai' ? 'bg-green-100 text-green-800 border border-green-200' : '' }}
+
+                                        {{ $statusAntrian === 'dilewati' ? 'bg-gray-100 text-gray-600 border border-gray-200' : '' }}
+                                    ">
+
+                                        @if($statusAntrian === 'belum_datang')
+                                            <i class="fa-solid fa-user-clock mr-1.5"></i>
+
+                                        @elseif($statusAntrian === 'menunggu')
+                                            <i class="fa-solid fa-clock mr-1.5"></i>
+
+                                        @elseif($statusAntrian === 'dipanggil')
+                                            <i class="fa-solid fa-microphone mr-1.5"></i>
+
+                                        @elseif($statusAntrian === 'selesai')
+                                            <i class="fa-solid fa-check mr-1.5"></i>
+
+                                        @elseif($statusAntrian === 'dilewati')
+                                            <i class="fa-solid fa-forward-step mr-1.5"></i>
+                                        @endif
+
+                                        {{ str_replace('_', ' ', $row->status) }}
+                                    </span>
+                                </td>
+
+                                {{-- AKSI --}}
+                                <td class="py-4 px-4 text-center whitespace-nowrap border-b border-gray-100/80">
+                                    <div class="flex items-center justify-center gap-2">
+
+                                        {{-- HADIR --}}
+                                        @if($statusAntrian === 'belum_datang')
+                                            <form action="{{ route('antrian.hadir', $row->id_antrian) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
+
+                                                <button type="submit"
+                                                    class="inline-flex items-center px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+
+                                                    <i class="fa-solid fa-clipboard-user mr-1.5"></i>
+                                                    Lapor Hadir
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        {{-- PANGGIL --}}
+                                        @if(in_array($statusAntrian, ['menunggu', 'dilewati']))
+                                            <form action="{{ route('antrian.panggil', $row->id_antrian) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
+
+                                                @if($statusAntrian === 'dilewati')
+
+                                                    <button type="submit"
+                                                        class="inline-flex items-center px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+
+                                                        <i class="fa-solid fa-bullhorn mr-1.5"></i>
+                                                        Panggil Ulang
+                                                    </button>
+
+                                                @else
+
+                                                    <button type="submit"
+                                                        class="inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+
+                                                        <i class="fa-solid fa-bullhorn mr-1.5"></i>
+                                                        Panggil
+                                                    </button>
+
+                                                @endif
+                                            </form>
+                                        @endif
+
+                                        {{-- DIPANGGIL --}}
+                                        @if($statusAntrian === 'dipanggil')
+
+                                            {{-- SELESAI --}}
+                                            <form action="{{ route('antrian.selesai', $row->id_antrian) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
+
+                                                <button type="submit"
+                                                    class="inline-flex items-center px-3 py-1.5 rounded-lg bg-green-500 hover:bg-green-600 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+
+                                                    <i class="fa-solid fa-check-double mr-1.5"></i>
+                                                    Selesai
+                                                </button>
+                                            </form>
+
+                                            {{-- LEWATI --}}
+                                            <form action="{{ route('antrian.lewati', $row->id_antrian) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <input type="hidden" name="tanggal" value="{{ now()->toDateString() }}">
+
+                                                <button type="submit"
+                                                    class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-400 hover:bg-gray-500 text-white text-xs font-bold transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+
+                                                    <i class="fa-solid fa-forward-step mr-1.5"></i>
+                                                    Lewati
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        {{-- DONE --}}
+                                        @if($statusAntrian === 'selesai')
+                                            <span class="text-green-500 text-sm font-bold">
+                                                <i class="fa-solid fa-circle-check"></i>
+                                                Done
+                                            </span>
+                                        @endif
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        @empty
+
+                            {{-- EMPTY --}}
+                            <tr>
+                                <td colspan="5" class="py-12 text-center text-gray-500">
+
+                                    <div class="flex flex-col items-center justify-center">
+
+                                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-3">
+                                            <i class="fa-solid fa-clipboard-list text-2xl"></i>
+                                        </div>
+
+                                        <p class="text-base font-bold text-gray-700">
+                                            Tidak Ada Antrian Hari Ini
+                                        </p>
+
+                                        <p class="text-sm mt-1">
+                                            Belum ada pasien yang masuk antrian hari ini.
+                                        </p>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- FOOTER --}}
+            @if(($antrian_hari_ini ?? collect())->isNotEmpty())
+                <div class="mt-4 flex justify-end">
+                    <a href="{{ route('antrian.index') }}"
+                        class="text-sm text-orange-500 hover:text-orange-700 font-bold bg-white/50 px-4 py-2 rounded-xl transition-all hover:bg-white">
+
+                        Kelola Semua Antrian &rarr;
+                    </a>
+                </div>
+            @endif
+
         </div>
-        @endif
     </div>
-</div>
 
 <!-- Table Area -->
 <div class="px-2">

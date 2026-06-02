@@ -26,10 +26,6 @@
                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tagihan Awal Layanan</p>
                 <p class="text-lg font-semibold text-gray-900">Rp {{ number_format(optional($pembayaran->pendaftaran->layanan)->harga ?? 0, 0, ',', '.') }}</p>
             </div>
-            <div>
-                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Metode</p>
-                <p class="text-sm font-semibold text-gray-800">{{ ucfirst($pembayaran->metode_pembayaran ?? '-') }}</p>
-            </div>
         </div>
 
         <form action="{{ route('pembayaran.update', $pembayaran->id_pembayaran ?? $pembayaran->id) }}" method="POST">
@@ -40,6 +36,15 @@
                 <label class="block text-sm font-bold text-gray-700 mb-2">Total Bayar (Rp)</label>
                 <input type="number" name="total_bayar" value="{{ old('total_bayar', $pembayaran->total_bayar) }}" required min="0" class="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all font-semibold text-gray-800 bg-white">
                 @error('total_bayar') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="mb-5">
+                <label class="block text-sm font-bold text-gray-700 mb-2">Metode Pembayaran</label>
+                <select name="metode_pembayaran" required class="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all font-semibold text-gray-800 bg-white">
+                    <option value="cash" {{ old('metode_pembayaran', strtolower(trim($pembayaran->metode_pembayaran ?? 'cash'))) === 'cash' ? 'selected' : '' }}>Cash</option>
+                    <option value="transfer" {{ old('metode_pembayaran', strtolower(trim($pembayaran->metode_pembayaran ?? ''))) === 'transfer' ? 'selected' : '' }}>Transfer</option>
+                </select>
+                @error('metode_pembayaran') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
             </div>
 
             <div>

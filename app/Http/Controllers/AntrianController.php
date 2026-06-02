@@ -35,7 +35,7 @@ class AntrianController extends Controller
         // data yang statusnya "dipanggil" per hari
         $dipanggil = Antrian::whereDate('tanggal_antrian', $tanggal)
             ->where('status', self::STATUS_DIPANGGIL)
-            ->orderBy('nomor_antrian', 'asc')
+            ->orderBy('updated_at', 'asc')
             ->get(['id_antrian', 'nomor_antrian']);
         if ($dipanggil->count() > 1) {
             $keepId = $dipanggil->first()->id_antrian;
@@ -47,7 +47,8 @@ class AntrianController extends Controller
 
         $antrian = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanan')
             ->whereDate('tanggal_antrian', $tanggal)
-            ->orderBy('nomor_antrian')
+            ->orderByRaw("FIELD(status, 'dipanggil', 'menunggu', 'dilewati', 'belum_datang', 'selesai')")
+            ->orderBy('updated_at', 'asc')
             ->get();
 
         return view('antrian.index', compact('antrian', 'tanggal'));
@@ -73,7 +74,7 @@ class AntrianController extends Controller
     // menandai pasien hadir
     public function hadir(Request $request, $id)
     {
-        $antrian = Antrian::with('pendaftaran')->findOrFail($id);
+        $antrian = Antrian::with('pendaftaran.layanan')->findOrFail($id);
 
         $statusSaatIni = strtolower(trim((string) $antrian->status));
         if ($statusSaatIni !== 'belum_datang') {
@@ -83,6 +84,19 @@ class AntrianController extends Controller
         $antrian->update([
             'status' => self::STATUS_MENUNGGU
         ]);
+
+        if ($antrian->pendaftaran && $antrian->pendaftaran->layanan) {
+            $pembayaran = Pembayaran::where('id_pendaftaran', $antrian->pendaftaran->id_pendaftaran)->first();
+            if (!$pembayaran) {
+                Pembayaran::create([
+                    'id_pendaftaran' => $antrian->pendaftaran->id_pendaftaran,
+                    'total_bayar' => $antrian->pendaftaran->layanan->harga,
+                    'tanggal_pembayaran' => $antrian->tanggal_antrian,
+                    'status' => 'belum lunas',
+                    'metode_pembayaran' => 'cash',
+                ]);
+            }
+        }
 
         return redirect()->back()->with('success', 'Pasien telah melapor datang dan masuk antrian menunggu.');
     }
@@ -148,8 +162,7 @@ class AntrianController extends Controller
         $antrianBerikutnya = Antrian::with('pendaftaran')
             ->whereDate('tanggal_antrian', $antrian->tanggal_antrian)
             ->whereIn('status', [self::STATUS_MENUNGGU, self::STATUS_DILEWATI])
-            ->where('nomor_antrian', '>', $antrian->nomor_antrian)
-            ->orderBy('nomor_antrian', 'asc')
+            ->orderBy('updated_at', 'asc')
             ->first();
 
         if ($antrianBerikutnya) {
@@ -195,8 +208,7 @@ class AntrianController extends Controller
         $antrianBerikutnya = Antrian::with('pendaftaran')
             ->whereDate('tanggal_antrian', $antrian->tanggal_antrian)
             ->whereIn('status', [self::STATUS_MENUNGGU, self::STATUS_DILEWATI])
-            ->where('nomor_antrian', '>', $antrian->nomor_antrian)
-            ->orderBy('nomor_antrian', 'asc')
+            ->orderBy('updated_at', 'asc')
             ->first();
 
         if ($antrianBerikutnya) {
