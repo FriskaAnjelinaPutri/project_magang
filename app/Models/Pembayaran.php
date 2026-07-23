@@ -13,8 +13,7 @@ class Pembayaran extends Model
         'total_bayar',
         'tanggal_pembayaran',
         'status',
-        'metode_pembayaran',
-        'bukti_transfer'
+        'metode_pembayaran'
     ];
 
     public function pendaftaran()

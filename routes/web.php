@@ -7,6 +7,7 @@ use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\RekamMedisController;
 
 use Illuminate\Http\Request;
 use App\Models\Layanan;
@@ -90,9 +91,6 @@ use App\Http\Controllers\AdminController;
 Route::get('/dashboard/admin', [AdminController::class, 'index'])
     ->middleware('auth')->name('dashboard.admin');
 
-Route::get('/dashboard/kasir', function () {
-    return redirect()->route('pembayaran.index');
-})->middleware('auth')->name('dashboard.kasir');
 
 Route::get('/dashboard/dokter', [DokterController::class, 'index'])
     ->middleware('auth')->name('dashboard.dokter');
@@ -130,4 +128,7 @@ Route::get('/pendaftaran/{id}/cetak', fn ($id) => redirect()->route('reservasi.c
 Route::put('/pendaftaran/{id}/cancel', [PendaftaranController::class, 'cancel'])
     ->name('pendaftaran.cancel')
     ->middleware('auth');
+Route::get('/pembayaran/cetak', [PembayaranController::class, 'cetak'])->name('pembayaran.cetak')->middleware('auth');
 Route::resource('pembayaran', PembayaranController::class)->middleware('auth');
+Route::get('/rekam-medis/cetak', [RekamMedisController::class, 'cetak'])->name('rekam-medis.cetak')->middleware('auth');
+Route::resource('rekam-medis', RekamMedisController::class)->middleware('auth');

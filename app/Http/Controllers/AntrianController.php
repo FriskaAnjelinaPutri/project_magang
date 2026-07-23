@@ -57,8 +57,10 @@ class AntrianController extends Controller
     // membuat nomor antrian
     public function store(Request $request)
     {
-        // menghitung jumlah antrian hari ini
-        $nomor = Antrian::whereDate('tanggal_antrian', today())->count() + 1;
+        // Hitung berdasarkan nomor urut kedatangan hari ini
+        $nomor = Antrian::whereDate('tanggal_antrian', today())
+                    ->where('nomor_antrian', '>', 0)
+                    ->max('nomor_antrian') + 1;
 
         Antrian::create([
             'id_pendaftaran' => $request->id_pendaftaran,
@@ -81,8 +83,14 @@ class AntrianController extends Controller
             return redirect()->back()->with('error', 'Status antrian tidak valid untuk ditandai hadir.');
         }
 
+        // Berikan nomor antrian baru (berdasarkan urutan kedatangan hari itu)
+        $antrianKe = Antrian::whereDate('tanggal_antrian', $antrian->tanggal_antrian)
+            ->where('nomor_antrian', '>', 0)
+            ->max('nomor_antrian') + 1;
+
         $antrian->update([
-            'status' => self::STATUS_MENUNGGU
+            'status' => self::STATUS_MENUNGGU,
+            'nomor_antrian' => $antrianKe
         ]);
 
         if ($antrian->pendaftaran && $antrian->pendaftaran->layanan) {

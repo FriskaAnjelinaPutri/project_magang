@@ -23,13 +23,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // Kasir
-        User::create([
-            'name' => 'Kasir Klinik',
-            'email' => 'kasir@klinik.com',
-            'password' => bcrypt('password123'),
-            'role' => 'kasir',
-        ]);
+
 
         // Pasien
         User::create([

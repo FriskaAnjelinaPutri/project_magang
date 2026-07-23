@@ -83,7 +83,7 @@
                                         {{ $item->layanan->nama_layanan ?? '-' }}
                                     </td>
                                     <td class="px-5 py-4 text-center font-bold text-dark">
-                                        {{ isset($item->antrian->nomor_antrian) ? (int) $item->antrian->nomor_antrian : '-' }}
+                                        {{ (isset($item->antrian->nomor_antrian) && (int) $item->antrian->nomor_antrian > 0) ? (int) $item->antrian->nomor_antrian : 'Booking' }}
                                     </td>
                                     <td class="px-5 py-4 text-center">
                                         @if($item->antrian)

@@ -1,4 +1,4 @@
-@extends(auth()->check() && auth()->user()->role === 'kasir' ? 'layouts.kasir' : 'layouts.admin')
+@extends('layouts.admin')
 
 @section('content')
 <div class="flex items-center mb-8 px-2 gap-4">

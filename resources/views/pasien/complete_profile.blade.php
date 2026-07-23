@@ -103,7 +103,7 @@
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-id-card text-gray-400 group-focus-within:text-primary"></i>
                             </div>
-                            <input id="NIK" type="text" name="NIK" value="{{ old('NIK') }}" required maxlength="16"
+                            <input id="NIK" type="text" name="NIK" value="{{ old('NIK') }}" required maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark font-semibold"
                                 placeholder="16 Digit NIK KTP">
                         </div>
@@ -116,7 +116,7 @@
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-phone text-gray-400 group-focus-within:text-primary"></i>
                             </div>
-                            <input id="no_hp" type="text" name="no_hp" value="{{ old('no_hp') }}" required
+                            <input id="no_hp" type="text" name="no_hp" value="{{ old('no_hp') }}" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark font-semibold"
                                 placeholder="Cth: 08123456789">
                         </div>

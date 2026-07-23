@@ -29,7 +29,7 @@
                 <!-- NIK KTP -->
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Nomor Induk Kependudukan (NIK)</label>
-                    <input type="number" name="NIK" required 
+                    <input type="text" name="NIK" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         class="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all font-semibold text-gray-800"
                         placeholder="Ketik 16 Digit NIK" minlength="16" maxlength="16" value="{{ old('NIK') }}">
                     @error('NIK') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
@@ -58,7 +58,7 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <span class="text-gray-500 font-bold">+62</span>
                         </div>
-                        <input type="tel" name="no_hp" required 
+                        <input type="text" name="no_hp" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                             class="w-full pl-12 pr-5 py-3.5 rounded-2xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all font-semibold text-gray-800"
                             placeholder="81234567890" value="{{ old('no_hp') }}">
                     </div>

@@ -61,7 +61,7 @@
                 <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-4xl mb-8 border border-white/20 shadow-2xl">
                     <i class="fa-solid fa-tooth text-white"></i>
                 </div>
-                <h1 class="text-5xl font-extrabold mb-6 leading-tight">Selamat Datang di Portal Klinik.</h1>
+                <h1 class="text-5xl font-extrabold mb-6 leading-tight">Selamat Datang di Klinik Gigi Drg.Noviandri.</h1>
 
 
 
@@ -85,7 +85,7 @@
 
                 <div class="mb-10">
                     <h2 class="text-4xl font-extrabold text-dark tracking-tight mb-2">Masuk Akun</h2>
-                    <p class="text-dark/60 font-medium text-lg">Silakan masukkan detail kredensial Anda.</p>
+                    <p class="text-dark/60 font-medium text-lg">Silakan masukkan ke akun Anda.</p>
                 </div>
 
                 @if ($errors->any())
@@ -124,7 +124,6 @@
                     <div class="space-y-2">
                         <div class="flex items-center justify-between">
                             <label for="password" class="block text-sm font-bold text-dark">Password</label>
-                            <a href="#" class="text-sm font-bold text-primary hover:text-secondary hover:underline transition-colors">Lupa Password?</a>
                         </div>
                         <div class="relative custom-input group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

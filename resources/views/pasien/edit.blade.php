@@ -39,7 +39,7 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-id-card text-gray-400 group-focus-within:text-primary transition-colors"></i>
                         </div>
-                        <input type="text" name="NIK" required maxlength="16"
+                        <input type="text" name="NIK" required maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                             class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
                             placeholder="16 Digit NIK KTP" value="{{ old('NIK', $pasien->NIK) }}">
                     </div>
@@ -69,7 +69,7 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-phone text-gray-400 group-focus-within:text-primary transition-colors"></i>
                         </div>
-                        <input type="text" name="no_hp" required
+                        <input type="text" name="no_hp" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                             class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
                             placeholder="Cth: 0812..." value="{{ old('no_hp', $pasien->no_hp) }}">
                     </div>

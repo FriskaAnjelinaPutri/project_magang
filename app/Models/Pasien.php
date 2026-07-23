@@ -16,4 +16,9 @@ class Pasien extends Model
         'no_hp',
         'alamat'
     ];
+
+    public function rekamMedis()
+    {
+        return $this->hasMany(RekamMedis::class, 'id_pasien', 'id_pasien');
+    }
 }

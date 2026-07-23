@@ -62,12 +62,12 @@
     <div class="xl:col-span-2 glass-panel rounded-3xl p-6 md:p-8 flex flex-col shadow-sm">
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h2 class="text-xl font-bold text-gray-900">Tren Pendaftaran Harian</h2>
+                <h2 class="text-xl font-bold text-gray-900">Grafik Pendaftaran Harian</h2>
                 <p class="text-sm text-gray-500 mt-1">Grafik reservasi pasien 7 hari terakhir.</p>
             </div>
-            <div class="flex items-center gap-2 text-sm text-orange-500 font-bold bg-orange-50 px-3 py-1 rounded-full">
+            {{-- <div class="flex items-center gap-2 text-sm text-orange-500 font-bold bg-orange-50 px-3 py-1 rounded-full">
                 <i class="fa-solid fa-arrow-trend-up"></i> Live
-            </div>
+            </div> --}}
         </div>
         <div class="relative w-full flex-1 min-h-[250px] lg:min-h-[350px]">
             <canvas id="trendChart"></canvas>
@@ -77,7 +77,7 @@
     <!-- Quick Actions Column (Span 1) -->
     <div class="flex flex-col gap-6">
         <div class="glass-panel rounded-3xl p-6 md:p-8 shadow-sm h-full">
-            <h2 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Aksi Cermat (Quick Actions)</h2>
+            <h2 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Aksi Cermat</h2>
             <div class="grid grid-cols-2 gap-4">
 
                 <a href="{{ route('reservasi.index') }}" class="flex flex-col items-center justify-center p-5 rounded-2xl bg-orange-50/70 hover:bg-orange-100 border border-orange-100/50 text-orange-600 transition-all hover:shadow-md transform hover:-translate-y-1">

@@ -28,7 +28,7 @@ class AdminController extends Controller
         ->take(5)
         ->get();
 
-        // Antrian hari ini untuk tabel manajemen antrian
+        // Antrian hari ini 
         $antrian_hari_ini = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanan')
             ->whereDate('tanggal_antrian', today())
             ->orderByRaw("FIELD(status, 'dipanggil', 'menunggu', 'dilewati', 'belum_datang', 'selesai')")

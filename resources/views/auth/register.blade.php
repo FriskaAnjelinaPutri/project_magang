@@ -163,19 +163,19 @@
             <div class="absolute bottom-0 left-0 -ml-32 -mb-32 w-96 h-96 bg-accent/40 rounded-full blur-3xl z-0"></div>
 
             <div class="relative z-10 w-full max-w-lg text-white animate-fade-in-up">
-                <h1 class="text-5xl font-extrabold mb-6 leading-tight">Mulai Perjalanan Senyum Sempurna Anda.</h1>
+                <h1 class="text-5xl font-extrabold mb-6 leading-tight">Mulai Langkah Menuju Pelayanan yang Lebih Mudah.</h1>
                 <p class="text-xl text-white/80 font-medium leading-relaxed mb-8">
-                    Hanya butuh waktu kurang dari 1 menit untuk mendaftar dan mulai mengatur jadwal konsultasi dengan dokter spesialis kami.
+                    Daftar sebagai pasien dan atur jadwal kunjungan secara online tanpa proses yang rumit. Pantau antrian Anda secara langsung melalui website sehingga waktu tunggu menjadi lebih teratur.
                 </p>
                 
                 <div class="space-y-5 text-white/90 font-bold text-lg">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center border border-white/20"><i class="fa-solid fa-check text-primary"></i></div>
-                        Prioritas antrian jelas
+                        Pendaftaran online yang praktis
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center border border-white/20"><i class="fa-solid fa-check text-primary"></i></div>
-                        Sistem transparan dan informatif
+                        Status antrian dapat dipantau secara real-time
                     </div>
                 </div>
             </div>

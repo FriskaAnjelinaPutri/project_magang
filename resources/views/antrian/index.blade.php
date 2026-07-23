@@ -55,7 +55,7 @@
                         @endphp
                         <tr class="odd:bg-white even:bg-gray-50/50 hover:bg-orange-50/40 transition-colors">
                             <td class="py-4 px-4 text-2xl font-black text-orange-500 text-center border-b border-gray-100/80">
-                                {{ (int) $row->nomor_antrian }}
+                                {{ $row->nomor_antrian > 0 ? (int) $row->nomor_antrian : '-' }}
                             </td>
                             <td class="py-4 px-4 border-b border-gray-100/80">
                                 <div class="text-sm text-gray-900 font-bold mb-1">

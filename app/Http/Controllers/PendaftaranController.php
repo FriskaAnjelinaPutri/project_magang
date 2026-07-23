@@ -65,11 +65,10 @@ class PendaftaranController extends Controller
             'status' => 'menunggu'
         ]);
 
-        $antrianKe = \App\Models\Antrian::where('tanggal_antrian', $request->tanggal_kunjungan)->count() + 1;
-        
+        // Saat reservasi awal, nomor antrian diset ke 0 (Hanya Booking)
         $antrian = \App\Models\Antrian::create([
             'id_pendaftaran' => $pendaftaran->id_pendaftaran,
-            'nomor_antrian' => $antrianKe,
+            'nomor_antrian' => 0,
             'tanggal_antrian' => $request->tanggal_kunjungan,
             'status' => 'belum_datang'
         ]);

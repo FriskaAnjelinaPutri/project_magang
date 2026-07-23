@@ -181,10 +181,13 @@
 
                             @if($statusAntrian === 'dipanggil')
                                 <div class="mt-3 flex flex-col sm:flex-row justify-center items-center gap-2">
-                                    <form action="{{ route('antrian.selesai', $row->id_antrian) }}" method="POST" class="inline m-0">
+                                    <a href="{{ route('rekam-medis.create', ['id_pendaftaran' => $row->id_pendaftaran]) }}" class="bg-orange-100 hover:bg-orange-200 text-orange-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-orange-200 w-full sm:w-auto text-center inline-block">
+                                        Isi Rekam Medis
+                                    </a>
+                                    <form action="{{ route('antrian.selesai', $row->id_antrian) }}" method="POST" class="inline m-0 w-full sm:w-auto">
                                         @csrf @method('PUT')
                                         <input type="hidden" name="tanggal" value="{{ $tanggal }}">
-                                        <button type="submit" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-green-200 w-full sm:w-auto">
+                                        <button type="submit" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-green-200 w-full">
                                             Selesai
                                         </button>
                                     </form>

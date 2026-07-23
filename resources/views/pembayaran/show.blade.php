@@ -1,4 +1,4 @@
-@extends(auth()->check() && auth()->user()->role === 'kasir' ? 'layouts.kasir' : 'layouts.admin')
+@extends('layouts.admin')
 
 @section('content')
 <div class="flex items-center mb-8 px-2 gap-4">
@@ -47,22 +47,34 @@
                     @endif
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Tagihan</p>
-                    <p class="text-3xl font-black text-gray-900">Rp {{ number_format($pembayaran->total_bayar, 0, ',', '.') }}</p>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Rincian Tagihan</p>
+                    <div class="space-y-2 text-sm bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Biaya Layanan/Konsultasi</span>
+                            <span class="font-semibold">Rp {{ number_format(optional(optional($pembayaran->pendaftaran)->layanan)->harga ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                        @if($pembayaran->pendaftaran && $pembayaran->pendaftaran->rekamMedis)
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Biaya Tindakan</span>
+                            <span class="font-semibold">Rp {{ number_format($pembayaran->pendaftaran->rekamMedis->biaya_tindakan ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Biaya Obat</span>
+                            <span class="font-semibold">Rp {{ number_format($pembayaran->pendaftaran->rekamMedis->biaya_obat ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                        @endif
+                        <div class="pt-3 border-t border-gray-100 flex justify-between items-center mt-3">
+                            <span class="font-bold text-gray-800">Total Keseluruhan</span>
+                            <span class="text-2xl font-black text-orange-500">Rp {{ number_format($pembayaran->total_bayar, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Metode Pembayaran</p>
                     <p class="text-lg font-semibold text-gray-800 capitalize">{{ $pembayaran->metode_pembayaran ?? '-' }}</p>
                 </div>
                 
-                @if($pembayaran->bukti_transfer)
-                <div>
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bukti Transfer</p>
-                    <a href="{{ asset('storage/' . $pembayaran->bukti_transfer) }}" target="_blank" class="block overflow-hidden rounded-xl border border-gray-200">
-                        <img src="{{ asset('storage/' . $pembayaran->bukti_transfer) }}" alt="Bukti Transfer" class="w-full object-cover max-h-48 hover:scale-105 transition-transform duration-300">
-                    </a>
-                </div>
-                @endif
+
             </div>
         </div>
 

@@ -23,7 +23,7 @@ return new class extends Migration
                   ->onDelete('cascade');
             $table->enum('status', ['lunas', 'belum lunas'])->default('belum lunas');
             $table->enum('metode_pembayaran',['cash','transfer']);
-            $table->string('bukti_transfer')->nullable();
+
         });
     }
 

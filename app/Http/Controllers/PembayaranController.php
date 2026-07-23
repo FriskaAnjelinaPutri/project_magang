@@ -47,7 +47,6 @@ class PembayaranController extends Controller
             'id_pendaftaran' => 'required|exists:pendaftaran,id_pendaftaran',
             'total_bayar' => 'required|numeric|min:0',
             'metode_pembayaran' => 'required|in:cash,transfer',
-            'bukti_transfer' => 'required_if:metode_pembayaran,transfer|nullable|image|max:2048',
         ]);
 
         $pendaftaran = Pendaftaran::with('layanan')->findOrFail($request->id_pendaftaran);
@@ -57,18 +56,12 @@ class PembayaranController extends Controller
         // Lunas hanya jika jumlah yang dibayar >= harga layanan (bukan dari metode cash/transfer)
         $status = $totalBayar >= $hargaLayanan ? 'lunas' : 'belum lunas';
 
-        $bukti = null;
-        if ($request->hasFile('bukti_transfer')) {
-            $bukti = $request->file('bukti_transfer')->store('bukti_transfer', 'public');
-        }
-
         Pembayaran::create([
             'id_pendaftaran' => $request->id_pendaftaran,
             'total_bayar' => $totalBayar,
             'tanggal_pembayaran' => now(),
             'status' => $status,
             'metode_pembayaran' => $request->metode_pembayaran,
-            'bukti_transfer' => $bukti,
         ]);
 
         return redirect()->route('pembayaran.index')
@@ -135,5 +128,17 @@ class PembayaranController extends Controller
 
         return redirect()->route('pembayaran.index')
             ->with('success','Data pembayaran berhasil dihapus');
+    }
+
+    public function cetak(Request $request)
+    {
+        $tanggalFilter = $request->input('tanggal', now()->toDateString());
+
+        $pembayaran = Pembayaran::with('pendaftaran.pasien', 'pendaftaran.antrian', 'pendaftaran.layanan', 'pendaftaran.rekamMedis')
+            ->whereDate('tanggal_pembayaran', $tanggalFilter)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return view('pembayaran.cetak', compact('pembayaran', 'tanggalFilter'));
     }
 }

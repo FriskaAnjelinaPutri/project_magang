@@ -34,4 +34,9 @@ class Pendaftaran extends Model
     {
         return $this->hasMany(Pembayaran::class, 'id_pendaftaran', 'id_pendaftaran');
     }
+
+    public function rekamMedis()
+    {
+        return $this->hasOne(RekamMedis::class, 'id_pendaftaran', 'id_pendaftaran');
+    }
 }

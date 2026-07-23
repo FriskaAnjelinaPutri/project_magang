@@ -49,7 +49,12 @@
         <!-- Badan Tiket -->
         <div class="p-8 text-center bg-gradient-to-b from-white to-orange-50/30">
             <p class="text-gray-500 font-bold text-sm tracking-widest uppercase mb-2">Nomor Antrean Anda</p>
-            <h2 class="text-7xl font-extrabold text-[#4a403d] mb-4 tracking-tighter">{{ (int) $antrian->nomor_antrian }}</h2>
+            @if((int) $antrian->nomor_antrian > 0)
+                <h2 class="text-7xl font-extrabold text-[#4a403d] mb-4 tracking-tighter">{{ (int) $antrian->nomor_antrian }}</h2>
+            @else
+                <h2 class="text-4xl font-extrabold text-[#4a403d] mb-4 tracking-tighter mt-4">-</h2>
+                <p class="text-sm font-bold text-orange-600 mb-4 bg-orange-100 py-1.5 px-3 rounded-full inline-block">Belum Lapor Hadir</p>
+            @endif
             
             <div class="w-16 h-1 bg-[#d4a373] mx-auto rounded-full mb-6 relative"></div>
 
@@ -73,7 +78,7 @@
         <!-- Footer Tiket -->
         <div class="bg-gray-50 text-center py-5 px-6 border-t border-dashed border-gray-300">
             <p class="text-xs text-gray-500 font-medium leading-relaxed">
-                Harap datang 15 menit sebelum nomor antrean Anda dipanggil.<br>Terima Kasih.
+                Harap datang lapor hadir untuk mendapatkan nomor antrian anda.<br>Terima Kasih.
             </p>
         </div>
 

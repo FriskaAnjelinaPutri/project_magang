@@ -1,4 +1,4 @@
-@extends(auth()->check() && auth()->user()->role === 'kasir' ? 'layouts.kasir' : 'layouts.admin')
+@extends('layouts.admin')
 
 @section('content')
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 px-2 mt-4 gap-4">
@@ -17,15 +17,21 @@
 
 <div class="px-2">
     <div class="glass-panel rounded-2xl p-4 mb-5">
-        <form method="GET" action="{{ route('pembayaran.index') }}" class="flex flex-col sm:flex-row items-end gap-3">
-            <div class="w-full sm:w-auto">
-                <label for="tanggal" class="block text-sm font-bold text-gray-700 mb-1">Filter Tanggal</label>
-                <input id="tanggal" name="tanggal" type="date" value="{{ $tanggalFilter ?? now()->toDateString() }}"
-                    class="w-full sm:w-56 px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all text-gray-800 font-semibold">
+        <form method="GET" action="{{ route('pembayaran.index') }}" class="flex flex-col sm:flex-row items-end gap-3 w-full">
+            <div class="flex-1 flex flex-col sm:flex-row items-end gap-3">
+                <div class="w-full sm:w-auto">
+                    <label for="tanggal" class="block text-sm font-bold text-gray-700 mb-1">Filter Tanggal</label>
+                    <input id="tanggal" name="tanggal" type="date" value="{{ $tanggalFilter ?? now()->toDateString() }}"
+                        class="w-full sm:w-56 px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all text-gray-800 font-semibold">
+                </div>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-colors">
+                    Tampilkan
+                </button>
             </div>
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-colors">
-                Tampilkan
-            </button>
+            <a href="{{ route('pembayaran.cetak', ['tanggal' => $tanggalFilter ?? now()->toDateString()]) }}" target="_blank" class="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:-translate-y-0.5 w-full sm:w-auto mt-3 sm:mt-0 justify-center">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Cetak Laporan (PDF)
+            </a>
         </form>
     </div>
 
