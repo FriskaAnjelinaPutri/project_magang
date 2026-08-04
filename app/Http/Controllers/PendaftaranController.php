@@ -65,7 +65,7 @@ class PendaftaranController extends Controller
             'status' => 'menunggu'
         ]);
 
-        // Saat reservasi awal, nomor antrian diset ke 0 (Hanya Booking)
+        // Saat reservasi awal, pasien belum mendapatkan nomor antrian sesungguhnya (diset 0)
         $antrian = \App\Models\Antrian::create([
             'id_pendaftaran' => $pendaftaran->id_pendaftaran,
             'nomor_antrian' => 0,
@@ -78,8 +78,8 @@ class PendaftaranController extends Controller
 
 
         if ($user->role === 'pasien') {
-            return redirect()->route('reservasi.cetak', $antrian->id_antrian)
-                ->with('success', 'Antrian berhasil diambil!');
+            return redirect()->route('dashboard.pasien')
+                ->with('success', 'Reservasi berhasil dibuat! Silakan lapor hadir saat tiba di klinik.');
         }
 
         return redirect()->route('reservasi.index')

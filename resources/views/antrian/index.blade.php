@@ -3,7 +3,7 @@
 @section('content')
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 px-2 mt-4 gap-4">
     <div>
-        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Manajemen Antrian</h1>
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Data Antrian</h1>
         <p class="text-sm text-gray-500 mt-1">Monitor dan kelola pemanggilan pasien hari ini.</p>
     </div>
 </div>
@@ -42,7 +42,7 @@
                 <thead>
                     <tr class="bg-gray-50/90">
                         <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">No</th>
-                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Informasi Pendaftaran</th>
+                        <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Pasien</th>
                         <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Tanggal</th>
                         <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">Status</th>
                         <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-b border-gray-200/80">Aksi</th>

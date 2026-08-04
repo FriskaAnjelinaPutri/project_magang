@@ -125,11 +125,13 @@
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th width="15%">No. Antrian</th>
+                <th width="12%">No. Antrian</th>
                 <th width="20%">Nama Pasien</th>
-                <th width="20%">Layanan</th>
-                <th width="15%">Status</th>
-                <th width="25%">Total Bayar (Rp)</th>
+                <th width="15%">Layanan</th>
+                <th width="10%">Metode</th>
+                <th width="13%">Tanggal</th>
+                <th width="10%">Status</th>
+                <th width="15%">Total Bayar (Rp)</th>
             </tr>
         </thead>
         <tbody>
@@ -144,6 +146,8 @@
                     <td style="text-align: center;">{{ optional(optional($row->pendaftaran)->antrian)->nomor_antrian ?? '-' }}</td>
                     <td>{{ optional(optional($row->pendaftaran)->pasien)->nama_pasien ?? '-' }}</td>
                     <td>{{ optional(optional($row->pendaftaran)->layanan)->nama_layanan ?? '-' }}</td>
+                    <td style="text-align: center;">{{ $row->metode_pembayaran ? ucfirst($row->metode_pembayaran) : '-' }}</td>
+                    <td style="text-align: center;">{{ $row->tanggal_pembayaran ?? $row->created_at->format('d M Y') }}</td>
                     <td style="text-align: center; {{ $isLunas ? 'color: green;' : 'color: red;' }}">
                         <strong>{{ strtoupper($row->status) }}</strong>
                     </td>
@@ -152,11 +156,11 @@
             @endforeach
             @if($pembayaran->isEmpty())
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 20px;">Tidak ada transaksi pada tanggal ini.</td>
+                    <td colspan="8" style="text-align: center; padding: 20px;">Tidak ada transaksi pada tanggal ini.</td>
                 </tr>
             @else
                 <tr>
-                    <td colspan="5" style="text-align: right; font-weight: bold;">TOTAL PENDAPATAN (LUNAS):</td>
+                    <td colspan="7" style="text-align: right; font-weight: bold;">TOTAL PENDAPATAN (LUNAS):</td>
                     <td style="text-align: right; font-weight: bold; font-size: 14pt;">Rp {{ number_format($totalSemua, 0, ',', '.') }}</td>
                 </tr>
             @endif

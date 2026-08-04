@@ -115,20 +115,22 @@
     </div>
 
     <div class="judul-laporan">
-        LAPORAN KESELURUHAN REKAM MEDIS PASIEN
+        LAPORAN REKAM MEDIS PASIEN
     </div>
     
-    <p>Dicetak pada tanggal: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+    <p>Tanggal Pemeriksaan: <strong>{{ \Carbon\Carbon::parse($tanggalFilter)->translatedFormat('d F Y') }}</strong><br>
+    Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }}</p>
 
     <table>
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th width="15%">Tgl Periksa</th>
-                <th width="20%">Nama Pasien</th>
+                <th width="12%">Tgl Periksa</th>
+                <th width="18%">Nama Pasien</th>
                 <th width="15%">Layanan</th>
-                <th width="20%">Keluhan</th>
-                <th width="25%">Tindakan & Resep</th>
+                <th width="15%">Keluhan</th>
+                <th width="17%">Tindakan</th>
+                <th width="18%">Resep Obat</th>
             </tr>
         </thead>
         <tbody>
@@ -141,15 +143,13 @@
                     <td>
                         {{ $rm->keluhan }}
                     </td>
-                    <td>
-                        <strong>Tindakan:</strong> {{ $rm->tindakan }}<br><br>
-                        <strong>Obat:</strong> {{ $rm->resep_obat }}
-                    </td>
+                    <td>{{ $rm->tindakan }}</td>
+                    <td>{{ $rm->resep_obat }}</td>
                 </tr>
             @endforeach
             @if($rekamMedis->isEmpty())
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 20px;">Belum ada data rekam medis.</td>
+                    <td colspan="7" style="text-align: center; padding: 20px;">Belum ada data rekam medis.</td>
                 </tr>
             @endif
         </tbody>

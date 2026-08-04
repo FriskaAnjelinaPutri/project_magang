@@ -8,12 +8,18 @@ use App\Models\RekamMedis;
 
 class RekamMedisController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $rekamMedis = RekamMedis::with(['pasien', 'pendaftaran.layanan'])->latest()->get();
+        $tanggalFilter = $request->query('tanggal', now()->toDateString());
+        
+        $rekamMedis = RekamMedis::with(['pasien', 'pendaftaran.layanan'])
+            ->whereDate('tanggal_periksa', $tanggalFilter)
+            ->latest()
+            ->get();
+            
         // Determine layout based on user role (Admin or Dokter)
         $layout = auth()->user()->role === 'dokter' ? 'layouts.dokter' : 'layouts.admin';
-        return view('rekam_medis.index', compact('rekamMedis', 'layout'));
+        return view('rekam_medis.index', compact('rekamMedis', 'layout', 'tanggalFilter'));
     }
 
     public function create(Request $request)
@@ -34,10 +40,10 @@ class RekamMedisController extends Controller
         $request->validate([
             'id_pasien' => 'required|exists:pasien,id_pasien',
             'id_pendaftaran' => 'nullable|exists:pendaftaran,id_pendaftaran',
-            'keluhan' => 'nullable|string',
-            'tindakan' => 'nullable|string',
+            'keluhan' => 'required|string',
+            'tindakan' => 'required|string',
             'biaya_tindakan' => 'nullable|numeric|min:0',
-            'resep_obat' => 'nullable|string',
+            'resep_obat' => 'required|string',
             'biaya_obat' => 'nullable|numeric|min:0',
             'tanggal_periksa' => 'required|date',
         ]);
@@ -63,6 +69,15 @@ class RekamMedisController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'keluhan' => 'required|string',
+            'tindakan' => 'required|string',
+            'biaya_tindakan' => 'nullable|numeric|min:0',
+            'resep_obat' => 'required|string',
+            'biaya_obat' => 'nullable|numeric|min:0',
+            'tanggal_periksa' => 'required|date',
+        ]);
+
         $rekamMedis = RekamMedis::findOrFail($id);
         
         $oldBiayaTindakan = $rekamMedis->biaya_tindakan ?? 0;
@@ -90,12 +105,15 @@ class RekamMedisController extends Controller
         return response()->json(['message' => 'Rekam medis berhasil dihapus']);
     }
 
-    public function cetak()
+    public function cetak(Request $request)
     {
+        $tanggalFilter = $request->query('tanggal', now()->toDateString());
+        
         $rekamMedis = RekamMedis::with(['pasien', 'pendaftaran.layanan'])
+            ->whereDate('tanggal_periksa', $tanggalFilter)
             ->orderBy('tanggal_periksa', 'asc')
             ->get();
             
-        return view('rekam_medis.cetak', compact('rekamMedis'));
+        return view('rekam_medis.cetak', compact('rekamMedis', 'tanggalFilter'));
     }
 }

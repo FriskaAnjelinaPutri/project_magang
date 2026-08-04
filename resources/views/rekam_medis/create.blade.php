@@ -43,8 +43,8 @@
         <div class="space-y-6">
             <!-- Keluhan -->
             <div>
-                <label for="keluhan" class="block text-sm font-bold text-gray-700 mb-2">Keluhan / Anamnesa</label>
-                <textarea id="keluhan" name="keluhan" rows="3"
+                <label for="keluhan" class="block text-sm font-bold text-gray-700 mb-2">Keluhan / Anamnesa <span class="text-red-500">*</span></label>
+                <textarea id="keluhan" name="keluhan" rows="3" required
                     class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all bg-gray-50 focus:bg-white resize-none placeholder-gray-400 text-gray-700 font-medium"
                     placeholder="Tuliskan keluhan utama pasien..."></textarea>
             </div>
@@ -53,8 +53,8 @@
                 <!-- Tindakan -->
                 <div class="space-y-3">
                     <div>
-                        <label for="tindakan" class="block text-sm font-bold text-gray-700 mb-2">Tindakan Medis</label>
-                        <textarea id="tindakan" name="tindakan" rows="3"
+                        <label for="tindakan" class="block text-sm font-bold text-gray-700 mb-2">Tindakan Medis <span class="text-red-500">*</span></label>
+                        <textarea id="tindakan" name="tindakan" rows="3" required
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all bg-gray-50 focus:bg-white resize-none placeholder-gray-400 text-gray-700 font-medium"
                             placeholder="Tindakan yang diberikan..."></textarea>
                     </div>
@@ -71,8 +71,8 @@
                 <!-- Resep Obat -->
                 <div class="space-y-3">
                     <div>
-                        <label for="resep_obat" class="block text-sm font-bold text-gray-700 mb-2">Resep Obat</label>
-                        <textarea id="resep_obat" name="resep_obat" rows="3"
+                        <label for="resep_obat" class="block text-sm font-bold text-gray-700 mb-2">Resep Obat <span class="text-red-500">*</span></label>
+                        <textarea id="resep_obat" name="resep_obat" rows="3" required
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all bg-gray-50 focus:bg-white resize-none placeholder-gray-400 text-gray-700 font-medium"
                             placeholder="Daftar resep obat (Nama Obat, Dosis)..."></textarea>
                     </div>

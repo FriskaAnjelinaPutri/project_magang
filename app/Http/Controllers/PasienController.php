@@ -24,21 +24,27 @@ class PasienController extends Controller
             return redirect()->route('pasien.complete_profile');
         }
 
-        // Riwayat pendaftaran pasien login + detail layanan & antrian
-        $reservasi = Pendaftaran::with(['layanan', 'antrian'])
+        // Query dasar
+        $query = Pendaftaran::with(['layanan', 'antrian'])
             ->where('id_pasien', $pasien->id_pasien)
             ->orderByDesc('tanggal_kunjungan')
-            ->orderByDesc('created_at')
-            ->get();
+            ->orderByDesc('created_at');
 
-        // Statistik ringkas dashboard
-        $totalReservasi = $reservasi->count();
-        $antrianHariIni = $reservasi->filter(function ($item) {
+        // Statistik (mengambil semua data)
+        $allReservasi = (clone $query)->get();
+
+        $totalReservasi = $allReservasi->count();
+
+        $antrianHariIni = $allReservasi->filter(function ($item) {
             return optional($item->antrian)->tanggal_antrian === now()->toDateString();
         })->count();
-        $riwayat = $reservasi->filter(function ($item) {
+
+        $riwayat = $allReservasi->filter(function ($item) {
             return strtolower((string) $item->status) === 'selesai';
         })->count();
+
+        // Data yang ditampilkan hanya 10 per halaman
+        $reservasi = $query->paginate(10);
 
         return view('pasien.dashboard', compact(
             'pasien',
@@ -60,7 +66,7 @@ class PasienController extends Controller
         if ($user->role !== 'pasien') {
             return redirect('/');
         }
-        
+
         $pasien = Pasien::where('id_user', $user->id)->first();
         if ($pasien) {
             return redirect()->route('reservasi.create');

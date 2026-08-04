@@ -47,8 +47,7 @@ class AntrianController extends Controller
 
         $antrian = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanan')
             ->whereDate('tanggal_antrian', $tanggal)
-            ->orderByRaw("FIELD(status, 'dipanggil', 'menunggu', 'dilewati', 'belum_datang', 'selesai')")
-            ->orderBy('updated_at', 'asc')
+            ->orderBy('nomor_antrian', 'asc')
             ->get();
 
         return view('antrian.index', compact('antrian', 'tanggal'));
@@ -83,14 +82,14 @@ class AntrianController extends Controller
             return redirect()->back()->with('error', 'Status antrian tidak valid untuk ditandai hadir.');
         }
 
-        // Berikan nomor antrian baru (berdasarkan urutan kedatangan hari itu)
-        $antrianKe = Antrian::whereDate('tanggal_antrian', $antrian->tanggal_antrian)
-            ->where('nomor_antrian', '>', 0)
-            ->max('nomor_antrian') + 1;
+        // Update status menjadi menunggu dan berikan nomor antrian urut
+        $nomor = Antrian::whereDate('tanggal_antrian', $antrian->tanggal_antrian)
+                    ->where('nomor_antrian', '>', 0)
+                    ->max('nomor_antrian') + 1;
 
         $antrian->update([
-            'status' => self::STATUS_MENUNGGU,
-            'nomor_antrian' => $antrianKe
+            'nomor_antrian' => $nomor,
+            'status' => self::STATUS_MENUNGGU
         ]);
 
         if ($antrian->pendaftaran && $antrian->pendaftaran->layanan) {

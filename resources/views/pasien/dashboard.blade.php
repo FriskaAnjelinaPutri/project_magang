@@ -1,6 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    nav[role="navigation"] > div > div > span > span[aria-current="page"] > span,
+    nav[role="navigation"] > div > div > span > a {
+        transition: all 0.2s ease-in-out;
+    }
+    nav[role="navigation"] .bg-white {
+        background-color: transparent !important;
+    }
+    nav[role="navigation"] span[aria-current="page"] > span {
+        background-color: #a97142 !important;
+        color: white !important;
+        border-color: #a97142 !important;
+    }
+    nav[role="navigation"] a:hover {
+        background-color: rgba(169, 113, 66, 0.1) !important;
+        color: #a97142 !important;
+    }
+</style>
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <div class="glass-card rounded-[28px] p-6 md:p-8">
         @if(session('success'))
@@ -68,8 +86,7 @@
                             <tr class="bg-primary/5 text-dark/60 uppercase tracking-wider text-xs font-bold">
                                 <th class="px-5 py-3 text-left">Tanggal</th>
                                 <th class="px-5 py-3 text-left">Layanan</th>
-                                <th class="px-5 py-3 text-center">No. Antrian</th>
-                                <th class="px-5 py-3 text-center">Cetak</th>
+                                <th class="px-5 py-3 text-center">Status / Antrian</th>
                                 <th class="px-5 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -84,17 +101,6 @@
                                     </td>
                                     <td class="px-5 py-4 text-center font-bold text-dark">
                                         {{ (isset($item->antrian->nomor_antrian) && (int) $item->antrian->nomor_antrian > 0) ? (int) $item->antrian->nomor_antrian : 'Booking' }}
-                                    </td>
-                                    <td class="px-5 py-4 text-center">
-                                        @if($item->antrian)
-                                            <a href="{{ route('reservasi.cetak', $item->antrian->id_antrian) }}"
-                                               class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors"
-                                               title="Cetak Tiket">
-                                                <i class="fa-solid fa-print"></i>
-                                            </a>
-                                        @else
-                                            <span class="text-dark/40">-</span>
-                                        @endif
                                     </td>
                                     <td class="px-5 py-4 text-center">
                                         @php
@@ -118,6 +124,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="px-5 py-4 border-t border-gray-100">
+                        {{ $reservasi->links() }}
+                    </div>
                 </div>
             @else
                 <div class="p-10 text-center">

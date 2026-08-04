@@ -43,6 +43,7 @@
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">No. Antrian</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Pasien</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Total Bayar</th>
+                        <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Metode</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggal</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
                     </tr>
@@ -57,6 +58,15 @@
                             <td class="py-4 px-4 text-sm font-bold text-green-600 text-center">{{ optional(optional($row->pendaftaran)->antrian)->nomor_antrian ?? '-' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">{{ optional(optional($row->pendaftaran)->pasien)->nama_pasien ?? '-' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">Rp {{ number_format($row->total_bayar, 0, ',', '.') }}</td>
+                            <td class="py-4 px-4 text-sm text-gray-600 font-medium">
+                                @if($row->metode_pembayaran)
+                                    <span class="px-2.5 py-1 rounded-lg text-xs font-bold {{ strtolower($row->metode_pembayaran) == 'cash' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }}">
+                                        {{ ucfirst($row->metode_pembayaran) }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
                             <td class="py-4 px-4 text-sm text-gray-600">{{ $row->tanggal_pembayaran ?? $row->created_at->format('d M Y') }}</td>
                             <td class="py-4 px-4 min-w-[180px]">
                                 @if($isLunas)
@@ -82,7 +92,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="py-10 text-center text-sm font-medium text-gray-500">Belum ada riwayat pembayaran.</td>
+                            <td colspan="6" class="py-10 text-center text-sm font-medium text-gray-500">Belum ada riwayat pembayaran.</td>
                         </tr>
                     @endforelse
                 </tbody>
