@@ -117,7 +117,7 @@
     <div class="judul-laporan">
         LAPORAN TRANSAKSI PEMBAYARAN PASIEN
     </div>
-    
+
     <p>Tanggal Transaksi: <strong>{{ \Carbon\Carbon::parse($tanggalFilter)->translatedFormat('d F Y') }}</strong><br>
     Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }}</p>
 
@@ -137,7 +137,7 @@
         <tbody>
             @php $totalSemua = 0; @endphp
             @foreach ($pembayaran as $index => $row)
-                @php 
+                @php
                     $isLunas = strtolower(trim($row->status)) === 'lunas';
                     if($isLunas) $totalSemua += $row->total_bayar;
                 @endphp
@@ -160,7 +160,7 @@
                 </tr>
             @else
                 <tr>
-                    <td colspan="7" style="text-align: right; font-weight: bold;">TOTAL PENDAPATAN (LUNAS):</td>
+                    <td colspan="7" style="text-align: right; font-weight: bold;">TOTAL PENDAPATAN:</td>
                     <td style="text-align: right; font-weight: bold; font-size: 14pt;">Rp {{ number_format($totalSemua, 0, ',', '.') }}</td>
                 </tr>
             @endif
@@ -171,10 +171,10 @@
         <tr>
             <td></td>
             <td class="kanan">
-                Kota Anda, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
-                Bagian Keuangan / Admin,<br>
+                Padang Panjang, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
+                Asisten Doker,<br>
                 <div class="ttd-space"></div>
-                <strong>{{ auth()->user()->name ?? 'Administrator' }}</strong>
+                <strong>{{ auth()->user()->name ?? 'weni' }}</strong>
             </td>
         </tr>
     </table>

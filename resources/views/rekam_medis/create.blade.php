@@ -15,7 +15,7 @@
 <div class="glass-panel rounded-3xl p-6 sm:p-8 max-w-4xl">
     <form action="{{ route('rekam-medis.store') }}" method="POST">
         @csrf
-        
+
         <!-- Informasi Pasien -->
         <div class="mb-8 p-5 bg-orange-50/50 rounded-2xl border border-orange-100">
             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
@@ -32,7 +32,7 @@
                     <div class="text-base font-bold text-gray-900">{{ $pendaftaran->layanan->nama_layanan ?? '-' }}</div>
                 </div>
             </div>
-            
+
             <!-- Hidden inputs -->
             <input type="hidden" name="id_pasien" value="{{ $pendaftaran->id_pasien ?? '' }}">
             <input type="hidden" name="id_pendaftaran" value="{{ $pendaftaran->id_pendaftaran ?? '' }}">
@@ -43,7 +43,7 @@
         <div class="space-y-6">
             <!-- Keluhan -->
             <div>
-                <label for="keluhan" class="block text-sm font-bold text-gray-700 mb-2">Keluhan / Anamnesa <span class="text-red-500">*</span></label>
+                <label for="keluhan" class="block text-sm font-bold text-gray-700 mb-2">Keluhan<span class="text-red-500">*</span></label>
                 <textarea id="keluhan" name="keluhan" rows="3" required
                     class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all bg-gray-50 focus:bg-white resize-none placeholder-gray-400 text-gray-700 font-medium"
                     placeholder="Tuliskan keluhan utama pasien..."></textarea>

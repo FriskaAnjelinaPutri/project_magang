@@ -105,13 +105,13 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-4xl mx-auto">
                 <div class="inline-flex items-center px-4 py-2 rounded-full glass-card text-primary font-bold text-sm mb-8 border border-primary/20 shadow-sm animate-fade-in-up">
-                    <i class="fa-solid fa-award text-accent mr-2 text-lg"></i> Pelayanan Gigi Terbaik di Kota Anda
+                    <i class="fa-solid fa-award text-accent mr-2 text-lg"></i> Klinik Gigi Terpercaya di Padang Panjang
                 </div>
                 <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight text-dark">
-                    Senyum Sehat Anda Adalah <br class="hidden md:block"/> <span class="gradient-text">Prioritas Kami</span>
+                    Perawatan Gigi yang <br class="hidden md:block"/> <span class="gradient-text">Nyaman & Aman</span>
                 </h1>
                 <p class="text-lg md:text-xl text-dark/80 mb-10 leading-relaxed max-w-2xl mx-auto font-medium">
-                    Perawatan gigi profesional dengan teknologi modern dan dokter berpengalaman. Dapatkan gigi sehat, bersih, dan senyum menawan yang Anda impikan.
+                    Klinik Gigi Drg. Noviandri siap membantu menjaga kesehatan gigi dan mulut Anda beserta keluarga. Didukung peralatan steril dan dokter yang ramah.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <a href="{{ route('reservasi.create') }}" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-accent hover:from-secondary hover:to-primary text-white rounded-full font-bold text-lg transition-all shadow-xl hover:shadow-primary/40 transform hover:-translate-y-1 flex items-center justify-center gap-3">
@@ -156,7 +156,7 @@
             <div class="flex flex-col md:flex-row justify-between items-end mb-16">
                 <div class="max-w-2xl">
                     <h2 class="text-primary font-bold tracking-widest uppercase mb-2">Layanan Kami</h2>
-                    <h3 class="text-4xl md:text-5xl font-extrabold text-dark leading-tight">Perawatan Komprehensif Untuk Anda</h3>
+                    <h3 class="text-4xl md:text-5xl font-extrabold text-dark leading-tight">Pilihan Perawatan</h3>
                 </div>
                 <div class="mt-6 md:mt-0">
                     <a href="#" class="inline-flex items-center font-bold text-primary hover:text-secondary transition-colors text-lg">
@@ -175,7 +175,7 @@
                             <i class="fa-solid {{ $serviceIcons[$index % count($serviceIcons)] }}"></i>
                         </div>
                         <h4 class="text-2xl font-bold text-dark mb-4">{{ $layanan->nama_layanan }}</h4>
-                        <p class="text-dark/70 mb-8 leading-relaxed font-medium">Layanan profesional {{ $layanan->nama_layanan }} dengan perawatan optimal dan harga terjangkau (Rp {{ number_format($layanan->harga, 0, ',', '.') }}).</p>
+                        <p class="text-dark/70 mb-8 leading-relaxed font-medium">Penanganan untuk {{ strtolower($layanan->nama_layanan) }} dengan biaya yang bersahabat mulai dari Rp {{ number_format($layanan->harga, 0, ',', '.') }}.</p>
                     </div>
                 @empty
                     <div class="col-span-full text-center text-dark/70 font-medium py-10">Belum ada layanan yang tersedia.</div>
@@ -199,8 +199,8 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="bg-gradient-to-br from-primary to-secondary rounded-[40px] p-10 md:p-16 shadow-2xl text-center border border-white/10 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-2xl"></div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6">Waktunya Membuat Senyum Anda Bersinar</h2>
-                <p class="text-white/90 text-xl mb-10 max-w-2xl mx-auto font-medium">Bebaskan diri dari rasa sakit gigi. Ambil langkah pertama menuju kesehatan mulut yang sempurna hari ini.</p>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6">Jangan Biarkan Sakit Gigi Mengganggu</h2>
+                <p class="text-white/90 text-xl mb-10 max-w-2xl mx-auto font-medium">Segera periksakan keluhan gigi Anda ke klinik kami. Daftar antrian sekarang juga untuk mengatur jadwal kedatangan.</p>
                 <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
                     <a href="{{ route('reservasi.create') }}" class="px-10 py-5 bg-white text-primary hover:bg-light rounded-full font-extrabold text-xl transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center gap-3 w-full sm:w-auto justify-center">
                         <i class="fa-solid fa-calendar-check text-2xl"></i> Reservasi Jadwal
@@ -281,7 +281,7 @@
                         <span class="font-bold text-3xl">Klinik <span class="text-primary">Drg. Noviandri</span></span>
                     </div>
                     <p class="text-white/70 text-lg mb-8 max-w-md leading-relaxed">
-                        Kami berkomitmen untuk memberikan layanan perawatan gigi yang aman, nyaman, dan berkualitas dengan teknologi terkini.
+                        Kami melayani keluhan seputar kesehatan gigi dengan sepenuh hati, memberikan perawatan yang tepat agar Anda bisa kembali tersenyum sehat.
                     </p>
                     <div class="flex gap-4">
                         <a href="#" class="w-12 h-12 rounded-full bg-white/5 hover:bg-primary flex items-center justify-center transition-all text-xl hover:-translate-y-1">

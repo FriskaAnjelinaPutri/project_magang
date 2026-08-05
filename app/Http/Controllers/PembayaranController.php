@@ -26,7 +26,7 @@ class PembayaranController extends Controller
     {
         $tanggalFilter = $request->input('tanggal', now()->toDateString());
 
-        $pendaftaran = Pendaftaran::with(['layanan', 'pasien', 'antrian'])
+        $pendaftaran = Pendaftaran::with(['layanan', 'pasien', 'antrian', 'rekamMedis'])
             ->select('pendaftaran.*')
             ->leftJoin('antrian', 'pendaftaran.id_pendaftaran', '=', 'antrian.id_pendaftaran')
             ->whereDate('pendaftaran.tanggal_kunjungan', $tanggalFilter)
@@ -49,12 +49,16 @@ class PembayaranController extends Controller
             'metode_pembayaran' => 'required|in:cash,transfer',
         ]);
 
-        $pendaftaran = Pendaftaran::with('layanan')->findOrFail($request->id_pendaftaran);
+        $pendaftaran = Pendaftaran::with(['layanan', 'rekamMedis'])->findOrFail($request->id_pendaftaran);
         $hargaLayanan = (float) ($pendaftaran->layanan->harga ?? 0);
+        $biayaTindakan = (float) (optional($pendaftaran->rekamMedis)->biaya_tindakan ?? 0);
+        $biayaObat = (float) (optional($pendaftaran->rekamMedis)->biaya_obat ?? 0);
+        
+        $totalTagihan = $hargaLayanan + $biayaTindakan + $biayaObat;
         $totalBayar = (float) $request->total_bayar;
 
-        // Lunas hanya jika jumlah yang dibayar >= harga layanan (bukan dari metode cash/transfer)
-        $status = $totalBayar >= $hargaLayanan ? 'lunas' : 'belum lunas';
+        // Lunas hanya jika jumlah yang dibayar >= total tagihan (bukan dari metode cash/transfer)
+        $status = $totalBayar >= $totalTagihan ? 'lunas' : 'belum lunas';
 
         Pembayaran::create([
             'id_pendaftaran' => $request->id_pendaftaran,
@@ -71,7 +75,7 @@ class PembayaranController extends Controller
     // edit pembayaran
     public function edit($id)
     {
-        $pembayaran = Pembayaran::with('pendaftaran.layanan', 'pendaftaran.antrian', 'pendaftaran.pasien')->findOrFail($id);
+        $pembayaran = Pembayaran::with('pendaftaran.layanan', 'pendaftaran.antrian', 'pendaftaran.pasien', 'pendaftaran.rekamMedis')->findOrFail($id);
 
         return view('pembayaran.edit', compact('pembayaran'));
     }
@@ -85,7 +89,7 @@ class PembayaranController extends Controller
             'metode_pembayaran' => 'nullable|in:cash,transfer',
         ]);
 
-        $pembayaran = Pembayaran::with('pendaftaran.layanan')->findOrFail($id);
+        $pembayaran = Pembayaran::with(['pendaftaran.layanan', 'pendaftaran.rekamMedis'])->findOrFail($id);
 
         $pembayaran->status = $request->status;
         
@@ -97,8 +101,12 @@ class PembayaranController extends Controller
             $pembayaran->total_bayar = $request->total_bayar;
         } else if ($request->status === 'lunas' && $pembayaran->total_bayar == 0) {
             $hargaLayanan = (float) (optional($pembayaran->pendaftaran->layanan)->harga ?? 0);
-            if ($hargaLayanan > 0) {
-                $pembayaran->total_bayar = $hargaLayanan;
+            $biayaTindakan = (float) (optional($pembayaran->pendaftaran->rekamMedis)->biaya_tindakan ?? 0);
+            $biayaObat = (float) (optional($pembayaran->pendaftaran->rekamMedis)->biaya_obat ?? 0);
+            $totalTagihan = $hargaLayanan + $biayaTindakan + $biayaObat;
+            
+            if ($totalTagihan > 0) {
+                $pembayaran->total_bayar = $totalTagihan;
             }
         }
 
@@ -117,7 +125,7 @@ class PembayaranController extends Controller
     // menampilkan detail pembayaran
     public function show($id)
     {
-        $pembayaran = Pembayaran::with('pendaftaran.layanan', 'pendaftaran.antrian', 'pendaftaran.pasien')->findOrFail($id);
+        $pembayaran = Pembayaran::with('pendaftaran.layanan', 'pendaftaran.antrian', 'pendaftaran.pasien', 'pendaftaran.rekamMedis')->findOrFail($id);
         return view('pembayaran.show', compact('pembayaran'));
     }
 

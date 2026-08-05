@@ -23,8 +23,26 @@
                 <p class="text-lg font-bold text-gray-900">{{ optional(optional($pembayaran->pendaftaran)->pasien)->nama_pasien ?? '-' }}</p>
             </div>
             <div>
-                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tagihan Awal Layanan</p>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tagihan Layanan</p>
                 <p class="text-lg font-semibold text-gray-900">Rp {{ number_format(optional($pembayaran->pendaftaran->layanan)->harga ?? 0, 0, ',', '.') }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Biaya Tindakan</p>
+                <p class="text-lg font-semibold text-gray-900">Rp {{ number_format(optional($pembayaran->pendaftaran->rekamMedis)->biaya_tindakan ?? 0, 0, ',', '.') }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Biaya Obat</p>
+                <p class="text-lg font-semibold text-gray-900">Rp {{ number_format(optional($pembayaran->pendaftaran->rekamMedis)->biaya_obat ?? 0, 0, ',', '.') }}</p>
+            </div>
+            <div class="pt-4 border-t border-gray-100">
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Tagihan</p>
+                @php
+                    $harga = (float) (optional($pembayaran->pendaftaran->layanan)->harga ?? 0);
+                    $tindakan = (float) (optional($pembayaran->pendaftaran->rekamMedis)->biaya_tindakan ?? 0);
+                    $obat = (float) (optional($pembayaran->pendaftaran->rekamMedis)->biaya_obat ?? 0);
+                    $total = $harga + $tindakan + $obat;
+                @endphp
+                <p class="text-2xl font-black text-orange-500">Rp {{ number_format($total, 0, ',', '.') }}</p>
             </div>
         </div>
 
