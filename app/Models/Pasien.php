@@ -12,7 +12,6 @@ class Pasien extends Model
         'id_user',
         'nama_pasien',
         'jenis_kelamin',
-        'NIK',
         'no_hp',
         'alamat'
     ];

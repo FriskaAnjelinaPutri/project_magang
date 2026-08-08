@@ -28,10 +28,10 @@
             @csrf
 
             <!-- Layanan Dipilih -->
-            <div class="space-y-2">
+            <div class="space-y-2" id="layanan-container">
                 <label class="block text-sm font-bold text-dark">Pilih Pelayanan</label>
-                <div class="relative group rounded-2xl bg-white border border-gray-200 focus-within:ring-4 focus-within:ring-primary/20 focus-within:border-primary transition-all">
-                    <select name="id_layanan" class="block w-full px-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark font-semibold outline-none appearance-none" required>
+                <div class="layanan-item relative group rounded-2xl bg-white border border-gray-200 focus-within:ring-4 focus-within:ring-primary/20 focus-within:border-primary transition-all mb-3 flex gap-2 items-center">
+                    <select name="id_layanan[]" class="block w-full px-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark font-semibold outline-none appearance-none" required>
                         <option value="" disabled selected>-- Daftar Layanan Tersedia --</option>
                         @foreach($layanan as $ly)
                             <option value="{{ $ly->id_layanan }}">{{ $ly->nama_layanan }}</option>
@@ -42,6 +42,9 @@
                     </div>
                 </div>
             </div>
+            <button type="button" id="btn-tambah-layanan" class="text-sm font-bold text-primary hover:text-accent transition-colors flex items-center gap-1 mt-2 mb-4">
+                <i class="fa-solid fa-plus-circle"></i> Tambah Layanan Lain
+            </button>
 
             <!-- Tanggal Kunjungan -->
             <div class="space-y-2">
@@ -98,20 +101,25 @@
                 <select name="id_pasien" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all text-gray-800 font-medium" required>
                     <option value="" disabled selected>-- Pilih Pasien --</option>
                     @foreach($pasienList as $ps)
-                        <option value="{{ $ps->id_pasien }}">{{ $ps->nama_pasien }} (NIK: {{ $ps->NIK }})</option>
+                        <option value="{{ $ps->id_pasien }}">{{ $ps->nama_pasien }} - {{ $ps->no_hp }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <div>
+            <div id="admin-layanan-container">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Pilih Layanan</label>
-                <select name="id_layanan" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all text-gray-800 font-medium" required>
-                    <option value="" disabled selected>-- Pilih Layanan --</option>
-                    @foreach($layanan as $ly)
-                        <option value="{{ $ly->id_layanan }}">{{ $ly->nama_layanan }}</option>
-                    @endforeach
-                </select>
+                <div class="admin-layanan-item mb-3 flex gap-2 items-center">
+                    <select name="id_layanan[]" class="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all text-gray-800 font-medium" required>
+                        <option value="" disabled selected>-- Pilih Layanan --</option>
+                        @foreach($layanan as $ly)
+                            <option value="{{ $ly->id_layanan }}">{{ $ly->nama_layanan }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
+            <button type="button" id="admin-btn-tambah-layanan" class="text-sm font-bold text-orange-500 hover:text-orange-600 transition-colors flex items-center gap-1 mb-4">
+                <i class="fa-solid fa-plus-circle"></i> Tambah Layanan Lain
+            </button>
 
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal Reservasi</label>
@@ -128,6 +136,66 @@
 </div>
 
 @endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Logika untuk halaman Pasien
+        const btnTambah = document.getElementById('btn-tambah-layanan');
+        if (btnTambah) {
+            btnTambah.addEventListener('click', function() {
+                const container = document.getElementById('layanan-container');
+                const items = container.querySelectorAll('.layanan-item');
+                if (items.length >= {{ count($layanan) }}) {
+                    alert('Anda telah memilih semua layanan yang tersedia.');
+                    return;
+                }
+                
+                const original = items[0];
+                const clone = original.cloneNode(true);
+                
+                // Tambahkan tombol hapus pada clone
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'text-red-500 hover:text-red-700 p-2 font-bold';
+                removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                removeBtn.onclick = function() {
+                    clone.remove();
+                };
+                
+                clone.appendChild(removeBtn);
+                container.appendChild(clone);
+            });
+        }
+
+        // Logika untuk halaman Admin
+        const adminBtnTambah = document.getElementById('admin-btn-tambah-layanan');
+        if (adminBtnTambah) {
+            adminBtnTambah.addEventListener('click', function() {
+                const container = document.getElementById('admin-layanan-container');
+                const items = container.querySelectorAll('.admin-layanan-item');
+                if (items.length >= {{ count($layanan) }}) {
+                    alert('Semua layanan telah dipilih.');
+                    return;
+                }
+                
+                const original = items[0];
+                const clone = original.cloneNode(true);
+                
+                // Tambahkan tombol hapus
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'text-red-500 hover:text-red-700 p-3 bg-red-50 hover:bg-red-100 rounded-xl transition-colors';
+                removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                removeBtn.onclick = function() {
+                    clone.remove();
+                };
+                
+                clone.appendChild(removeBtn);
+                container.appendChild(clone);
+            });
+        }
+    });
+</script>
 
 @endsection
 

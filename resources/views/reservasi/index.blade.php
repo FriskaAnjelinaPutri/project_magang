@@ -52,7 +52,7 @@
                         <tr class="border-b border-gray-100/50 hover:bg-white/40 transition-colors">
                             <td class="py-4 px-4 text-sm font-bold text-orange-500 text-center">{{ $loop->iteration }}</td>
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">{{ $row->pasien->nama_pasien ?? 'Unknown' }}</td>
-                            <td class="py-4 px-4 text-sm text-gray-600 font-medium">{{ $row->layanan->nama_layanan ?? '-' }}</td>
+                            <td class="py-4 px-4 text-sm text-gray-600 font-medium">{{ optional($row)->layanans ? $row->layanans->pluck('nama_layanan')->implode(', ') : '-' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-600">{{ $row->tanggal_kunjungan ?? $row->created_at->format('d M Y') }}</td>
                         </tr>
                     @empty

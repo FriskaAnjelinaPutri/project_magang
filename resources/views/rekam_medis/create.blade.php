@@ -27,11 +27,23 @@
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Pasien</label>
                     <div class="text-base font-bold text-gray-900">{{ $pendaftaran->pasien->nama_pasien ?? 'Pasien Umum' }}</div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Layanan</label>
-                    <div class="text-base font-bold text-gray-900">{{ $pendaftaran->layanan->nama_layanan ?? '-' }}</div>
+                <div class="col-span-1 sm:col-span-2 mt-2">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Layanan Final (Centang yang benar-benar dikerjakan)<span class="text-red-500">*</span></label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        @php
+                            $selectedLayanan = optional($pendaftaran)->layanans ? $pendaftaran->layanans->pluck('id_layanan')->toArray() : [];
+                        @endphp
+                        @foreach($layanan as $l)
+                            <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-orange-50 transition-colors {{ in_array($l->id_layanan, $selectedLayanan) ? 'bg-orange-50 border-orange-200' : 'bg-white border-gray-200' }}">
+                                <input type="checkbox" name="id_layanan[]" value="{{ $l->id_layanan }}" class="w-5 h-5 text-orange-500 border-gray-300 rounded focus:ring-orange-500" {{ in_array($l->id_layanan, $selectedLayanan) ? 'checked' : '' }}>
+                                <span class="ml-3 text-sm font-semibold text-gray-700">{{ $l->nama_layanan }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('id_layanan')
+                        <p class="text-red-500 text-xs font-semibold mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
-            </div>
 
             <!-- Hidden inputs -->
             <input type="hidden" name="id_pasien" value="{{ $pendaftaran->id_pasien ?? '' }}">
@@ -49,7 +61,7 @@
                     placeholder="Tuliskan keluhan utama pasien..."></textarea>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 gap-6">
                 <!-- Tindakan -->
                 <div class="space-y-3">
                     <div>
@@ -58,31 +70,15 @@
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all bg-gray-50 focus:bg-white resize-none placeholder-gray-400 text-gray-700 font-medium"
                             placeholder="Tindakan yang diberikan..."></textarea>
                     </div>
-                    <div>
-                        <label for="biaya_tindakan" class="block text-sm font-bold text-gray-700 mb-2">Biaya Tindakan (Opsional)</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">Rp</span>
-                            <input type="number" id="biaya_tindakan" name="biaya_tindakan" value="0" min="0" step="1000"
-                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all text-gray-800 font-semibold bg-gray-50 focus:bg-white">
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Resep Obat -->
                 <div class="space-y-3">
                     <div>
-                        <label for="resep_obat" class="block text-sm font-bold text-gray-700 mb-2">Resep Obat <span class="text-red-500">*</span></label>
-                        <textarea id="resep_obat" name="resep_obat" rows="3" required
+                        <label for="resep_obat" class="block text-sm font-bold text-gray-700 mb-2">Resep Obat</label>
+                        <textarea id="resep_obat" name="resep_obat" rows="3"
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all bg-gray-50 focus:bg-white resize-none placeholder-gray-400 text-gray-700 font-medium"
-                            placeholder="Daftar resep obat (Nama Obat, Dosis)..."></textarea>
-                    </div>
-                    <div>
-                        <label for="biaya_obat" class="block text-sm font-bold text-gray-700 mb-2">Biaya Obat (Opsional)</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">Rp</span>
-                            <input type="number" id="biaya_obat" name="biaya_obat" value="0" min="0" step="1000"
-                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all text-gray-800 font-semibold bg-gray-50 focus:bg-white">
-                        </div>
+                            placeholder="Daftar resep obat (Nama Obat, Dosis)... (Opsional)"></textarea>
                     </div>
                 </div>
             </div>
@@ -96,4 +92,5 @@
         </div>
     </form>
 </div>
+
 @endsection

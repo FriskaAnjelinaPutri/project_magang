@@ -23,13 +23,13 @@ class AdminController extends Controller
         ];
 
         // Tabel pendaftaran
-        $recent_pendaftaran = Pendaftaran::with('pasien', 'layanan')
+        $recent_pendaftaran = Pendaftaran::with('pasien', 'layanans')
         ->latest('created_at')
         ->take(5)
         ->get();
 
         // Antrian hari ini 
-        $antrian_hari_ini = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanan')
+        $antrian_hari_ini = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanans')
             ->whereDate('tanggal_antrian', today())
             ->orderByRaw("nomor_antrian = 0, nomor_antrian ASC")
             ->get();

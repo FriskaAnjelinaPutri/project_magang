@@ -66,7 +66,7 @@
                 </div>
                 <div class="flex justify-between items-center border-b border-gray-100 pb-3">
                     <span class="text-gray-500 font-medium text-sm">Poli / Layanan</span>
-                    <span class="font-bold text-[#4a403d] text-right">{{ $antrian->pendaftaran->layanan->nama_layanan ?? 'Umum' }}</span>
+                    <span class="font-bold text-[#4a403d] text-right">{{ optional($antrian->pendaftaran)->layanans ? $antrian->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : 'Umum' }}</span>
                 </div>
                 <div class="flex justify-between items-center border-b border-gray-100 pb-3">
                     <span class="text-gray-500 font-medium text-sm">Tgl. Kunjungan</span>

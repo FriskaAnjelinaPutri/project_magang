@@ -12,4 +12,9 @@ class Layanan extends Model
         'nama_layanan',
         'harga'
     ];
+
+    public function pendaftarans()
+    {
+        return $this->belongsToMany(Pendaftaran::class, 'layanan_pendaftaran', 'id_layanan', 'id_pendaftaran');
+    }
 }

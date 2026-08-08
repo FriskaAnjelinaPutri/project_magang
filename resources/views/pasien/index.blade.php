@@ -21,7 +21,7 @@
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">No</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Pasien</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">L/P</th>
-                        <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">NIK</th>
+
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">No HP</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Alamat</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Aksi</th>
@@ -33,7 +33,7 @@
                             <td class="py-4 px-4 text-sm font-bold text-orange-500 text-center">{{ $loop->iteration }}</td>
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">{{ $row->nama_pasien }}</td>
                             <td class="py-4 px-4 text-sm text-gray-600 font-medium">{{ $row->jenis_kelamin }}</td>
-                            <td class="py-4 px-4 text-sm text-gray-600">{{ $row->NIK }}</td>
+
                             <td class="py-4 px-4 text-sm text-gray-600">{{ $row->no_hp }}</td>
                             <td class="py-4 px-4 text-sm text-gray-600 max-w-xs truncate">{{ $row->alamat }}</td>
                             <td class="py-4 px-4 text-right whitespace-nowrap">
@@ -47,7 +47,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="py-10 text-center text-sm font-medium text-gray-500">Belum ada data pasien.</td>
+                            <td colspan="6" class="py-10 text-center text-sm font-medium text-gray-500">Belum ada data pasien.</td>
                         </tr>
                     @endforelse
                 </tbody>

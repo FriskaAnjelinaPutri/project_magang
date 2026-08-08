@@ -30,7 +30,7 @@ Route::get('/jadwal', function (Request $request) {
     $tanggal = $request->input('tanggal', date('Y-m-d'));
 
     // Asumsikan status yang ditampilkan adalah yang sudah dikonfirmasi atau antri
-    $pendaftarans = Pendaftaran::with('pasien', 'layanan')
+    $pendaftarans = Pendaftaran::with('pasien', 'layanans')
         ->whereDate('tanggal_kunjungan', $tanggal)
         ->orderBy('created_at', 'asc')
         ->get();
@@ -39,7 +39,7 @@ Route::get('/jadwal', function (Request $request) {
 })->name('jadwal');
 
 Route::get('/antrian-monitor', function () {
-    $antrians = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanan')
+    $antrians = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanans')
         ->whereDate('tanggal_antrian', today())
         ->orderBy('nomor_antrian', 'asc')
         ->get();
@@ -57,7 +57,7 @@ Route::get('/antrian-monitor', function () {
 })->name('antrian.monitor');
 
 Route::get('/antrian-monitor/data', function () {
-    $antrians = Antrian::with('pendaftaran.layanan')
+    $antrians = Antrian::with('pendaftaran.layanans')
         ->whereDate('tanggal_antrian', today())
         ->orderBy('nomor_antrian', 'asc')
         ->get();
@@ -67,7 +67,7 @@ Route::get('/antrian-monitor/data', function () {
     return response()->json([
         'sedang_dipanggil' => $sedangDipanggil ? [
             'nomor_antrian' => $sedangDipanggil->nomor_antrian,
-            'layanan' => optional(optional($sedangDipanggil->pendaftaran)->layanan)->nama_layanan,
+            'layanan' => optional(optional($sedangDipanggil->pendaftaran)->layanans)->pluck('nama_layanan')->implode(', ') ?? '-',
             'status' => $sedangDipanggil->status,
         ] : null,
         'stats' => [

@@ -37,18 +37,16 @@
                         <option value="" disabled {{ old('id_pendaftaran') ? '' : 'selected' }} data-harga="0">-- Pilih nama pasien &amp; layanan --</option>
                         @foreach($pendaftaran ?? [] as $daftar)
                             @php
-                                $harga = (float) (optional($daftar->layanan)->harga ?? 0);
-                                $biaya_tindakan = (float) (optional($daftar->rekamMedis)->biaya_tindakan ?? 0);
+                                $harga = (float) (optional($daftar)->layanans?->sum('harga') ?? 0);
                                 $biaya_obat = (float) (optional($daftar->rekamMedis)->biaya_obat ?? 0);
-                                $total = $harga + $biaya_tindakan + $biaya_obat;
+                                $total = $harga + $biaya_obat;
                             @endphp
                             <option value="{{ $daftar->id_pendaftaran ?? $daftar->id }}"
                                 data-harga="{{ $harga }}"
-                                data-tindakan="{{ $biaya_tindakan }}"
                                 data-obat="{{ $biaya_obat }}"
                                 data-total="{{ $total }}"
                                 {{ (string) old('id_pendaftaran') === (string) ($daftar->id_pendaftaran ?? $daftar->id) ? 'selected' : '' }}>
-                                {{ optional($daftar->pasien)->nama_pasien ?? 'Pasien' }} — {{ optional($daftar->layanan)->nama_layanan ?? 'Layanan' }}
+                                {{ optional($daftar->pasien)->nama_pasien ?? 'Pasien' }} — {{ optional($daftar)->layanans ? $daftar->layanans->pluck('nama_layanan')->implode(', ') : 'Layanan' }}
                             </option>
                         @endforeach
                     </select>
@@ -140,12 +138,11 @@
         }
         var totalBiaya = parseFloat(opt.getAttribute('data-total') || '0');
         var hargaLayanan = parseFloat(opt.getAttribute('data-harga') || '0');
-        var biayaTindakan = parseFloat(opt.getAttribute('data-tindakan') || '0');
         var biayaObat = parseFloat(opt.getAttribute('data-obat') || '0');
 
         if (totalBiaya > 0) {
             total.value = Math.floor(totalBiaya);
-            hint.innerHTML = 'Rincian Tagihan: Layanan (Rp ' + formatRp(hargaLayanan) + ') + Tindakan (Rp ' + formatRp(biayaTindakan) + ') + Obat (Rp ' + formatRp(biayaObat) + '). Total: <strong>Rp ' + formatRp(totalBiaya) + '</strong>';
+            hint.innerHTML = 'Rincian Tagihan: Layanan (Rp ' + formatRp(hargaLayanan) + ') + Obat (Rp ' + formatRp(biayaObat) + '). Total Final: <strong>Rp ' + formatRp(totalBiaya) + '</strong>';
             hint.classList.remove('hidden');
         } else {
             hint.textContent = 'Harga belum terdeteksi. Isi jumlah bayar secara manual.';

@@ -14,7 +14,7 @@ class DokterController extends Controller
     {
         $tanggal = $request->input('tanggal', now()->toDateString());
 
-        $antrian = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanan')
+        $antrian = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanans')
             ->whereDate('tanggal_antrian', $tanggal)
             ->where('status', '!=', 'belum_datang')
             ->orderByRaw("nomor_antrian = 0, nomor_antrian ASC")

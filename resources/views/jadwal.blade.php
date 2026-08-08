@@ -91,7 +91,7 @@
                                 </td>
                                 <td class="px-6 py-4 border-b border-gray-50">
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-light text-primary text-sm font-semibold">
-                                        <i class="fa-solid fa-stethoscope text-xs"></i> {{ $antrian->layanan->nama_layanan }}
+                                        <i class="fa-solid fa-stethoscope text-xs"></i> {{ optional($antrian)->layanans ? $antrian->layanans->pluck('nama_layanan')->implode(', ') : '-' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 border-b border-gray-50 text-center">

@@ -89,7 +89,7 @@
                 <span class="text-base font-semibold text-gray-600 ml-2">—</span>
                 <span class="text-lg font-bold text-gray-700 ml-2">{{ $sedangDipanggil->pendaftaran->pasien->nama_pasien ?? 'Unknown' }}</span>
             </p>
-            <p class="text-sm text-gray-500 mt-1">Layanan: <span class="font-semibold text-gray-700">{{ $sedangDipanggil->pendaftaran->layanan->nama_layanan ?? '-' }}</span></p>
+            <p class="text-sm text-gray-500 mt-1">Layanan: <span class="font-semibold text-gray-700">{{ optional($sedangDipanggil->pendaftaran)->layanans ? $sedangDipanggil->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}</span></p>
         </div>
     </div>
 </div>
@@ -146,7 +146,7 @@
                         </td>
                         <td class="py-4 px-4 border-b border-gray-100/80">
                             <div class="text-sm text-gray-700 font-medium">
-                                {{ $row->pendaftaran->layanan->nama_layanan ?? '-' }}
+                                {{ optional($row->pendaftaran)->layanans ? $row->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}
                             </div>
                         </td>
                         <td class="py-4 px-4 text-center border-b border-gray-100/80">

@@ -69,7 +69,7 @@
                         </td>
                         <td class="py-4 px-4 border-b border-gray-100/80">
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                                {{ $rm->pendaftaran->layanan->nama_layanan ?? '-' }}
+                                {{ optional($rm->pendaftaran)->layanans ? $rm->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}
                             </span>
                         </td>
                         <td class="py-4 px-4 border-b border-gray-100/80">

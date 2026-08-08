@@ -145,7 +145,7 @@
                     <td style="text-align: center;">{{ $index + 1 }}</td>
                     <td style="text-align: center;">{{ optional(optional($row->pendaftaran)->antrian)->nomor_antrian ?? '-' }}</td>
                     <td>{{ optional(optional($row->pendaftaran)->pasien)->nama_pasien ?? '-' }}</td>
-                    <td>{{ optional(optional($row->pendaftaran)->layanan)->nama_layanan ?? '-' }}</td>
+                    <td>{{ optional($row->pendaftaran)->layanans ? $row->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}</td>
                     <td style="text-align: center;">{{ $row->metode_pembayaran ? ucfirst($row->metode_pembayaran) : '-' }}</td>
                     <td style="text-align: center;">{{ $row->tanggal_pembayaran ?? $row->created_at->format('d M Y') }}</td>
                     <td style="text-align: center; {{ $isLunas ? 'color: green;' : 'color: red;' }}">

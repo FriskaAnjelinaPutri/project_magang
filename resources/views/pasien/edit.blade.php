@@ -32,19 +32,6 @@
                     @error('nama_pasien') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
                 </div>
 
-                <!-- NIK KTP -->
-                <div>
-                    <label class="block text-sm font-bold text-dark mb-1.5">Nomor Induk Kependudukan (NIK)</label>
-                    <div class="relative group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all focus-within:ring-4 focus-within:ring-primary/20 focus-within:border-primary">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-id-card text-gray-400 group-focus-within:text-primary transition-colors"></i>
-                        </div>
-                        <input type="text" name="NIK" required maxlength="16" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                            class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
-                            placeholder="16 Digit NIK KTP" value="{{ old('NIK', $pasien->NIK) }}">
-                    </div>
-                    @error('NIK') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
-                </div>
 
                 <!-- Jenis Kelamin -->
                 <div>

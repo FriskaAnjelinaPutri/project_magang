@@ -25,7 +25,7 @@ class PasienController extends Controller
         }
 
         // Query dasar
-        $query = Pendaftaran::with(['layanan', 'antrian'])
+        $query = Pendaftaran::with(['layanans', 'antrian'])
             ->where('id_pasien', $pasien->id_pasien)
             ->orderByDesc('tanggal_kunjungan')
             ->orderByDesc('created_at');
@@ -82,24 +82,14 @@ class PasienController extends Controller
         $request->validate([
             'nama_pasien' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
-            'NIK' => 'required|string|size:16|unique:pasien,NIK',
             'no_hp' => 'required|string|max:15',
             'alamat' => 'required|string'
         ]);
-
-        $nik = $request->NIK;
-
-        if (Pasien::where('NIK', $nik)->exists()) {
-            return back()->withErrors([
-                'NIK' => 'NIK sudah terdaftar.',
-            ]);
-        }
 
         Pasien::create([
             'id_user' => $user->id,
             'nama_pasien' => $request->nama_pasien,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'NIK' => $nik,
             'no_hp' => $request->no_hp,
             'alamat' => $request->alamat
         ]);
@@ -137,29 +127,31 @@ class PasienController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_pasien' => 'required|string|max:255',
+            'nama_pasien' => 'required|string|max:100',
             'jenis_kelamin' => 'required|in:L,P',
-            'NIK' => 'required|string|max:16|unique:pasien,NIK',
-            'no_hp' => 'required|string|max:15',
-            'alamat' => 'required|string'
+            'tanggal_lahir' => 'required|date',
+            'no_hp' => 'required|string|max:15|unique:pasien,no_hp',
+            'alamat' => 'required|string',
         ]);
+        
+        $no_hp = $request->no_hp;
 
-        // Auto-create user account to satisfy foreight-key constraints
-        $user = \App\Models\User::create([
+        // Auto create user account for patient
+        $user = User::create([
             'name' => $request->nama_pasien,
-            'username' => $request->NIK,
+            'username' => $no_hp,
             'email' => strtolower(str_replace(' ', '', $request->nama_pasien)) . rand(100,999) . '@klinik.com',
-            'password' => bcrypt($request->NIK),
-            'role' => 'pasien'
+            'password' => bcrypt($no_hp),
+            'role' => 'pasien',
         ]);
 
         Pasien::create([
             'id_user' => $user->id,
             'nama_pasien' => $request->nama_pasien,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'NIK' => $request->NIK,
-            'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'no_hp' => $no_hp,
+            'alamat' => $request->alamat,
         ]);
 
         return redirect()->route('pasien.index')
@@ -189,7 +181,6 @@ class PasienController extends Controller
         $request->validate([
             'nama_pasien' => 'required',
             'jenis_kelamin' => 'required',
-            'NIK' => 'required',
             'no_hp' => 'required',
             'alamat' => 'required'
         ]);
@@ -199,7 +190,6 @@ class PasienController extends Controller
         $pasien->update([
             'nama_pasien' => $request->nama_pasien,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'NIK' => $request->NIK,
             'no_hp' => $request->no_hp,
             'alamat' => $request->alamat
         ]);

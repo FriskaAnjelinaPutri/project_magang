@@ -62,7 +62,7 @@
                                     {{ $row->pendaftaran->pasien->nama_pasien ?? 'Unknown' }}
                                 </div>
                                 <div class="text-xs text-gray-500 font-medium">
-                                    {{ $row->pendaftaran->layanan->nama_layanan ?? '-' }}
+                                    {{ optional($row->pendaftaran)->layanans ? $row->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}
                                 </div>
                             </td>
                             <td class="py-4 px-4 text-sm text-gray-600 font-medium whitespace-nowrap border-b border-gray-100/80">

@@ -25,7 +25,7 @@
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Layanan</p>
-                    <p class="text-lg font-semibold text-gray-800">{{ optional(optional($pembayaran->pendaftaran)->layanan)->nama_layanan ?? '-' }}</p>
+                    <p class="text-lg font-semibold text-gray-800">{{ optional($pembayaran->pendaftaran)->layanans ? $pembayaran->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}</p>
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggal Transaksi</p>
@@ -51,7 +51,7 @@
                     <div class="space-y-2 text-sm bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                         <div class="flex justify-between">
                             <span class="text-gray-600">Biaya Layanan/Konsultasi</span>
-                            <span class="font-semibold">Rp {{ number_format(optional(optional($pembayaran->pendaftaran)->layanan)->harga ?? 0, 0, ',', '.') }}</span>
+                            <span class="font-semibold">Rp {{ number_format(optional($pembayaran->pendaftaran)->layanans ? $pembayaran->pendaftaran->layanans->sum('harga') : 0, 0, ',', '.') }}</span>
                         </div>
                         @if($pembayaran->pendaftaran && $pembayaran->pendaftaran->rekamMedis)
                         <div class="flex justify-between">

@@ -221,7 +221,7 @@
                                 {{-- LAYANAN --}}
                                 <td class="py-4 px-4 border-b border-gray-100/80">
                                     <div class="text-sm text-gray-600 font-medium">
-                                        {{ $row->pendaftaran->layanan->nama_layanan ?? '-' }}
+                                        {{ optional($row->pendaftaran)->layanans ? $row->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}
                                     </div>
                                 </td>
 

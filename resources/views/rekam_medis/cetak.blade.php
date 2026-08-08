@@ -139,7 +139,7 @@
                     <td style="text-align: center;">{{ $index + 1 }}</td>
                     <td>{{ \Carbon\Carbon::parse($rm->tanggal_periksa)->translatedFormat('d M Y') }}</td>
                     <td>{{ $rm->pasien->nama_pasien ?? '-' }}</td>
-                    <td>{{ $rm->pendaftaran->layanan->nama_layanan ?? '-' }}</td>
+                    <td>{{ optional($rm->pendaftaran)->layanans ? $rm->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}</td>
                     <td>
                         {{ $rm->keluhan }}
                     </td>

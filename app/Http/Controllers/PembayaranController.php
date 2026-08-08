@@ -26,7 +26,7 @@ class PembayaranController extends Controller
     {
         $tanggalFilter = $request->input('tanggal', now()->toDateString());
 
-        $pendaftaran = Pendaftaran::with(['layanan', 'pasien', 'antrian', 'rekamMedis'])
+        $pendaftaran = Pendaftaran::with(['layanans', 'pasien', 'antrian', 'rekamMedis'])
             ->select('pendaftaran.*')
             ->leftJoin('antrian', 'pendaftaran.id_pendaftaran', '=', 'antrian.id_pendaftaran')
             ->whereDate('pendaftaran.tanggal_kunjungan', $tanggalFilter)
@@ -49,8 +49,8 @@ class PembayaranController extends Controller
             'metode_pembayaran' => 'required|in:cash,transfer',
         ]);
 
-        $pendaftaran = Pendaftaran::with(['layanan', 'rekamMedis'])->findOrFail($request->id_pendaftaran);
-        $hargaLayanan = (float) ($pendaftaran->layanan->harga ?? 0);
+        $pendaftaran = Pendaftaran::with(['layanans', 'rekamMedis'])->findOrFail($request->id_pendaftaran);
+        $hargaLayanan = (float) ($pendaftaran->layanans->sum('harga'));
         $biayaTindakan = (float) (optional($pendaftaran->rekamMedis)->biaya_tindakan ?? 0);
         $biayaObat = (float) (optional($pendaftaran->rekamMedis)->biaya_obat ?? 0);
         
@@ -75,7 +75,7 @@ class PembayaranController extends Controller
     // edit pembayaran
     public function edit($id)
     {
-        $pembayaran = Pembayaran::with('pendaftaran.layanan', 'pendaftaran.antrian', 'pendaftaran.pasien', 'pendaftaran.rekamMedis')->findOrFail($id);
+        $pembayaran = Pembayaran::with('pendaftaran.layanans', 'pendaftaran.antrian', 'pendaftaran.pasien', 'pendaftaran.rekamMedis')->findOrFail($id);
 
         return view('pembayaran.edit', compact('pembayaran'));
     }
@@ -87,9 +87,10 @@ class PembayaranController extends Controller
             'status' => 'required|in:lunas,belum lunas',
             'total_bayar' => 'nullable|numeric|min:0',
             'metode_pembayaran' => 'nullable|in:cash,transfer',
+            'biaya_obat' => 'nullable|numeric|min:0',
         ]);
 
-        $pembayaran = Pembayaran::with(['pendaftaran.layanan', 'pendaftaran.rekamMedis'])->findOrFail($id);
+        $pembayaran = Pembayaran::with(['pendaftaran.layanans', 'pendaftaran.rekamMedis'])->findOrFail($id);
 
         $pembayaran->status = $request->status;
         
@@ -97,10 +98,15 @@ class PembayaranController extends Controller
             $pembayaran->metode_pembayaran = $request->metode_pembayaran;
         }
 
+        if ($request->has('biaya_obat') && $pembayaran->pendaftaran && $pembayaran->pendaftaran->rekamMedis) {
+            $pembayaran->pendaftaran->rekamMedis->biaya_obat = $request->biaya_obat;
+            $pembayaran->pendaftaran->rekamMedis->save();
+        }
+
         if ($request->has('total_bayar') && $request->total_bayar !== null) {
             $pembayaran->total_bayar = $request->total_bayar;
         } else if ($request->status === 'lunas' && $pembayaran->total_bayar == 0) {
-            $hargaLayanan = (float) (optional($pembayaran->pendaftaran->layanan)->harga ?? 0);
+            $hargaLayanan = (float) (optional($pembayaran->pendaftaran)->layanans?->sum('harga') ?? 0);
             $biayaTindakan = (float) (optional($pembayaran->pendaftaran->rekamMedis)->biaya_tindakan ?? 0);
             $biayaObat = (float) (optional($pembayaran->pendaftaran->rekamMedis)->biaya_obat ?? 0);
             $totalTagihan = $hargaLayanan + $biayaTindakan + $biayaObat;
@@ -125,7 +131,7 @@ class PembayaranController extends Controller
     // menampilkan detail pembayaran
     public function show($id)
     {
-        $pembayaran = Pembayaran::with('pendaftaran.layanan', 'pendaftaran.antrian', 'pendaftaran.pasien', 'pendaftaran.rekamMedis')->findOrFail($id);
+        $pembayaran = Pembayaran::with('pendaftaran.layanans', 'pendaftaran.antrian', 'pendaftaran.pasien', 'pendaftaran.rekamMedis')->findOrFail($id);
         return view('pembayaran.show', compact('pembayaran'));
     }
 
@@ -142,7 +148,7 @@ class PembayaranController extends Controller
     {
         $tanggalFilter = $request->input('tanggal', now()->toDateString());
 
-        $pembayaran = Pembayaran::with('pendaftaran.pasien', 'pendaftaran.antrian', 'pendaftaran.layanan', 'pendaftaran.rekamMedis')
+        $pembayaran = Pembayaran::with('pendaftaran.pasien', 'pendaftaran.antrian', 'pendaftaran.layanans', 'pendaftaran.rekamMedis')
             ->whereDate('tanggal_pembayaran', $tanggalFilter)
             ->orderBy('created_at', 'asc')
             ->get();

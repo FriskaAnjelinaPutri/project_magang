@@ -15,7 +15,7 @@ class PendaftaranController extends Controller
     {
         $tanggalFilter = $request->input('tanggal', now()->toDateString());
 
-        $pendaftaran = Pendaftaran::with(['pasien', 'layanan'])
+        $pendaftaran = Pendaftaran::with(['pasien', 'layanans'])
             ->whereDate('tanggal_kunjungan', $tanggalFilter)
             ->orderByDesc('id_pendaftaran')
             ->get();
@@ -54,28 +54,30 @@ class PendaftaranController extends Controller
         }
 
         $request->validate([
-            'id_layanan' => 'required',
+            'id_layanan' => 'required|array|min:1',
+            'id_layanan.*' => 'required|exists:layanan,id_layanan',
             'tanggal_kunjungan' => 'required|date',
         ]);
 
+        // Mencegah layanan yang sama dipilih 2x (menghapus duplikat)
+        $idLayananArray = array_unique($request->id_layanan);
+
         $pendaftaran = Pendaftaran::create([
             'id_pasien' => $id_pasien,
-            'id_layanan' => $request->id_layanan,
             'tanggal_kunjungan' => $request->tanggal_kunjungan,
             'status' => 'menunggu'
         ]);
 
+        // Attach layanans (many-to-many)
+        $pendaftaran->layanans()->attach($idLayananArray);
+
         // Saat reservasi awal, pasien belum mendapatkan nomor antrian sesungguhnya (diset 0)
-        $antrian = \App\Models\Antrian::create([
+        \App\Models\Antrian::create([
             'id_pendaftaran' => $pendaftaran->id_pendaftaran,
             'nomor_antrian' => 0,
             'tanggal_antrian' => $request->tanggal_kunjungan,
             'status' => 'belum_datang'
         ]);
-
-        $layananRecord = \App\Models\Layanan::find($request->id_layanan);
-        $total_bayar = $layananRecord ? $layananRecord->harga : 0;
-
 
         if ($user->role === 'pasien') {
             return redirect()->route('dashboard.pasien')
@@ -83,13 +85,13 @@ class PendaftaranController extends Controller
         }
 
         return redirect()->route('reservasi.index')
-            ->with('success','Reservasi berhasil dibuat');
+            ->with('success', 'Reservasi berhasil dibuat');
     }
 
     // mencetak antrian
     public function cetak($id)
     {
-        $antrian = \App\Models\Antrian::with(['pendaftaran.pasien', 'pendaftaran.layanan'])->findOrFail($id);
+        $antrian = \App\Models\Antrian::with(['pendaftaran.pasien', 'pendaftaran.layanans'])->findOrFail($id);
         
         $user = \Illuminate\Support\Facades\Auth::user();
         if ($user->role === 'pasien') {
@@ -129,17 +131,19 @@ class PendaftaranController extends Controller
         } else {
             $request->validate([
                 'id_pasien' => 'required|exists:pasien,id_pasien',
-                'id_layanan' => 'required|exists:layanan,id_layanan',
+                'id_layanan' => 'required|array|min:1',
+                'id_layanan.*' => 'required|exists:layanan,id_layanan',
                 'tanggal_kunjungan' => 'required|date',
                 'status' => 'required|in:menunggu,dipanggil,diproses,diperiksa,selesai,batal',
             ]);
 
             $pendaftaran->update([
                 'id_pasien' => $request->id_pasien,
-                'id_layanan' => $request->id_layanan,
                 'tanggal_kunjungan' => $request->tanggal_kunjungan,
                 'status' => strtolower((string) $request->status),
             ]);
+
+            $pendaftaran->layanans()->sync(array_unique($request->id_layanan));
         }
 
         return redirect()->route('reservasi.index')

@@ -158,7 +158,7 @@
                                 </div>
                                 @if($sedangDipanggil->pendaftaran)
                                     <p id="layanan-sekarang" class="text-dark/60 font-medium text-base mt-2">
-                                        {{ $sedangDipanggil->pendaftaran->layanan->nama_layanan ?? '-' }}
+                                        {{ optional($sedangDipanggil->pendaftaran)->layanans ? $sedangDipanggil->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}
                                     </p>
                                 @else
                                     <p id="layanan-sekarang" class="text-dark/60 font-medium text-base mt-2 hidden"></p>
@@ -210,16 +210,6 @@
                         <div>
                             <p class="text-dark/50 font-semibold text-sm uppercase tracking-wider">Selesai</p>
                             <p id="stat-selesai" class="text-4xl font-black text-dark">{{ $stats['selesai'] }}</p>
-                        </div>
-                    </div>
-                    <!-- Dilewati -->
-                    <div class="glass-card rounded-3xl p-7 flex items-center gap-5">
-                        <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center text-3xl text-gray-400 shrink-0 shadow-sm">
-                            <i class="fa-solid fa-forward-step"></i>
-                        </div>
-                        <div>
-                            <p class="text-dark/50 font-semibold text-sm uppercase tracking-wider">Dilewati</p>
-                            <p id="stat-dilewati" class="text-4xl font-black text-dark">{{ $stats['dilewati'] }}</p>
                         </div>
                     </div>
                     <!-- Auto-refresh info -->

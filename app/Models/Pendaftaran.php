@@ -20,9 +20,9 @@ class Pendaftaran extends Model
         return $this->belongsTo(Pasien::class, 'id_pasien', 'id_pasien');
     }
 
-    public function layanan()
+    public function layanans()
     {
-        return $this->belongsTo(Layanan::class, 'id_layanan', 'id_layanan');
+        return $this->belongsToMany(Layanan::class, 'layanan_pendaftaran', 'id_pendaftaran', 'id_layanan');
     }
 
     public function antrian()

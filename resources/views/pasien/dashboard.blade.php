@@ -97,7 +97,7 @@
                                         {{ \Carbon\Carbon::parse($item->tanggal_kunjungan)->translatedFormat('d M Y') }}
                                     </td>
                                     <td class="px-5 py-4 text-dark/80">
-                                        {{ $item->layanan->nama_layanan ?? '-' }}
+                                        {{ optional($item)->layanans ? $item->layanans->pluck('nama_layanan')->implode(', ') : '-' }}
                                     </td>
                                     <td class="px-5 py-4 text-center font-bold text-dark">
                                         {{ (isset($item->antrian->nomor_antrian) && (int) $item->antrian->nomor_antrian > 0) ? (int) $item->antrian->nomor_antrian : 'Booking' }}
