@@ -17,7 +17,12 @@ class RekamMedis extends Model
         'biaya_tindakan',
         'resep_obat',
         'biaya_obat',
-        'tanggal_periksa'
+        'tanggal_periksa',
+        'rujukan_dokter',
+        'rujukan_rs',
+        'rujukan_diagnosa_sementara',
+        'rujukan_kasus',
+        'rujukan_terapi'
     ];
 
     public function pasien()
@@ -29,4 +34,5 @@ class RekamMedis extends Model
     {
         return $this->belongsTo(Pendaftaran::class, 'id_pendaftaran', 'id_pendaftaran');
     }
+
 }

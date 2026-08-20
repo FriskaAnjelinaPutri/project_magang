@@ -25,7 +25,19 @@
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Layanan</p>
-                    <p class="text-lg font-semibold text-gray-800">{{ optional($pembayaran->pendaftaran)->layanans ? $pembayaran->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}</p>
+                    <p class="text-lg font-semibold text-gray-800">{{ optional($pembayaran->pendaftaran)->layanans ? $pembayaran->pendaftaran->layanans->map(function($l) { return $l->nama_layanan . (($l->pivot->jumlah ?? 1) > 1 ? ' (x'.$l->pivot->jumlah.')' : ''); })->implode(', ') : '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Resep Obat</p>
+                    <p class="text-lg font-semibold text-gray-800">
+                        @if(optional(optional($pembayaran->pendaftaran)->rekamMedis)->resep_obat)
+                            <div class="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100 mt-2">
+                                {!! nl2br(e($pembayaran->pendaftaran->rekamMedis->resep_obat)) !!}
+                            </div>
+                        @else
+                            -
+                        @endif
+                    </p>
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggal Transaksi</p>
@@ -51,7 +63,15 @@
                     <div class="space-y-2 text-sm bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                         <div class="flex justify-between">
                             <span class="text-gray-600">Biaya Layanan/Konsultasi</span>
-                            <span class="font-semibold">Rp {{ number_format(optional($pembayaran->pendaftaran)->layanans ? $pembayaran->pendaftaran->layanans->sum('harga') : 0, 0, ',', '.') }}</span>
+                            @php
+                                $totalHargaLayananShow = 0;
+                                if(optional($pembayaran->pendaftaran)->layanans){
+                                    foreach($pembayaran->pendaftaran->layanans as $lay){
+                                        $totalHargaLayananShow += $lay->harga * ($lay->pivot->jumlah ?? 1);
+                                    }
+                                }
+                            @endphp
+                            <span class="font-semibold">Rp {{ number_format($totalHargaLayananShow, 0, ',', '.') }}</span>
                         </div>
                         @if($pembayaran->pendaftaran && $pembayaran->pendaftaran->rekamMedis)
                         <div class="flex justify-between">

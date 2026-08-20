@@ -10,15 +10,34 @@
 
 <div class="px-2">
     <div class="glass-panel rounded-2xl p-4 mb-5">
-        <form method="GET" action="{{ route('antrian.index') }}" class="flex flex-col sm:flex-row items-end gap-3">
-            <div class="w-full sm:w-auto">
-                <label for="tanggal" class="block text-sm font-bold text-gray-700 mb-1">Filter Tanggal</label>
-                <input id="tanggal" name="tanggal" type="date" value="{{ $tanggal ?? now()->toDateString() }}"
-                    class="w-full sm:w-56 px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all text-gray-800 font-semibold">
+        <form method="GET" action="{{ route('antrian.index') }}" class="flex flex-col sm:flex-row items-end gap-3 w-full">
+            <div class="flex-1 flex flex-col sm:flex-row items-end gap-3 w-full">
+                <div class="w-full sm:w-auto">
+                    <label for="tanggal" class="block text-sm font-bold text-gray-700 mb-1">Filter Tanggal</label>
+                    <input id="tanggal" name="tanggal" type="date" value="{{ $tanggal ?? now()->toDateString() }}"
+                        class="w-full sm:w-48 px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all text-gray-800 font-semibold">
+                </div>
+                <div class="w-full sm:flex-1">
+                    <label for="search" class="block text-sm font-bold text-gray-700 mb-1">Cari Nama Pasien</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <input id="search" name="search" type="text" value="{{ $search ?? '' }}" placeholder="Masukkan nama pasien..."
+                            class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all text-gray-800 font-semibold">
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-colors">
-                Tampilkan
-            </button>
+            <div class="flex gap-2 w-full sm:w-auto mt-3 sm:mt-0">
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-colors w-full sm:w-auto">
+                    Filter
+                </button>
+                @if(isset($search) && $search != '')
+                    <a href="{{ route('antrian.index', ['tanggal' => $tanggal ?? now()->toDateString()]) }}" class="px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-colors w-full sm:w-auto text-center">
+                        Reset Pencarian
+                    </a>
+                @endif
+            </div>
         </form>
     </div>
 

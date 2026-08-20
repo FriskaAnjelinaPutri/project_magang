@@ -88,6 +88,13 @@
                                         </a>
                                     </div>
                                 @endif
+                                @if(optional(optional($row->pendaftaran)->rekamMedis)->rujukan_dokter)
+                                    <div class="mt-2">
+                                        <a href="{{ route('rekam-medis.cetak_rujukan', $row->pendaftaran->rekamMedis->id_rekam_medis) }}" target="_blank" class="inline-flex items-center px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs font-bold transition-colors shadow-sm">
+                                            🖨️ Cetak Rujukan
+                                        </a>
+                                    </div>
+                                @endif
                             </td>
                         </tr>
                     @empty

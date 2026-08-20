@@ -20,7 +20,9 @@
                     <tr class="border-b border-gray-200/50">
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">No</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Layanan</th>
+                        <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Induk</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Harga</th>
+                        <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Tampil Booking</th>
                         <th class="py-4 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -29,7 +31,15 @@
                         <tr class="border-b border-gray-100/50 hover:bg-white/40 transition-colors">
                             <td class="py-4 px-4 text-sm font-bold text-purple-600 text-center">{{ $loop->iteration }}</td>
                             <td class="py-4 px-4 text-sm text-gray-900 font-semibold">{{ $row->nama_layanan }}</td>
+                            <td class="py-4 px-4 text-sm text-gray-500">{{ $row->parent ? $row->parent->nama_layanan : '-' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-700 font-medium">Rp {{ number_format($row->harga, 0, ',', '.') }}</td>
+                            <td class="py-4 px-4 text-center">
+                                @if($row->tampil_di_booking)
+                                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">Ya</span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold">Tidak</span>
+                                @endif
+                            </td>
                             <td class="py-4 px-4 text-right whitespace-nowrap">
                                 <a href="{{ route('layanan.edit', $row->id_layanan ?? $row->id) }}" class="text-orange-500 hover:text-orange-700 text-sm font-bold mr-3 transition-colors">Edit</a>
                                 <form action="{{ route('layanan.destroy', $row->id_layanan ?? $row->id) }}" method="POST" class="inline">

@@ -25,14 +25,34 @@
                 </div>
                 <div>
                     <p class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-stethoscope text-orange-400"></i> Layanan</p>
-                    <p class="text-sm font-semibold text-gray-900 mt-1">{{ optional($pembayaran->pendaftaran)->layanans ? $pembayaran->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}</p>
+                    <p class="text-sm font-semibold text-gray-900 mt-1">{{ optional($pembayaran->pendaftaran)->layanans ? $pembayaran->pendaftaran->layanans->map(function($l) { return $l->nama_layanan . (($l->pivot->jumlah ?? 1) > 1 ? ' (x'.$l->pivot->jumlah.')' : ''); })->implode(', ') : '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-pills text-orange-400"></i> Resep Obat</p>
+                    <p class="text-sm font-semibold text-gray-900 mt-1">
+                        @if(optional(optional($pembayaran->pendaftaran)->rekamMedis)->resep_obat)
+                            <div class="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100 mt-2">
+                                {!! nl2br(e($pembayaran->pendaftaran->rekamMedis->resep_obat)) !!}
+                            </div>
+                        @else
+                            -
+                        @endif
+                    </p>
                 </div>
             </div>
             <div class="mt-6 pt-6 border-t border-orange-200/60">
                 <div class="flex flex-col gap-2 mb-4">
                     <div class="flex justify-between items-center text-sm font-semibold text-gray-700">
                         <span>Biaya Layanan</span>
-                        <span>Rp {{ number_format(optional($pembayaran->pendaftaran)->layanans?->sum('harga') ?? 0, 0, ',', '.') }}</span>
+                        @php
+                            $totalHargaLayanan = 0;
+                            if(optional($pembayaran->pendaftaran)->layanans){
+                                foreach($pembayaran->pendaftaran->layanans as $lay){
+                                    $totalHargaLayanan += $lay->harga * ($lay->pivot->jumlah ?? 1);
+                                }
+                            }
+                        @endphp
+                        <span>Rp {{ number_format($totalHargaLayanan, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex flex-col gap-1 text-sm font-semibold text-gray-700">
                         <div class="flex justify-between items-center mt-1">
@@ -44,7 +64,7 @@
                 <div class="flex justify-between items-center pt-4 border-t border-dashed border-orange-300">
                     <p class="text-sm font-bold text-gray-600 uppercase tracking-wider">Total Tagihan Final</p>
                     @php
-                        $hargaLayanan = (float) (optional($pembayaran->pendaftaran)->layanans?->sum('harga') ?? 0);
+                        $hargaLayanan = (float) $totalHargaLayanan;
                         $biayaTindakan = (float) (optional(optional($pembayaran->pendaftaran)->rekamMedis)->biaya_tindakan ?? 0);
                         $biayaObat = (float) (optional(optional($pembayaran->pendaftaran)->rekamMedis)->biaya_obat ?? 0);
                         $total = $hargaLayanan + $biayaTindakan + $biayaObat;
@@ -101,7 +121,7 @@
 </div>
 
 <script>
-    const hargaLayanan = {{ (float) (optional($pembayaran->pendaftaran)->layanans?->sum('harga') ?? 0) }};
+    const hargaLayanan = {{ (float) $totalHargaLayanan }};
     const biayaTindakan = {{ (float) (optional(optional($pembayaran->pendaftaran)->rekamMedis)->biaya_tindakan ?? 0) }};
     
     function updateTotalBayar() {

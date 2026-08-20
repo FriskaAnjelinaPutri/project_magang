@@ -110,8 +110,8 @@
 
     <div class="kop-surat">
         <h1>KLINIK GIGI DRG. NOVIANDRI</h1>
-        <p>Jl. Contoh Alamat Klinik No. 123, Kota Anda, Provinsi</p>
-        <p>Telepon: (021) 1234567 | Email: info@kliniknoviandri.com</p>
+        <p>Jl.urip sumoharjo no 356 balai balai timur,kec padang panjang timur,kota padang panjang</p>
+        <p>Telepon: 08126794403 | Email: Noviandri@gmail.com</p>
     </div>
 
     <div class="judul-laporan">
@@ -144,7 +144,15 @@
                         {{ $rm->keluhan }}
                     </td>
                     <td>{{ $rm->tindakan }}</td>
-                    <td>{{ $rm->resep_obat }}</td>
+                    <td>
+                        @if($rm->resep_obat)
+                            <div style="font-size: 10pt; margin-top: 5px;">
+                                {!! nl2br(e($rm->resep_obat)) !!}
+                            </div>
+                        @else
+                            -
+                        @endif
+                    </td>
                 </tr>
             @endforeach
             @if($rekamMedis->isEmpty())
@@ -159,7 +167,7 @@
         <tr>
             <td></td>
             <td class="kanan">
-                Kota Anda, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
+                Padang Panjang, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
                 Pimpinan Klinik,<br>
                 <div class="ttd-space"></div>
                 <strong>drg. Noviandri</strong>

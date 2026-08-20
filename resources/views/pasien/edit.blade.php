@@ -34,7 +34,7 @@
 
 
                 <!-- Jenis Kelamin -->
-                <div>
+                <div class="md:col-span-2">
                     <label class="block text-sm font-bold text-dark mb-1.5">Jenis Kelamin</label>
                     <div class="flex gap-4 items-center h-full pb-2">
                         <label class="flex items-center gap-2 cursor-pointer group">
@@ -47,6 +47,34 @@
                         </label>
                     </div>
                     @error('jenis_kelamin') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
+                </div>
+
+                <!-- NIK -->
+                <div>
+                    <label class="block text-sm font-bold text-dark mb-1.5">Nomor Induk Kependudukan (NIK)</label>
+                    <div class="relative group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all focus-within:ring-4 focus-within:ring-primary/20 focus-within:border-primary">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-id-card text-gray-400 group-focus-within:text-primary transition-colors"></i>
+                        </div>
+                        <input type="text" name="nik" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="16"
+                            class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
+                            placeholder="16 Digit NIK" value="{{ old('nik', $pasien->nik) }}">
+                    </div>
+                    @error('nik') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
+                </div>
+
+                <!-- Tanggal Lahir -->
+                <div>
+                    <label class="block text-sm font-bold text-dark mb-1.5">Tanggal Lahir</label>
+                    <div class="relative group rounded-2xl border border-gray-200 bg-gray-50 hover:bg-white transition-all focus-within:ring-4 focus-within:ring-primary/20 focus-within:border-primary">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-calendar text-gray-400 group-focus-within:text-primary transition-colors"></i>
+                        </div>
+                        <input type="date" name="tanggal_lahir" required max="{{ date('Y-m-d') }}"
+                            class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark placeholder-gray-400 font-bold"
+                            value="{{ old('tanggal_lahir', $pasien->tanggal_lahir) }}">
+                    </div>
+                    @error('tanggal_lahir') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Nomor HP -->

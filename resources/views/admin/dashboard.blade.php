@@ -97,7 +97,7 @@
 
                 <a href="{{ route('pembayaran.index') }}" class="flex flex-col items-center justify-center p-5 rounded-2xl bg-green-50/70 hover:bg-green-100 border border-green-100/50 text-green-600 transition-all hover:shadow-md transform hover:-translate-y-1">
                     <svg class="w-8 h-8 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    <span class="text-sm font-bold text-center">Cek<br>Kasir</span>
+                    <span class="text-sm font-bold text-center">Daftar<br>Pembayaran</span>
                 </a>
 
             </div>

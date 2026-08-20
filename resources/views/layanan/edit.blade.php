@@ -41,6 +41,31 @@
                     </div>
                 </div>
 
+                <!-- Kategori Induk -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Kategori Induk (Opsional)</label>
+                    <select name="parent_id" class="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all font-semibold text-gray-800">
+                        <option value="">-- Tidak Ada (Jadikan Layanan Utama) --</option>
+                        @foreach($parents as $parent)
+                            <option value="{{ $parent->id_layanan }}" {{ old('parent_id', $layanan->parent_id) == $parent->id_layanan ? 'selected' : '' }}>
+                                {{ $parent->nama_layanan }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Pilih jika layanan ini adalah variasi dari layanan utama (Contoh: "Behel Metal" induknya adalah "Pasang Behel").</p>
+                    @error('parent_id') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
+                </div>
+
+                <!-- Tampil di Booking -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Tampil di Halaman Booking Pasien?</label>
+                    <select name="tampil_di_booking" required class="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all font-semibold text-gray-800">
+                        <option value="1" {{ old('tampil_di_booking', $layanan->tampil_di_booking) == '1' ? 'selected' : '' }}>Ya, Tampilkan</option>
+                        <option value="0" {{ old('tampil_di_booking', $layanan->tampil_di_booking) == '0' ? 'selected' : '' }}>Tidak, Sembunyikan</option>
+                    </select>
+                    @error('tampil_di_booking') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
+                </div>
+
                 <div class="pt-8 border-t border-gray-100 flex justify-end gap-3 mt-8">
                     <a href="{{ route('layanan.index') }}" class="px-6 py-3 rounded-full text-gray-500 font-bold hover:bg-gray-50 transition-colors">Batal</a>
                     <button type="submit" class="btn-gradient px-8 py-3 rounded-full font-bold shadow-lg shadow-orange-500/30 flex items-center gap-2">

@@ -159,7 +159,7 @@
                     <h3 class="text-4xl md:text-5xl font-extrabold text-dark leading-tight">Pilihan Perawatan</h3>
                 </div>
                 <div class="mt-6 md:mt-0">
-                    <a href="#" class="inline-flex items-center font-bold text-primary hover:text-secondary transition-colors text-lg">
+                    <a href="{{ route('layanan.semua') }}" class="inline-flex items-center font-bold text-primary hover:text-secondary transition-colors text-lg">
                         Lihat Semua Layanan <i class="fa-solid fa-arrow-right-long ml-2"></i>
                     </a>
                 </div>

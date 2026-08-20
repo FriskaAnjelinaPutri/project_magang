@@ -31,6 +31,7 @@ class AntrianController extends Controller
     public function index(Request $request)
     {
         $tanggal = $request->input('tanggal', now()->toDateString());
+        $search = $request->input('search');
 
         // data yang statusnya "dipanggil" per hari
         $dipanggil = Antrian::whereDate('tanggal_antrian', $tanggal)
@@ -45,12 +46,19 @@ class AntrianController extends Controller
                 ->update(['status' => self::STATUS_MENUNGGU]);
         }
 
-        $antrian = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanans')
+        $query = Antrian::with('pendaftaran.pasien', 'pendaftaran.layanans')
             ->whereDate('tanggal_antrian', $tanggal)
-            ->orderBy('nomor_antrian', 'asc')
-            ->get();
+            ->orderBy('nomor_antrian', 'asc');
 
-        return view('antrian.index', compact('antrian', 'tanggal'));
+        if ($search) {
+            $query->whereHas('pendaftaran.pasien', function ($q) use ($search) {
+                $q->where('nama_pasien', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        $antrian = $query->get();
+
+        return view('antrian.index', compact('antrian', 'tanggal', 'search'));
     }
 
     // membuat nomor antrian

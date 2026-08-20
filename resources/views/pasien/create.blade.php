@@ -28,7 +28,7 @@
 
 
                 <!-- Jenis Kelamin -->
-                <div>
+                <div class="md:col-span-2">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Jenis Kelamin</label>
                     <div class="grid grid-cols-2 gap-4 h-[52px]">
                         <label class="flex items-center justify-center gap-2 border border-gray-200 rounded-2xl cursor-pointer hover:border-orange-500 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50 transition-all px-4">
@@ -41,6 +41,24 @@
                         </label>
                     </div>
                     @error('jenis_kelamin') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
+                </div>
+
+                <!-- NIK -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Nomor Induk Kependudukan (NIK)</label>
+                    <input type="text" name="nik" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="16"
+                        class="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all font-semibold text-gray-800"
+                        placeholder="16 Digit NIK" value="{{ old('nik') }}">
+                    @error('nik') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
+                </div>
+
+                <!-- Tanggal Lahir -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal Lahir</label>
+                    <input type="date" name="tanggal_lahir" required max="{{ date('Y-m-d') }}"
+                        class="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all font-semibold text-gray-800"
+                        value="{{ old('tanggal_lahir') }}">
+                    @error('tanggal_lahir') <p class="text-red-500 text-xs mt-1.5 font-bold">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Nomor HP -->

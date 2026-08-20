@@ -110,8 +110,8 @@
 
     <div class="kop-surat">
         <h1>KLINIK GIGI DRG. NOVIANDRI</h1>
-        <p>Jl. Contoh Alamat Klinik No. 123, Kota Anda, Provinsi</p>
-        <p>Telepon: (021) 1234567 | Email: info@kliniknoviandri.com</p>
+        <p>Jl.urip sumoharjo no 356 balai balai timur,kec padang panjang timur,kota padang panjang</p>
+        <p>Telepon: 08126794403 | Email: Noviandri@gmail.com</p>
     </div>
 
     <div class="judul-laporan">
@@ -125,13 +125,15 @@
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th width="12%">No. Antrian</th>
-                <th width="20%">Nama Pasien</th>
+                <th width="8%">No. Antrian</th>
+                <th width="10%">Tanggal</th>
+                <th width="15%">Nama Pasien</th>
                 <th width="15%">Layanan</th>
-                <th width="10%">Metode</th>
-                <th width="13%">Tanggal</th>
-                <th width="10%">Status</th>
-                <th width="15%">Total Bayar (Rp)</th>
+                <th width="12%">Biaya Layanan (Rp)</th>
+                <th width="12%">Biaya Obat (Rp)</th>
+                <th width="8%">Metode</th>
+                <th width="5%">Status</th>
+                <th width="10%">Total Bayar (Rp)</th>
             </tr>
         </thead>
         <tbody>
@@ -140,14 +142,23 @@
                 @php
                     $isLunas = strtolower(trim($row->status)) === 'lunas';
                     if($isLunas) $totalSemua += $row->total_bayar;
+                    
+                    $totalLayanan = 0;
+                    if(optional($row->pendaftaran)->layanans){
+                        foreach($row->pendaftaran->layanans as $lay){
+                            $totalLayanan += $lay->harga * ($lay->pivot->jumlah ?? 1);
+                        }
+                    }
                 @endphp
                 <tr>
                     <td style="text-align: center;">{{ $index + 1 }}</td>
                     <td style="text-align: center;">{{ optional(optional($row->pendaftaran)->antrian)->nomor_antrian ?? '-' }}</td>
+                    <td style="text-align: center;">{{ $row->tanggal_pembayaran ?? $row->created_at->format('d M Y') }}</td>
                     <td>{{ optional(optional($row->pendaftaran)->pasien)->nama_pasien ?? '-' }}</td>
                     <td>{{ optional($row->pendaftaran)->layanans ? $row->pendaftaran->layanans->pluck('nama_layanan')->implode(', ') : '-' }}</td>
+                    <td style="text-align: right;">{{ number_format($totalLayanan, 0, ',', '.') }}</td>
+                    <td style="text-align: right;">{{ number_format(optional(optional($row->pendaftaran)->rekamMedis)->biaya_obat ?? 0, 0, ',', '.') }}</td>
                     <td style="text-align: center;">{{ $row->metode_pembayaran ? ucfirst($row->metode_pembayaran) : '-' }}</td>
-                    <td style="text-align: center;">{{ $row->tanggal_pembayaran ?? $row->created_at->format('d M Y') }}</td>
                     <td style="text-align: center; {{ $isLunas ? 'color: green;' : 'color: red;' }}">
                         <strong>{{ strtoupper($row->status) }}</strong>
                     </td>
@@ -156,11 +167,11 @@
             @endforeach
             @if($pembayaran->isEmpty())
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 20px;">Tidak ada transaksi pada tanggal ini.</td>
+                    <td colspan="10" style="text-align: center; padding: 20px;">Tidak ada transaksi pada tanggal ini.</td>
                 </tr>
             @else
                 <tr>
-                    <td colspan="7" style="text-align: right; font-weight: bold;">TOTAL PENDAPATAN:</td>
+                    <td colspan="9" style="text-align: right; font-weight: bold;">TOTAL PENDAPATAN:</td>
                     <td style="text-align: right; font-weight: bold; font-size: 14pt;">Rp {{ number_format($totalSemua, 0, ',', '.') }}</td>
                 </tr>
             @endif

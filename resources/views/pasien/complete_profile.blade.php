@@ -96,6 +96,31 @@
                         </div>
                     </div>
 
+                    <!-- NIK -->
+                    <div class="space-y-2">
+                        <label for="nik" class="block text-sm font-bold text-dark">Nomor Induk Kependudukan (NIK)</label>
+                        <div class="relative custom-input group rounded-2xl bg-white border border-gray-200">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-id-card text-gray-400 group-focus-within:text-primary"></i>
+                            </div>
+                            <input id="nik" type="text" name="nik" value="{{ old('nik') }}" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="16"
+                                class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark font-semibold"
+                                placeholder="16 Digit NIK">
+                        </div>
+                    </div>
+
+                    <!-- Tanggal Lahir -->
+                    <div class="space-y-2">
+                        <label for="tanggal_lahir" class="block text-sm font-bold text-dark">Tanggal Lahir</label>
+                        <div class="relative custom-input group rounded-2xl bg-white border border-gray-200">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-calendar text-gray-400 group-focus-within:text-primary"></i>
+                            </div>
+                            <input id="tanggal_lahir" type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" required max="{{ date('Y-m-d') }}"
+                                class="block w-full pl-12 pr-4 py-3.5 bg-transparent border-none focus:ring-0 text-dark font-semibold">
+                        </div>
+                    </div>
+
 
 
                     <!-- No HP -->

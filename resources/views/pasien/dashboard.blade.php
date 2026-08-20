@@ -59,6 +59,30 @@
             </div>
         </div>
 
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 md:p-6 mb-8 flex flex-col md:flex-row gap-5 items-start md:items-center">
+            <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <i class="fa-solid fa-user text-xl"></i>
+            </div>
+            <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                <div>
+                    <p class="text-dark/50 text-[10px] font-bold uppercase tracking-widest">NIK</p>
+                    <p class="text-dark font-bold mt-1 text-sm">{{ $pasien->nik ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-dark/50 text-[10px] font-bold uppercase tracking-widest">Tanggal Lahir</p>
+                    <p class="text-dark font-bold mt-1 text-sm">{{ $pasien->tanggal_lahir ? \Carbon\Carbon::parse($pasien->tanggal_lahir)->translatedFormat('d F Y') : '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-dark/50 text-[10px] font-bold uppercase tracking-widest">No. HP</p>
+                    <p class="text-dark font-bold mt-1 text-sm">{{ $pasien->no_hp ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-dark/50 text-[10px] font-bold uppercase tracking-widest">Alamat</p>
+                    <p class="text-dark font-bold mt-1 text-sm truncate" title="{{ $pasien->alamat ?? '-' }}">{{ $pasien->alamat ?? '-' }}</p>
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
             <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
                 <p class="text-dark/60 text-sm font-semibold">Total Pendaftaran</p>

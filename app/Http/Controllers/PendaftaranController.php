@@ -37,7 +37,7 @@ class PendaftaranController extends Controller
         }
 
         $pasienList = \App\Models\Pasien::all();
-        $layanan = \App\Models\Layanan::all();
+        $layanan = \App\Models\Layanan::where('tampil_di_booking', true)->get();
 
         return view('reservasi.create', compact('pasienList', 'layanan', 'user'));
     }
@@ -58,6 +58,18 @@ class PendaftaranController extends Controller
             'id_layanan.*' => 'required|exists:layanan,id_layanan',
             'tanggal_kunjungan' => 'required|date',
         ]);
+
+        // Cek kuota booking harian
+        $existingCount = Pendaftaran::whereDate('tanggal_kunjungan', $request->tanggal_kunjungan)
+            ->where('status', '!=', 'batal')
+            ->count();
+            
+        if ($existingCount >= 10) {
+            $formattedDate = \Carbon\Carbon::parse($request->tanggal_kunjungan)->translatedFormat('d F Y');
+            return redirect()->back()
+                ->with('error', "Maaf, kuota antrian untuk tanggal $formattedDate sudah penuh (Maksimal 5 pasien). Silakan pilih tanggal lain.")
+                ->withInput();
+        }
 
         // Mencegah layanan yang sama dipilih 2x (menghapus duplikat)
         $idLayananArray = array_unique($request->id_layanan);
@@ -109,7 +121,7 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($id);
         $pasienList = \App\Models\Pasien::all();
-        $layanan = \App\Models\Layanan::all();
+        $layanan = \App\Models\Layanan::where('tampil_di_booking', true)->get();
 
         return view('reservasi.edit', compact('pendaftaran','pasienList','layanan'));
     }

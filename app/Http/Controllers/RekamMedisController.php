@@ -8,6 +8,18 @@ use App\Models\RekamMedis;
 
 class RekamMedisController extends Controller
 {
+    public static function getDaftarObat()
+    {
+        return [
+            ['nama_obat' => 'Paracetamol 500mg', 'harga' => 15000],
+            ['nama_obat' => 'Amoxicillin 500mg', 'harga' => 20000],
+            ['nama_obat' => 'Ibuprofen 400mg', 'harga' => 12000],
+            ['nama_obat' => 'Antasida Doen', 'harga' => 10000],
+            ['nama_obat' => 'Vitamin C', 'harga' => 5000],
+            ['nama_obat' => 'Kalsium', 'harga' => 8000],
+        ];
+    }
+
     public function index(Request $request)
     {
         $tanggalFilter = $request->query('tanggal', now()->toDateString());
@@ -31,9 +43,10 @@ class RekamMedisController extends Controller
             $pendaftaran = \App\Models\Pendaftaran::with('pasien', 'layanans')->find($idPendaftaran);
         }
         
-        $layanan = \App\Models\Layanan::all();
+        $layanan = \App\Models\Layanan::whereNull('parent_id')->with('children')->get();
+        $obatList = self::getDaftarObat();
         $layout = auth()->user()->role === 'dokter' ? 'layouts.dokter' : 'layouts.admin';
-        return view('rekam_medis.create', compact('pendaftaran', 'layout', 'layanan'));
+        return view('rekam_medis.create', compact('pendaftaran', 'layout', 'layanan', 'obatList'));
     }
 
     public function store(Request $request)
@@ -49,23 +62,76 @@ class RekamMedisController extends Controller
             'tanggal_periksa' => 'required|date',
         ]);
 
-        $rekamMedis = RekamMedis::create($request->except(['id_layanan', 'biaya_obat']));
+        $biayaObat = 0;
+        $resepObatArr = [];
+        $daftarObat = self::getDaftarObat();
+
+        if ($request->has('nama_obat_list')) {
+            $namaObats = $request->nama_obat_list;
+            $jumlahObats = $request->jumlah_obat;
+            $dosisObats = $request->dosis_obat;
+            foreach ($namaObats as $idx => $namaObat) {
+                if ($namaObat) {
+                    // Cari harga obat
+                    $harga = 0;
+                    foreach ($daftarObat as $obat) {
+                        if ($obat['nama_obat'] === $namaObat) {
+                            $harga = $obat['harga'];
+                            break;
+                        }
+                    }
+
+                    $qty = $jumlahObats[$idx] ?? 1;
+                    $dosis = $dosisObats[$idx] ?? '';
+                    $biayaObat += ($harga * $qty);
+                    
+                    $dosisText = $dosis ? " ($dosis)" : "";
+                    $resepObatArr[] = "- $namaObat ($qty pcs)$dosisText";
+                }
+            }
+        }
+
+        $inputData = $request->except(['id_layanan', 'nama_obat_list', 'jumlah_obat', 'dosis_obat']);
+        $inputData['biaya_obat'] = $biayaObat;
+        
+        // Gabungkan resep hardcode dengan catatan tambahan
+        $gabunganResep = implode("\n", $resepObatArr);
+        if ($request->resep_obat) {
+            $gabunganResep .= "\n\nCatatan: " . $request->resep_obat;
+        }
+        $inputData['resep_obat'] = trim($gabunganResep);
+        
+        $rekamMedis = RekamMedis::create($inputData);
 
         if ($request->id_pendaftaran) {
             $pendaftaran = \App\Models\Pendaftaran::find($request->id_pendaftaran);
             if ($pendaftaran) {
-                // Update daftar layanan final pilihan dokter
-                $pendaftaran->layanans()->sync(array_unique($request->id_layanan));
+                // Update daftar layanan final pilihan dokter beserta jumlahnya
+                $syncData = [];
+                $idLayananUnique = array_unique($request->id_layanan);
+                foreach($idLayananUnique as $id) {
+                    $syncData[$id] = ['jumlah' => $request->jumlah[$id] ?? 1];
+                }
+                $pendaftaran->layanans()->sync($syncData);
+
+                // Reload relasi untuk mengambil pivot jumlah terbaru
+                $pendaftaran->load('layanans');
+                $totalLayanan = 0;
+                foreach($pendaftaran->layanans as $lay) {
+                    $totalLayanan += $lay->harga * ($lay->pivot->jumlah ?? 1);
+                }
+                
+                $totalBayar = $totalLayanan + $biayaObat;
 
                 // Buat tagihan pembayaran (jika belum ada)
                 $pembayaran = \App\Models\Pembayaran::where('id_pendaftaran', $request->id_pendaftaran)->first();
                 if ($pembayaran) {
-                    $pembayaran->total_bayar = $pendaftaran->layanans()->sum('harga');
+                    $pembayaran->total_bayar = $totalBayar;
                     $pembayaran->save();
                 } else {
                     \App\Models\Pembayaran::create([
                         'id_pendaftaran' => $request->id_pendaftaran,
-                        'total_bayar' => $pendaftaran->layanans()->sum('harga'),
+                        'total_bayar' => $totalBayar,
                         'tanggal_pembayaran' => date('Y-m-d'),
                         'status' => 'belum lunas',
                         'metode_pembayaran' => 'cash',
@@ -117,22 +183,74 @@ class RekamMedisController extends Controller
 
         $rekamMedis = RekamMedis::findOrFail($id);
         
-        $rekamMedis->update($request->except(['id_layanan', 'biaya_obat']));
+        $biayaObat = 0;
+        $resepObatArr = [];
+        $daftarObat = self::getDaftarObat();
+
+        if ($request->has('nama_obat_list')) {
+            $namaObats = $request->nama_obat_list;
+            $jumlahObats = $request->jumlah_obat;
+            $dosisObats = $request->dosis_obat;
+            foreach ($namaObats as $idx => $namaObat) {
+                if ($namaObat) {
+                    // Cari harga obat
+                    $harga = 0;
+                    foreach ($daftarObat as $obat) {
+                        if ($obat['nama_obat'] === $namaObat) {
+                            $harga = $obat['harga'];
+                            break;
+                        }
+                    }
+
+                    $qty = $jumlahObats[$idx] ?? 1;
+                    $dosis = $dosisObats[$idx] ?? '';
+                    $biayaObat += ($harga * $qty);
+                    
+                    $dosisText = $dosis ? " ($dosis)" : "";
+                    $resepObatArr[] = "- $namaObat ($qty pcs)$dosisText";
+                }
+            }
+        }
+
+        $inputData = $request->except(['id_layanan', 'nama_obat_list', 'jumlah_obat', 'dosis_obat']);
+        $inputData['biaya_obat'] = $biayaObat;
+        
+        // Karena ini update dari API, mungkin kita timpa resep_obat sepenuhnya jika ada list obat,
+        // tapi resep_obat dari request juga harus dimasukkan.
+        $gabunganResep = implode("\n", $resepObatArr);
+        if ($request->resep_obat) {
+            $gabunganResep .= "\n\nCatatan: " . $request->resep_obat;
+        }
+        $inputData['resep_obat'] = trim($gabunganResep);
+        
+        $rekamMedis->update($inputData);
 
         if ($rekamMedis->id_pendaftaran && $request->has('id_layanan')) {
             $pendaftaran = \App\Models\Pendaftaran::find($rekamMedis->id_pendaftaran);
             if ($pendaftaran) {
-                $pendaftaran->layanans()->sync(array_unique($request->id_layanan));
+                $syncData = [];
+                $idLayananUnique = array_unique($request->id_layanan);
+                foreach($idLayananUnique as $id) {
+                    $syncData[$id] = ['jumlah' => $request->jumlah[$id] ?? 1];
+                }
+                $pendaftaran->layanans()->sync($syncData);
+                
+                $pendaftaran->load('layanans');
+                $totalLayanan = 0;
+                foreach($pendaftaran->layanans as $lay) {
+                    $totalLayanan += $lay->harga * ($lay->pivot->jumlah ?? 1);
+                }
+                
+                $totalBayar = $totalLayanan + $biayaObat;
                 
                 $pembayaran = \App\Models\Pembayaran::where('id_pendaftaran', $rekamMedis->id_pendaftaran)->first();
                 if ($pembayaran) {
-                    // Update total pembayaran sesuai dengan layanan saja (biaya obat diurus di kasir)
-                    $pembayaran->total_bayar = $pendaftaran->layanans()->sum('harga');
+                    // Update total pembayaran
+                    $pembayaran->total_bayar = $totalBayar;
                     $pembayaran->save();
                 }
             }
         }
-        
         
         return response()->json(['message' => 'Rekam medis berhasil diupdate']);
     }
@@ -155,5 +273,38 @@ class RekamMedisController extends Controller
             ->get();
             
         return view('rekam_medis.cetak', compact('rekamMedis', 'tanggalFilter'));
+    }
+
+    public function simpanRujukan(Request $request, $id)
+    {
+        $request->validate([
+            'rujukan_dokter' => 'required|string',
+            'rujukan_rs' => 'required|string',
+            'rujukan_diagnosa_sementara' => 'nullable|string',
+            'rujukan_kasus' => 'nullable|string',
+            'rujukan_terapi' => 'nullable|string',
+        ]);
+
+        $rekamMedis = RekamMedis::findOrFail($id);
+        $rekamMedis->update([
+            'rujukan_dokter' => $request->rujukan_dokter,
+            'rujukan_rs' => $request->rujukan_rs,
+            'rujukan_diagnosa_sementara' => $request->rujukan_diagnosa_sementara,
+            'rujukan_kasus' => $request->rujukan_kasus,
+            'rujukan_terapi' => $request->rujukan_terapi,
+        ]);
+
+        return redirect()->back()->with('success', 'Surat rujukan berhasil dibuat.');
+    }
+
+    public function cetakRujukan($id)
+    {
+        $rekamMedis = RekamMedis::with(['pasien'])->findOrFail($id);
+        
+        if (!$rekamMedis->rujukan_dokter) {
+            return redirect()->back()->with('error', 'Data rujukan belum diisi.');
+        }
+
+        return view('rekam_medis.cetak_rujukan', compact('rekamMedis'));
     }
 }

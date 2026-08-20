@@ -52,6 +52,9 @@
                     <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Keluhan</th>
                     <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Tindakan</th>
                     <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">Resep Obat</th>
+                    @if(auth()->user()->role === 'dokter')
+                    <th class="py-3.5 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80 text-center">Aksi</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -84,13 +87,26 @@
                         </td>
                         <td class="py-4 px-4 border-b border-gray-100/80">
                             <div class="text-sm text-gray-800">
-                                {{ $rm->resep_obat }}
+                                @if($rm->resep_obat)
+                                    <div class="text-sm text-gray-700 bg-gray-50 p-2 rounded border border-gray-100">
+                                        {!! nl2br(e($rm->resep_obat)) !!}
+                                    </div>
+                                @else
+                                    -
+                                @endif
                             </div>
                         </td>
+                        @if(auth()->user()->role === 'dokter')
+                        <td class="py-4 px-4 border-b border-gray-100/80 text-center">
+                            <button onclick="bukaModalRujukan({{ $rm->id_rekam_medis }})" class="inline-flex items-center px-3 py-1.5 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-700 text-xs font-bold transition-colors shadow-sm">
+                                📝 Rujukan
+                            </button>
+                        </td>
+                        @endif
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="py-16 text-center">
+                        <td colspan="{{ auth()->user()->role === 'dokter' ? '7' : '6' }}" class="py-16 text-center">
                             <div class="flex flex-col items-center justify-center">
                                 <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-4">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -104,4 +120,103 @@
         </table>
     </div>
 </div>
+
+@if(auth()->user()->role === 'dokter')
+<!-- Modal Surat Rujukan -->
+<div id="modal-rujukan" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="tutupModalRujukan()"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+            <form id="form-rujukan" method="POST" action="">
+                @csrf
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-8">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-2xl leading-6 font-extrabold text-gray-900 mb-6" id="modal-title">Buat Surat Rujukan</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-semibold mb-1">Nama Pasien</p>
+                                    <p class="font-bold text-gray-900" id="rujukan_nama_pasien">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500 font-semibold mb-1">Keluhan/Anamnese</p>
+                                    <p class="font-bold text-gray-900" id="rujukan_keluhan">-</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-sm font-bold text-gray-700 mb-2">Yth. Dokter Gigi <span class="text-red-500">*</span></label>
+                                        <input type="text" name="rujukan_dokter" id="rujukan_dokter" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 text-gray-800 font-medium" placeholder="Contoh: drg. Budi, Sp.Ort">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-bold text-gray-700 mb-2">Di RSU <span class="text-red-500">*</span></label>
+                                        <input type="text" name="rujukan_rs" id="rujukan_rs" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 text-gray-800 font-medium" placeholder="Contoh: RSUD Padang Panjang">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Diagnosa Sementara</label>
+                                    <textarea name="rujukan_diagnosa_sementara" id="rujukan_diagnosa_sementara" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 text-gray-800 font-medium"></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Kasus</label>
+                                    <textarea name="rujukan_kasus" id="rujukan_kasus" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 text-gray-800 font-medium"></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Terapi/Obat yang telah diberikan</label>
+                                    <textarea name="rujukan_terapi" id="rujukan_terapi" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 text-gray-800 font-medium"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-4 sm:px-8 sm:flex sm:flex-row-reverse rounded-b-3xl">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-2.5 bg-orange-600 text-base font-bold text-white hover:bg-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500/20 sm:ml-3 sm:w-auto sm:text-sm transition-all">
+                        Simpan Rujukan
+                    </button>
+                    <button type="button" onclick="tutupModalRujukan()" class="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-6 py-2.5 bg-white text-base font-bold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-all">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const rekamMedisData = @json($rekamMedis);
+
+    function bukaModalRujukan(id) {
+        const modal = document.getElementById('modal-rujukan');
+        const form = document.getElementById('form-rujukan');
+        const rm = rekamMedisData.find(item => item.id_rekam_medis === id);
+        
+        if (rm) {
+            form.action = `/rekam-medis/${id}/rujukan`;
+            
+            document.getElementById('rujukan_nama_pasien').textContent = rm.pasien?.nama_pasien || '-';
+            document.getElementById('rujukan_keluhan').textContent = rm.keluhan || '-';
+            
+            document.getElementById('rujukan_dokter').value = rm.rujukan_dokter || '';
+            document.getElementById('rujukan_rs').value = rm.rujukan_rs || '';
+            document.getElementById('rujukan_diagnosa_sementara').value = rm.rujukan_diagnosa_sementara || '';
+            document.getElementById('rujukan_kasus').value = rm.rujukan_kasus || '';
+            document.getElementById('rujukan_terapi').value = rm.rujukan_terapi || '';
+            
+            modal.classList.remove('hidden');
+        }
+    }
+
+    function tutupModalRujukan() {
+        const modal = document.getElementById('modal-rujukan');
+        modal.classList.add('hidden');
+    }
+</script>
+@endif
 @endsection

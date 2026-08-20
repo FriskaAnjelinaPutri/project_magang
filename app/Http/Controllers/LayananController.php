@@ -14,10 +14,10 @@ class LayananController extends Controller
         return view('layanan.index', compact('layanan'));
     }
 
-    // menampilkan form tambah layanan
     public function create()
     {
-        return view('layanan.create');
+        $parents = Layanan::whereNull('parent_id')->get();
+        return view('layanan.create', compact('parents'));
     }
 
     // menyimpan layanan
@@ -25,18 +25,20 @@ class LayananController extends Controller
     {
         Layanan::create([
             'nama_layanan' => $request->nama_layanan,
-            'harga' => $request->harga
+            'harga' => $request->harga,
+            'tampil_di_booking' => $request->tampil_di_booking,
+            'parent_id' => $request->parent_id
         ]);
 
         return redirect()->route('layanan.index')
             ->with('success','Layanan berhasil ditambahkan');
     }
 
-    // menampilkan form edit
     public function edit($id)
     {
         $layanan = Layanan::findOrFail($id);
-        return view('layanan.edit', compact('layanan'));
+        $parents = Layanan::whereNull('parent_id')->where('id_layanan', '!=', $id)->get();
+        return view('layanan.edit', compact('layanan', 'parents'));
     }
 
     // update layanan
@@ -46,7 +48,9 @@ class LayananController extends Controller
 
         $layanan->update([
             'nama_layanan' => $request->nama_layanan, 
-            'harga' => $request->harga
+            'harga' => $request->harga,
+            'tampil_di_booking' => $request->tampil_di_booking,
+            'parent_id' => $request->parent_id
         ]);
 
         return redirect()->route('layanan.index')

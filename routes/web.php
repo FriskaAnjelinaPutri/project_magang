@@ -16,7 +16,7 @@ use App\Models\Antrian;
 use App\Models\Pendaftaran;
 
 Route::get('/', function () {
-    $layanans = Layanan::all();
+    $layanans = Layanan::whereNull('parent_id')->get();
     $stats = [
         'pasien' => Pasien::count(),
         'antrian' => Antrian::count(),
@@ -25,6 +25,11 @@ Route::get('/', function () {
     ];
     return view('landing', compact('layanans', 'stats'));
 })->name('landing');
+
+Route::get('/semua-layanan', function () {
+    $layanans = Layanan::all();
+    return view('semua-layanan', compact('layanans'));
+})->name('layanan.semua');
 
 Route::get('/jadwal', function (Request $request) {
     $tanggal = $request->input('tanggal', date('Y-m-d'));
@@ -85,6 +90,7 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register')->middleware('guest');
 Route::post('/register', [AuthController::class, 'registerStore'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 use App\Http\Controllers\AdminController;
 
@@ -103,6 +109,7 @@ Route::post('/pasien/store-profile', [PasienController::class, 'storeProfile'])-
 
 Route::resource('pasien', PasienController::class)->middleware('auth');
 Route::resource('layanan', LayananController::class)->middleware('auth');
+
 
 use App\Http\Controllers\AntrianController;
 
@@ -131,4 +138,9 @@ Route::put('/pendaftaran/{id}/cancel', [PendaftaranController::class, 'cancel'])
 Route::get('/pembayaran/cetak', [PembayaranController::class, 'cetak'])->name('pembayaran.cetak')->middleware('auth');
 Route::resource('pembayaran', PembayaranController::class)->middleware('auth');
 Route::get('/rekam-medis/cetak', [RekamMedisController::class, 'cetak'])->name('rekam-medis.cetak')->middleware('auth');
+
+// Rujukan Routes
+Route::post('/rekam-medis/{id}/rujukan', [RekamMedisController::class, 'simpanRujukan'])->name('rekam-medis.simpan_rujukan')->middleware('auth');
+Route::get('/rekam-medis/{id}/cetak-rujukan', [RekamMedisController::class, 'cetakRujukan'])->name('rekam-medis.cetak_rujukan')->middleware('auth');
+
 Route::resource('rekam-medis', RekamMedisController::class)->middleware('auth');

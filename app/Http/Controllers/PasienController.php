@@ -82,6 +82,8 @@ class PasienController extends Controller
         $request->validate([
             'nama_pasien' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
+            'tanggal_lahir' => 'required|date',
+            'nik' => 'required|string|max:20',
             'no_hp' => 'required|string|max:15',
             'alamat' => 'required|string'
         ]);
@@ -90,6 +92,8 @@ class PasienController extends Controller
             'id_user' => $user->id,
             'nama_pasien' => $request->nama_pasien,
             'jenis_kelamin' => $request->jenis_kelamin,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'nik' => $request->nik,
             'no_hp' => $request->no_hp,
             'alamat' => $request->alamat
         ]);
@@ -102,11 +106,19 @@ class PasienController extends Controller
     // MENAMPILKAN DATA PASIEN
     // ==============================
 
-    public function index()
+    public function index(Request $request)
     {
-        $pasien = Pasien::all();
+        $search = $request->query('search');
 
-        return view('pasien.index', compact('pasien'));
+        $query = Pasien::query();
+
+        if ($search) {
+            $query->where('nama_pasien', 'LIKE', '%' . $search . '%');
+        }
+
+        $pasien = $query->get();
+
+        return view('pasien.index', compact('pasien', 'search'));
     }
 
 
@@ -130,6 +142,7 @@ class PasienController extends Controller
             'nama_pasien' => 'required|string|max:100',
             'jenis_kelamin' => 'required|in:L,P',
             'tanggal_lahir' => 'required|date',
+            'nik' => 'required|string|max:20',
             'no_hp' => 'required|string|max:15|unique:pasien,no_hp',
             'alamat' => 'required|string',
         ]);
@@ -150,6 +163,7 @@ class PasienController extends Controller
             'nama_pasien' => $request->nama_pasien,
             'jenis_kelamin' => $request->jenis_kelamin,
             'tanggal_lahir' => $request->tanggal_lahir,
+            'nik' => $request->nik,
             'no_hp' => $no_hp,
             'alamat' => $request->alamat,
         ]);
@@ -181,6 +195,8 @@ class PasienController extends Controller
         $request->validate([
             'nama_pasien' => 'required',
             'jenis_kelamin' => 'required',
+            'tanggal_lahir' => 'required|date',
+            'nik' => 'required|string|max:20',
             'no_hp' => 'required',
             'alamat' => 'required'
         ]);
@@ -190,6 +206,8 @@ class PasienController extends Controller
         $pasien->update([
             'nama_pasien' => $request->nama_pasien,
             'jenis_kelamin' => $request->jenis_kelamin,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'nik' => $request->nik,
             'no_hp' => $request->no_hp,
             'alamat' => $request->alamat
         ]);

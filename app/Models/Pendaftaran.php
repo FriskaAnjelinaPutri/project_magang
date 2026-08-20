@@ -22,7 +22,9 @@ class Pendaftaran extends Model
 
     public function layanans()
     {
-        return $this->belongsToMany(Layanan::class, 'layanan_pendaftaran', 'id_pendaftaran', 'id_layanan');
+        return $this->belongsToMany(Layanan::class, 'layanan_pendaftaran', 'id_pendaftaran', 'id_layanan')
+                    ->withPivot('jumlah')
+                    ->withTimestamps();
     }
 
     public function antrian()

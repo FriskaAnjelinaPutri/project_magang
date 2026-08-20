@@ -24,6 +24,12 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="mb-8 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 font-bold flex items-center shadow-sm">
+                <i class="fa-solid fa-triangle-exclamation mr-3 text-xl"></i> {{ session('error') }}
+            </div>
+        @endif
+
         <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-6">
             @csrf
 
@@ -92,6 +98,11 @@
 </div>
 
 <div class="px-2">
+    @if (session('error'))
+        <div class="mb-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 font-bold flex items-center shadow-sm max-w-2xl">
+            <i class="fa-solid fa-triangle-exclamation mr-3 text-xl"></i> {{ session('error') }}
+        </div>
+    @endif
     <div class="glass-panel rounded-3xl p-6 sm:p-8 bg-white shadow-xl max-w-2xl">
         <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-6">
             @csrf
